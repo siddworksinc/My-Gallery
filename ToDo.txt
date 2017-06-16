@@ -1,0 +1,19 @@
+
+
+Enhancements:
+All:
+    Change actionbar color to accent color while in selection mode
+ShortcutActivity:
+    Add select cover image functionality
+AlbumPickerDialog:
+    Show loading state
+    Multiselect albums
+    preload contents for albumpicker dialog(via cache)
+PickDirectoryDialog
+    Show only albums in shortcut activity
+    show unlock icon and show all albums on unlocking
+CopyTo/MoveTo
+    show only albums added in shortcuts activity
+Add security section in settings
+    Master password
+Add option to open app in locked state and have logo long press listener to open unlock prompt and show locked folders after unlock prompt

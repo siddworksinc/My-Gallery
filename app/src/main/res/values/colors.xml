@@ -5,5 +5,20 @@
 
     <!-- Default colors -->
     <color name="default_text_color">@color/default_dark_theme_text_color</color>
-    <color name="default_background_color">@color/default_dark_theme_background_color</color>
+    <color name="default_background_color">#FF000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="color_primary">#FF4081</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="bg_grey">#FFebebeb</color>
+    <color name="redbody">#FFe53935</color>
+    <color name="bluebg">#133572</color>
+    <color name="veryTransparentWhite">#22FFFFFF</color>
+    <color name="transparentWhite">#33FFFFFF</color>
+    <color name="transparentWhite44">#44FFFFFF</color>
+    <color name="transparentWhite55">#55FFFFFF</color>
+    <color name="transparent_white">#DDFFFFFF</color>
+    <color name="transparent_white_more">#AAFFFFFF</color>
 </resources>

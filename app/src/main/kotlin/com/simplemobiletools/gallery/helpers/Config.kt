@@ -190,4 +190,8 @@ class Config(context: Context) : BaseConfig(context) {
         val listType = object : TypeToken<List<AlbumCover>>() {}.type
         return Gson().fromJson<ArrayList<AlbumCover>>(albumCovers, listType) ?: ArrayList(1)
     }
+
+    var shortcuts: String
+        get() = prefs.getString(SHORTCUTS, "")
+        set(shortcuts) = prefs.edit().putString(SHORTCUTS, shortcuts).apply()
 }

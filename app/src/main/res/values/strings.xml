@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Simple Gallery</string>
-    <string name="app_launcher_name">Gallery</string>
+    <string name="app_name">My Gallery</string>
+    <string name="app_launcher_name">My Gallery</string>
     <string name="edit">Edit</string>
     <string name="open_camera">Open camera</string>
     <string name="open_with">Open with</string>
@@ -112,6 +112,7 @@
 
         This app is just one piece of a bigger series of apps. You can find the rest of them at http://www.simplemobiletools.com
     </string>
+    <string name="open">Open</string>
 
     <!--
         Haven't found some strings? There's more at

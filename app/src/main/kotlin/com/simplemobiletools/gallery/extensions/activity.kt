@@ -28,6 +28,7 @@ import com.simplemobiletools.gallery.helpers.REQUEST_EDIT_IMAGE
 import com.simplemobiletools.gallery.helpers.REQUEST_SET_WALLPAPER
 import com.simplemobiletools.gallery.models.Directory
 import com.simplemobiletools.gallery.models.Medium
+import com.simplemobiletools.gallery.models.Shortcut
 import com.simplemobiletools.gallery.views.MySquareImageView
 import java.io.File
 import java.util.*
@@ -325,4 +326,15 @@ fun Activity.loadStaticGif(path: String, target: MySquareImageView) {
 fun Activity.getCachedDirectories(): ArrayList<Directory> {
     val token = object : TypeToken<List<Directory>>() {}.type
     return Gson().fromJson<ArrayList<Directory>>(config.directories, token) ?: ArrayList<Directory>(1)
+}
+
+fun Activity.loadImageForShortcut(shortcut: Shortcut, target: MySquareImageView) {
+    if(shortcut.isThumbnailHidden) {
+        Glide.with(applicationContext)
+                .load(R.drawable.ic_folder_gallery)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .into(target)
+    } else {
+        loadImage(shortcut.tmb, target)
+    }
 }
