@@ -335,6 +335,17 @@ fun Activity.loadImageForShortcut(shortcut: Shortcut, target: MySquareImageView)
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(target)
     } else {
-        loadImage(shortcut.tmb, target)
+        if(shortcut.coverImage != null) {
+            loadImage(shortcut.coverImage as String, target)
+        } else {
+            if(shortcut.tmb != "") {
+                loadImage(shortcut.tmb, target)
+            } else {
+                Glide.with(applicationContext)
+                        .load(R.drawable.ic_folder_gallery)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(target)
+            }
+        }
     }
 }

@@ -20,15 +20,17 @@ class RefreshShortcutsAsynctask(val context: Context, val shortcuts: ArrayList<S
         val newShortcuts = ArrayList<Shortcut>()
 
         shortcuts.forEach {
-            if(!it.isThumbnailHidden) {
+            if(!it.isThumbnailHidden && it.coverImage == null) {
                 val allMedia = context.getFilesFrom(it.path, false, false)
-                val first = allMedia.first()
-                if(it.tmb != first.path) {
-                    val shortcut = Shortcut(it.path, first.path, it.name, 1, it.modified, 0, 0)
-                    newShortcuts.add(shortcut)
-                    isChanged = true;
-                } else {
-                    newShortcuts.add(it)
+                if(!allMedia.isEmpty()) {
+                    val first = allMedia.first()
+                    if(it.tmb != first.path) {
+                        val shortcut = Shortcut(it.path, first.path, it.name, 1, it.modified, 0, 0)
+                        newShortcuts.add(shortcut)
+                        isChanged = true;
+                    } else {
+                        newShortcuts.add(it)
+                    }
                 }
             }
         }

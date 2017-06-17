@@ -1,29 +1,27 @@
 package com.siddworks.android.mygallery
 
 import android.Manifest
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.extensions.hasWriteStoragePermission
-import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.commons.extensions.storeStoragePaths
 import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.MediaActivity
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.adapters.ShortcutsAdapter
+import com.simplemobiletools.gallery.asynctasks.GetDirectoriesAsynctask
 import com.simplemobiletools.gallery.asynctasks.RefreshShortcutsAsynctask
 import com.simplemobiletools.gallery.dialogs.ChangeSortingDialog
+import com.simplemobiletools.gallery.dialogs.PasswordDialog
 import com.simplemobiletools.gallery.dialogs.PickAlbumDialog
 import com.simplemobiletools.gallery.extensions.config
 import com.simplemobiletools.gallery.extensions.launchAbout
@@ -32,7 +30,6 @@ import com.simplemobiletools.gallery.helpers.*
 import com.simplemobiletools.gallery.models.Shortcut
 import com.simplemobiletools.gallery.views.MyScalableRecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_password.view.*
 import java.io.File
 import java.util.*
 
@@ -98,6 +95,14 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
             }
         }
         mCurrAsyncTask!!.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+
+        if(config.directories == "") {
+            val task = GetDirectoriesAsynctask(applicationContext, false, false) {
+                val directories = Gson().toJson(it)
+                config.directories = directories
+            }
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        }
     }
 
     private fun gotShortcuts(dirs: ArrayList<Shortcut>) {
@@ -164,28 +169,15 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
 
     private fun itemClicked(shortcut: Shortcut) {
         if(shortcut.passcode != null) {
-            val view = LayoutInflater.from(this).inflate(R.layout.dialog_password, null)
-            AlertDialog.Builder(this)
-                    .setPositiveButton(R.string.ok, DialogInterface.OnClickListener { dialog, which ->
-                        run {
-                            if (view.password_value.text != null &&
-                                    view.password_value.text.toString() == shortcut.passcode) {
-                                Intent(this, MediaActivity::class.java).apply {
-                                    putExtra(DIRECTORY, shortcut.path)
-                                    putExtra(GET_IMAGE_INTENT, false)
-                                    putExtra(GET_VIDEO_INTENT, false)
-                                    putExtra(GET_ANY_INTENT, false)
-                                    startActivityForResult(this, PICK_MEDIA)
-                                }
-                            } else {
-                                toast("Incorrect Password")
-                            }
-                        }
-                    })
-                    .create().apply {
-                        setupDialogStuff(view, this, R.string.open)
-                    }
-
+            PasswordDialog(this, R.string.open, shortcut) {
+                Intent(this, MediaActivity::class.java).apply {
+                    putExtra(DIRECTORY, shortcut.path)
+                    putExtra(GET_IMAGE_INTENT, false)
+                    putExtra(GET_VIDEO_INTENT, false)
+                    putExtra(GET_ANY_INTENT, false)
+                    startActivityForResult(this, PICK_MEDIA)
+                }
+            }
         } else {
             Intent(this, MediaActivity::class.java).apply {
                 putExtra(DIRECTORY, shortcut.path)

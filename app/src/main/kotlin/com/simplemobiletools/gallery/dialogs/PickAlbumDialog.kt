@@ -4,6 +4,8 @@ import android.os.Environment
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
+import com.google.gson.Gson
 import com.simplemobiletools.commons.dialogs.FilePickerDialog
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.gallery.R
@@ -25,21 +27,25 @@ class PickAlbumDialog(val activity: SimpleActivity, val filterDirs: List<String>
     init {
         val view = LayoutInflater.from(activity).inflate(R.layout.dialog_directory_picker, null)
         directoriesGrid = view.directories_grid
+        view.directory_message.visibility = View.VISIBLE
+        view.directory_message.text = "Loading Albums..."
 
         dialog = AlertDialog.Builder(activity)
                 .setPositiveButton(R.string.ok, null)
                 .setNegativeButton(R.string.cancel, null)
                 .setNeutralButton(R.string.other_folder, { dialogInterface, i -> showOtherFolder() })
                 .create().apply {
-            activity.setupDialogStuff(view, this, R.string.select_folder)
+            activity.setupDialogStuff(view, this, R.string.select_album)
 
             val dirs = activity.getCachedDirectories()
             if (dirs.isNotEmpty()) {
-                gotDirectories(dirs)
+                gotDirectories(dirs, view, true)
             }
 
             GetDirectoriesAsynctask(activity, false, false) {
-                gotDirectories(it)
+                gotDirectories(it, view, false)
+                val directories = Gson().toJson(it)
+                activity.config.directories = directories
             }.execute()
         }
     }
@@ -48,21 +54,28 @@ class PickAlbumDialog(val activity: SimpleActivity, val filterDirs: List<String>
         val showHidden = activity.config.shouldShowHidden
         FilePickerDialog(activity, Environment.getExternalStorageDirectory().getPath(), false, showHidden, true) {
             var file = File(it)
+            var path : String = "";
             val allMedia = activity.getFilesFrom(file.path, false , false)
-            val first = allMedia.first()
-            val dir = Directory(it, first.path, file.name, 1, file.lastModified(), 0, 0)
+            if(!allMedia.isEmpty()) {
+                val first = allMedia.first()
+                path = first.path;
+            }
+            val dir = Directory(it, path, file.name, 1, file.lastModified(), 0, 0)
             callback.invoke(dir)
         }
     }
 
-    private fun gotDirectories(directories: ArrayList<Directory>) {
+    private fun gotDirectories(directories: ArrayList<Directory>, view: View, isFromCache: Boolean) {
         if (directories.hashCode() == shownDirectories.hashCode())
             return
 
         val filteredAllDirs = directories.filter { !filterDirs.contains(it.path) } as ArrayList<Directory>
-        if(filteredAllDirs.isEmpty()) {
-            dialog?.dismiss()
-            callback.invoke(null)
+        if(!filteredAllDirs.isEmpty()) {
+            view.directory_message.visibility = View.GONE
+            view.directory_message.text = ""
+        } else if(filteredAllDirs.isEmpty() && !isFromCache) {
+            view.directory_message.visibility = View.VISIBLE
+            view.directory_message.text = "No More Albums To Show!\n(To browse and select album,\nuse OTHER FOLDER option)"
         }
 
         shownDirectories = filteredAllDirs

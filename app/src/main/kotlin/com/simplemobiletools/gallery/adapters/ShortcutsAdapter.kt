@@ -18,6 +18,7 @@ import com.simplemobiletools.commons.dialogs.PropertiesDialog
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.dialogs.EditShortcutDialog
+import com.simplemobiletools.gallery.dialogs.PasswordDialog
 import com.simplemobiletools.gallery.extensions.config
 import com.simplemobiletools.gallery.extensions.createSelector
 import com.simplemobiletools.gallery.extensions.loadImageForShortcut
@@ -153,16 +154,32 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, val dirs: MutableList<Sh
 
     private fun editShortcut() {
         val shortcut = dirs[selectedPositions.first()]
-        EditShortcutDialog(activity, shortcut) {
-            listener?.refreshItems()
-            notifyDataSetChanged()
-            actMode?.finish()
+        if(shortcut.passcode != null) {
+            PasswordDialog(activity, R.string.edit, shortcut) {
+                EditShortcutDialog(activity, shortcut) {
+                    listener?.refreshItems()
+                    notifyDataSetChanged()
+                    actMode?.finish()
+                }
+            }
+        } else {
+            EditShortcutDialog(activity, shortcut) {
+                listener?.refreshItems()
+                notifyDataSetChanged()
+                actMode?.finish()
+            }
         }
     }
 
     private fun showProperties() {
         if (selectedPositions.size <= 1) {
-            PropertiesDialog(activity, dirs[selectedPositions.first()].path, config.shouldShowHidden)
+            if(dirs[selectedPositions.first()].passcode != null) {
+                PasswordDialog(activity, R.string.properties, dirs[selectedPositions.first()]) {
+                    PropertiesDialog(activity, dirs[selectedPositions.first()].path, config.shouldShowHidden)
+                }
+            } else {
+                PropertiesDialog(activity, dirs[selectedPositions.first()].path, config.shouldShowHidden)
+            }
         } else {
             val paths = ArrayList<String>()
             selectedPositions.forEach { paths.add(dirs[it].path) }
@@ -284,14 +301,14 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, val dirs: MutableList<Sh
                      val itemClick: (Shortcut) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
 
         fun bindView(activity: SimpleActivity, multiSelectorCallback: ModalMultiSelectorCallback, multiSelector: MultiSelector,
-                     directory: Shortcut,
+                     shortcut: Shortcut,
                      isPinned: Boolean, listener: DirOperationsListener?): View {
             itemView.apply {
-                dir_name.text = directory.name
+                dir_name.text = shortcut.name + " (" + shortcut.mediaCnt + ")"
                 dir_pin.visibility = if (isPinned) View.VISIBLE else View.GONE
-                activity.loadImageForShortcut(directory, dir_thumbnail)
+                activity.loadImageForShortcut(shortcut, dir_thumbnail)
 
-                setOnClickListener { viewClicked(multiSelector, directory) }
+                setOnClickListener { viewClicked(multiSelector, shortcut) }
                 setOnLongClickListener {
                     if (listener != null) {
                         if (!multiSelector.isSelectable) {
