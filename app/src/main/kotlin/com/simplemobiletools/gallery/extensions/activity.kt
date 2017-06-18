@@ -1,5 +1,6 @@
 package com.simplemobiletools.gallery.extensions
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.database.Cursor
@@ -300,6 +301,13 @@ fun Activity.loadJpg(path: String, target: MySquareImageView) {
     builder.into(target)
 }
 
+fun Activity.loadImageFromResource(id: Int, target: MySquareImageView) {
+    Glide.with(applicationContext)
+            .load(id)
+            .diskCacheStrategy(DiskCacheStrategy.RESULT)
+            .into(target)
+}
+
 fun Activity.loadAnimatedGif(path: String, target: MySquareImageView) {
     val builder = Glide.with(applicationContext)
             .load(path)
@@ -330,10 +338,7 @@ fun Activity.getCachedDirectories(): ArrayList<Directory> {
 
 fun Activity.loadImageForShortcut(shortcut: Shortcut, target: MySquareImageView) {
     if(shortcut.isThumbnailHidden) {
-        Glide.with(applicationContext)
-                .load(R.drawable.ic_folder_gallery)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .into(target)
+        loadImageFromResource(R.drawable.ic_folder_gallery, target)
     } else {
         if(shortcut.coverImage != null) {
             loadImage(shortcut.coverImage as String, target)
@@ -341,11 +346,21 @@ fun Activity.loadImageForShortcut(shortcut: Shortcut, target: MySquareImageView)
             if(shortcut.tmb != "") {
                 loadImage(shortcut.tmb, target)
             } else {
-                Glide.with(applicationContext)
-                        .load(R.drawable.ic_folder_gallery)
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                        .into(target)
+                loadImageFromResource(R.drawable.ic_folder_gallery, target)
             }
         }
     }
+}
+
+@SuppressLint("NewApi")
+fun Activity.init() {
+    baseConfig.appRunCount++
+    if (baseConfig.appRunCount == 50 || baseConfig.appRunCount == 300 || baseConfig.appRunCount == 1000) {
+//        DonateDialog(this)
+    }
+
+    Thread({
+        baseConfig.internalStoragePath = getInternalStoragePath()
+        baseConfig.sdCardPath = getSDCardPath().trimEnd('/')
+    }).start()
 }

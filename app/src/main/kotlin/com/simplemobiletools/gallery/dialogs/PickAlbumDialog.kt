@@ -79,7 +79,9 @@ class PickAlbumDialog(val activity: SimpleActivity, val filterDirs: List<String>
         }
 
         shownDirectories = filteredAllDirs
-        val adapter = DirectoryAdapter(activity, filteredAllDirs, null) {
+        var adapter : DirectoryAdapter? = null;
+        adapter = DirectoryAdapter(activity, filteredAllDirs, null) {
+//            adapter?.adapterListener?.toggleItemSelectionAdapter(true, 1)
             callback.invoke(it)
             dialog.dismiss()
         }

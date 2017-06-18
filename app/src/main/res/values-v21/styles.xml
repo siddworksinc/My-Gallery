@@ -1,5 +1,9 @@
 <resources>
 
+    <style name="AppTheme" parent="AppTheme.Base">
+        <item name="android:actionModeBackground">@color/colorAccent</item>
+    </style>
+
     <style name="FullScreenTheme" parent="FullScreenTheme.Base">
         <item name="android:windowTranslucentNavigation">true</item>
     </style>

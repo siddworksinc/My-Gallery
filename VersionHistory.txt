@@ -1,0 +1,18 @@
+v1
+GAdded Shortcuts Activity
+Added password functionality
+
+v2
+Add select cover image functionality
+preload contents for albumpicker dialog(via cache) it is not initialized now
+added password protection to edit, properties dialog
+
+v3
+Change actionbar color to accent color while in selection mode
+Select any album and lock and unlock phone, highlight is gone
+PickDirectoryDialog
+    Now hides thumbnails for albums that have hide thumbnail option on
+Remove donate notice
+Enter Password dialog
+    Keyboard is not pulled up automatically
+

@@ -7,12 +7,18 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.mikepenz.materialdrawer.Drawer
+import com.mikepenz.materialdrawer.DrawerBuilder
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
+import com.mikepenz.materialdrawer.model.SectionDrawerItem
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.simplemobiletools.commons.extensions.hasWriteStoragePermission
-import com.simplemobiletools.commons.extensions.storeStoragePaths
 import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.MediaActivity
@@ -24,6 +30,7 @@ import com.simplemobiletools.gallery.dialogs.ChangeSortingDialog
 import com.simplemobiletools.gallery.dialogs.PasswordDialog
 import com.simplemobiletools.gallery.dialogs.PickAlbumDialog
 import com.simplemobiletools.gallery.extensions.config
+import com.simplemobiletools.gallery.extensions.init
 import com.simplemobiletools.gallery.extensions.launchAbout
 import com.simplemobiletools.gallery.extensions.launchSettings
 import com.simplemobiletools.gallery.helpers.*
@@ -32,6 +39,10 @@ import com.simplemobiletools.gallery.views.MyScalableRecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.util.*
+
+
+
+
 
 class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListener {
 
@@ -43,14 +54,20 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
 
     private var mCurrAsyncTask: RefreshShortcutsAsynctask? = null
 
+    private var toolbar: Toolbar? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shortcuts)
         logEvent("ActivityShortcuts")
 
+        toolbar = findViewById(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)
+
         directories_refresh_layout.setOnRefreshListener({ getShortcuts() })
         mShortcuts = ArrayList<Shortcut>()
-        storeStoragePaths()
+        init()
+        setupDrawer()
     }
 
     override fun onResume() {
@@ -190,6 +207,11 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     }
 
     private fun setupAdapter() {
+        // Reset Selections
+        if(directories_grid.adapter != null) {
+            val recyclerAdapter = getRecyclerAdapter()
+            recyclerAdapter.actMode?.finish()
+        }
         val adapter = ShortcutsAdapter(this, mShortcuts, this) {
             itemClicked(it)
         }
@@ -279,4 +301,43 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     override fun tryDeleteFolders(folders: ArrayList<File>) {
     }
 
+    private fun setupDrawer() {
+        //if you want to update the items at a later time it is recommended to keep it in a variable
+        val gallery = PrimaryDrawerItem().withIdentifier(1).withName(R.string.gallery)
+                .withIcon(R.drawable.ic_image_black_24dp).withIconTintingEnabled(true)
+        val settings = PrimaryDrawerItem().withIdentifier(2).withName(R.string.settings)
+                .withIcon(R.drawable.ic_settings_black_24dp).withIconTintingEnabled(true)
+        val about = PrimaryDrawerItem().withIdentifier(3).withName(R.string.about)
+                .withIcon(R.drawable.ic_info_black_24dp).withIconTintingEnabled(true)
+        val amazingUser = SectionDrawerItem().withName("Be An Amazing User :)").withDivider(true)
+        val share = PrimaryDrawerItem().withIdentifier(4).withName(R.string.share)
+                .withIcon(R.drawable.ic_share_black_24dp).withIconTintingEnabled(true)
+        val sendFeedback = PrimaryDrawerItem().withIdentifier(5).withName(R.string.send_feedback)
+                .withIcon(R.drawable.ic_send_white_24dp).withIconTintingEnabled(true)
+        val rateUs = PrimaryDrawerItem().withIdentifier(5).withName(R.string.rate_us)
+                .withIcon(R.drawable.ic_thumb_up_white_24dp).withIconTintingEnabled(true)
+        // Remaining
+        // Donate/Contribute
+        // tips & tutorials
+
+        val result = DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar as Toolbar)
+                .addDrawerItems(
+                        gallery,
+                        settings,
+                        about,
+                        amazingUser,
+                        share,
+                        sendFeedback,
+                        rateUs
+                )
+                .withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener {
+                    override fun onItemClick(view: View, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
+                        // do something with the clicked item :D
+                        return false
+                    }
+                })
+                .build()
+    }
 }

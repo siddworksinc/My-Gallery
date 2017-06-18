@@ -1,8 +1,0 @@
-v1
-Added Shortcuts Activity
-Added password functionality
-
-v2
-Add select cover image functionality
-preload contents for albumpicker dialog(via cache) it is not initialized now
-added password protection to edit, properties dialog

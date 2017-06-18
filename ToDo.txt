@@ -1,18 +1,40 @@
-
-
 Enhancements:
-All:
-    Change actionbar color to accent color while in selection mode
-AlbumPickerDialog:
-    Multiselect albums
+tutorial
+ShortcutActivity:
+    Shortcuts are not ordered as per last modified pic as last modified date is never updated.
+Add edit shortcut in bottom sheet dialog
+Settings:
+    Add security section in settings
+    Master password
+    hide password protected folders on startup
+Add option to open app in locked state and have logo long press listener to open unlock prompt and show locked folders after unlock prompt
+Navigation Drawer
+    Gallery
+    About
+    Tips & Help
+        Privacy and Security
+        Settings
+    Be an amazing user
+        Feedback
+        Rate us
+        Donate
+        Share
+        Social
+            Website
+            Twitter
+            G+
+
+
+Future:
+Analytics
+Donate option
 PickDirectoryDialog
     Show only albums in shortcut activity
     show unlock icon and show all albums on unlocking
 CopyTo/MoveTo
     show only albums added in shortcuts activity
-Add security section in settings
-    Master password
-Add option to open app in locked state and have logo long press listener to open unlock prompt and show locked folders after unlock prompt
-Remove donate notice
-Enter Password dialog
-    Keyboard is not pulled up automatically
+
+
+Debatable:
+AlbumPickerDialog:
+    Multiselect albums

@@ -1,7 +1,16 @@
 <resources>
 
-    <style name="AppTheme" parent="AppTheme.Base">
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="AppTheme" parent="AppTheme.Base">
+        <item name="actionModeBackground">@color/colorAccent</item>
     </style>
 
     <style name="FullScreenTheme.Base" parent="AppTheme">
@@ -15,4 +24,5 @@
     <style name="MyFullScreenActionBar" parent="Widget.AppCompat.Light.ActionBar">
         <item name="titleTextStyle">@style/AppTheme.ActionBar.TitleTextStyle</item>
     </style>
+
 </resources>
