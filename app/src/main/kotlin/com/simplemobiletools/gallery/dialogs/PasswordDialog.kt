@@ -9,11 +9,11 @@ import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.SimpleActivity
-import com.simplemobiletools.gallery.models.Shortcut
+import com.simplemobiletools.gallery.models.Directory
 import kotlinx.android.synthetic.main.dialog_password.view.*
 
 
-class PasswordDialog(val activity: SimpleActivity, val name: Int, val shortcut: Shortcut, val callback: (dir: Shortcut) -> Unit) {
+class PasswordDialog(val activity: SimpleActivity, val name: Int, val shortcut: Directory, val callback: (dir: Directory) -> Unit) {
 
     init {
         val view = LayoutInflater.from(activity).inflate(R.layout.dialog_password, null)

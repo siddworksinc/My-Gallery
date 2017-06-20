@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.R
+import com.simplemobiletools.gallery.helpers.logEvent
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.view_crop_image.*
 
@@ -24,6 +25,7 @@ class SetWallpaperActivity : SimpleActivity(), CropImageView.OnCropImageComplete
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_crop_image)
+        logEvent("ActivitySetWallpaper")
 
         if (intent.data == null) {
             val pickIntent = Intent(applicationContext, MainActivity::class.java)

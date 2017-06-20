@@ -7,6 +7,11 @@
         android:title="@string/edit"
         app:showAsAction="ifRoom"/>
     <item
+        android:id="@+id/cab_hide"
+        android:icon="@drawable/ic_hide"
+        android:title="@string/hide_folder"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/cab_delete"
         android:icon="@drawable/ic_delete"
         android:title="@string/delete"

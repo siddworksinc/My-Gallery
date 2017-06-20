@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    >
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:background="@color/bg_grey">
+
+            <!-- Author Card -->
+            <android.support.v7.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mal_baseline_half"
+                android:layout_marginStart="@dimen/mal_baseline_half"
+                android:layout_marginRight="@dimen/mal_baseline_half"
+                android:layout_marginEnd="@dimen/mal_baseline_half"
+                android:layout_marginTop="@dimen/mal_baseline_half"
+                android:paddingLeft="@dimen/mal_baseline_half"
+                android:paddingStart="@dimen/mal_baseline_half"
+                android:paddingRight="@dimen/mal_baseline_half"
+                android:paddingEnd="@dimen/mal_baseline_half"
+                android:paddingTop="@dimen/mal_baseline"
+                android:paddingBottom="@dimen/mal_baseline"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/mal_list_card_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/mal_baseline"
+                        android:layout_marginStart="@dimen/mal_baseline"
+                        android:layout_marginRight="@dimen/mal_baseline"
+                        android:layout_marginEnd="@dimen/mal_baseline"
+                        android:layout_marginTop="@dimen/mal_baseline"
+                        android:layout_marginBottom="@dimen/mal_baseline_half"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:text="Author" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/about_author_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/mal_item_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Sagar Siddhapura"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:id="@+id/mal_action_item_subtext"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Passionate Gamer and Developer"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/about_author_root_twitter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/about_author_twitter"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_tw"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="\@sagarsiddhpura"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Connect on Twitter"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/about_author_root_reddit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_red"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="/u/sagarsiddhpura"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Connect on Reddit"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <!-- App Card -->
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mal_baseline_half"
+                android:layout_marginStart="@dimen/mal_baseline_half"
+                android:layout_marginRight="@dimen/mal_baseline_half"
+                android:layout_marginEnd="@dimen/mal_baseline_half"
+                android:layout_marginTop="@dimen/mal_baseline_half"
+                android:paddingLeft="@dimen/mal_baseline_half"
+                android:paddingStart="@dimen/mal_baseline_half"
+                android:paddingRight="@dimen/mal_baseline_half"
+                android:paddingEnd="@dimen/mal_baseline_half"
+                android:paddingTop="@dimen/mal_baseline"
+                android:paddingBottom="@dimen/mal_baseline"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/mal_baseline"
+                        android:layout_marginStart="@dimen/mal_baseline"
+                        android:layout_marginRight="@dimen/mal_baseline"
+                        android:layout_marginEnd="@dimen/mal_baseline"
+                        android:layout_marginTop="@dimen/mal_baseline"
+                        android:layout_marginBottom="@dimen/mal_baseline_half"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:text="App" />
+
+                    <!-- App open in PS -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/about_app_root_playstore"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/about_app_ps"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="My Gallery"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Open in Play Store"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/about_app_current_ver_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_about_current_ver"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Current Version"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:id="@+id/about_app_version"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- App Whats New -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/about_app_root_whatsnew"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/about_app_whatsnew"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Whats New"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="See whats new for current version"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <!-- Feedback Card -->
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mal_baseline_half"
+                android:layout_marginStart="@dimen/mal_baseline_half"
+                android:layout_marginRight="@dimen/mal_baseline_half"
+                android:layout_marginEnd="@dimen/mal_baseline_half"
+                android:layout_marginTop="@dimen/mal_baseline_half"
+                android:paddingLeft="@dimen/mal_baseline_half"
+                android:paddingStart="@dimen/mal_baseline_half"
+                android:paddingRight="@dimen/mal_baseline_half"
+                android:paddingEnd="@dimen/mal_baseline_half"
+                android:paddingTop="@dimen/mal_baseline"
+                android:paddingBottom="@dimen/mal_baseline"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/mal_baseline"
+                        android:layout_marginStart="@dimen/mal_baseline"
+                        android:layout_marginRight="@dimen/mal_baseline"
+                        android:layout_marginEnd="@dimen/mal_baseline"
+                        android:layout_marginTop="@dimen/mal_baseline"
+                        android:layout_marginBottom="@dimen/mal_baseline_half"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:text="Feedback" />
+
+                    <!-- Feedback connnect -->
+                    <LinearLayout
+                        android:id="@+id/about_feedback_connect_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/about_feedback_connect_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Connect with Developer"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Send Feedback Email"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Feedback last update sendGoogleFormsfeedback -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/about_feedback_update_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/about_feedback_update_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Last Update"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Feedback on changes in last update"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- sendGoogleFormsfeedback upcoming -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/about_feedback_upcoming_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/about_feedback_upcoming_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Upcoming Features"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Feedback on Upcoming Features"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <!-- Credits Card -->
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mal_baseline_half"
+                android:layout_marginStart="@dimen/mal_baseline_half"
+                android:layout_marginRight="@dimen/mal_baseline_half"
+                android:layout_marginEnd="@dimen/mal_baseline_half"
+                android:layout_marginTop="@dimen/mal_baseline_half"
+                android:paddingLeft="@dimen/mal_baseline_half"
+                android:paddingStart="@dimen/mal_baseline_half"
+                android:paddingRight="@dimen/mal_baseline_half"
+                android:paddingEnd="@dimen/mal_baseline_half"
+                android:paddingTop="@dimen/mal_baseline"
+                android:paddingBottom="@dimen/mal_baseline"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/mal_baseline"
+                        android:layout_marginStart="@dimen/mal_baseline"
+                        android:layout_marginRight="@dimen/mal_baseline"
+                        android:layout_marginEnd="@dimen/mal_baseline"
+                        android:layout_marginTop="@dimen/mal_baseline"
+                        android:layout_marginBottom="@dimen/mal_baseline_half"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:text="Special Credits" />
+
+                    <!-- sendGoogleFormsfeedback upcoming -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/about_credits_simple_gallery_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/about_credits_reddit_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_simple_gallery"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Simple Gallery App"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="https://simplemobiletools.github.io"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
+

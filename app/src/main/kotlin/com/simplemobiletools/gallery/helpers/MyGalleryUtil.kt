@@ -1,13 +1,19 @@
 package com.simplemobiletools.gallery.helpers
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.support.annotation.UiThread
 import android.support.v4.content.ContextCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
+
+
+
+
 
 /**
  * Created by sidd on 3/6/17.
@@ -81,3 +87,26 @@ fun getWhatsNewContent(versionCode: Int): String? {
     }
     return null
 }
+
+fun openUrl(activity: Activity, yattoUrl: String) {
+    try {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(yattoUrl))
+        activity.startActivity(browserIntent)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        showAlertOneButton("", activity, "No Browser Installed", "Browser is required to open this URL. Please install browser app and try again")
+    }
+}
+
+fun shareApp(activity: Activity) {
+        val intent = Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, "I found this awesome Gallery App. Check it out " +
+                "https://play.google.com/store/apps/details?id=com.siddworks.mygallery" );
+        intent.setType("text/plain");
+        try {
+            activity.startActivity(Intent.createChooser(intent, "Sharing Helper For Tap Titans:"));
+        } catch (anfe: ActivityNotFoundException) {
+            logException(anfe)
+        }
+    }

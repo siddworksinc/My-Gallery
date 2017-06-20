@@ -11,7 +11,6 @@ import com.bignerdranch.android.multiselector.MultiSelector
 import com.bignerdranch.android.multiselector.SwappingHolder
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
 import com.simplemobiletools.commons.dialogs.PropertiesDialog
 import com.simplemobiletools.commons.dialogs.RenameItemDialog
@@ -26,7 +25,6 @@ import com.simplemobiletools.gallery.dialogs.PickMediumDialog
 import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.models.AlbumCover
 import com.simplemobiletools.gallery.models.Directory
-import com.simplemobiletools.gallery.models.Shortcut
 import kotlinx.android.synthetic.main.directory_item.view.*
 import kotlinx.android.synthetic.main.directory_tmb.view.*
 import java.io.File
@@ -425,22 +423,14 @@ class DirectoryAdapter(val activity: SimpleActivity, var dirs: MutableList<Direc
     }
 
     class ViewHolder(val view: View, val adapter: MyAdapterListener, val itemClick: (Directory) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
-        private var thumbnailHiddenShortcuts: ArrayList<String>? = null
 
         fun bindView(activity: SimpleActivity, multiSelectorCallback: ModalMultiSelectorCallback, multiSelector: MultiSelector, directory: Directory,
                      isPinned: Boolean, listener: DirOperationsListener?): View {
-            if(thumbnailHiddenShortcuts == null) {
-                initHiddenThumbnails(activity)
-            }
             itemView.apply {
                 dir_name.text = directory.name
                 photo_cnt.text = directory.mediaCnt.toString()
                 dir_pin.visibility = if (isPinned) View.VISIBLE else View.GONE
-                if(thumbnailHiddenShortcuts != null && (thumbnailHiddenShortcuts as ArrayList<String>).contains(directory.path )) {
-                    activity.loadImageFromResource(R.drawable.ic_folder_gallery, dir_thumbnail)
-                } else {
-                    activity.loadImage(directory.tmb, dir_thumbnail)
-                }
+                activity.loadImageForShortcut(directory, dir_thumbnail)
 
                 setOnClickListener { viewClicked(multiSelector, directory) }
                 setOnLongClickListener {
@@ -458,13 +448,6 @@ class DirectoryAdapter(val activity: SimpleActivity, var dirs: MutableList<Direc
                 adapter.setupItemForeground(this)
             }
             return itemView
-        }
-
-        private fun initHiddenThumbnails(activity: SimpleActivity) {
-            thumbnailHiddenShortcuts = ArrayList<String>()
-            val token = object : TypeToken<List<Shortcut>>() {}.type
-            var shortcuts =  Gson().fromJson<ArrayList<Shortcut>>(activity.config.shortcuts, token) ?: ArrayList<Shortcut>(1)
-            shortcuts.forEach { if(it.isThumbnailHidden) { thumbnailHiddenShortcuts?.add(it.path) } }
         }
 
         fun viewClicked(multiSelector: MultiSelector, directory: Directory) {

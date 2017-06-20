@@ -8,6 +8,7 @@ import com.simplemobiletools.commons.dialogs.FilePickerDialog
 import com.simplemobiletools.commons.extensions.beVisibleIf
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.extensions.config
+import com.simplemobiletools.gallery.helpers.logEvent
 import kotlinx.android.synthetic.main.activity_excluded_folders.*
 import kotlinx.android.synthetic.main.item_manage_folder.view.*
 
@@ -15,6 +16,7 @@ class ExcludedFoldersActivity : SimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_excluded_folders)
+        logEvent("ActivityExcludedFolders")
         updateExcludedFolders()
     }
 

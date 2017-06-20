@@ -2,6 +2,8 @@ package com.simplemobiletools.gallery.asynctasks
 
 import android.content.Context
 import android.os.AsyncTask
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.extensions.getFilenameFromPath
 import com.simplemobiletools.commons.extensions.hasWriteStoragePermission
 import com.simplemobiletools.commons.extensions.internalStoragePath
@@ -14,6 +16,7 @@ import com.simplemobiletools.gallery.models.Directory
 import com.simplemobiletools.gallery.models.Medium
 import java.io.File
 import java.util.*
+import kotlin.collections.HashMap
 
 class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, val isPickImage: Boolean,
                               val callback: (dirs: ArrayList<Directory>) -> Unit) : AsyncTask<Void, Void, ArrayList<Directory>>() {
@@ -28,10 +31,26 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         val media = context.getFilesFrom("", isPickImage, isPickVideo)
         val excludedPaths = config.excludedFolders
         val directories = groupDirectories(media)
-        val dirs = ArrayList(directories.values.filter { File(it.path).exists() }).filter { shouldFolderBeVisible(it.path, excludedPaths) } as ArrayList<Directory>
+        val dirsExcluded = ArrayList(directories.values.filter { File(it.path).exists() }).filter { shouldFolderBeVisible(it.path, excludedPaths) } as ArrayList<Directory>
+        val dirs = processDirs(dirsExcluded)
         Directory.sorting = config.directorySorting
         dirs.sort()
         return movePinnedToFront(dirs)
+    }
+
+    private fun processDirs(dirsExcluded: ArrayList<Directory>): ArrayList<Directory> {
+        val thumbnailHiddenFolders = config.thumbnailHiddenFolders
+        val passwordsString = config.passwords
+        val listType = object : TypeToken<HashMap<String, String>>() {}.type
+        val pass =  Gson().fromJson<HashMap<String, String>>(passwordsString, listType) ?: HashMap(1)
+        val passDirs = pass.keys
+
+        dirsExcluded.forEach {
+            if(thumbnailHiddenFolders.contains(it.path)) { it.isThumbnailHidden = true }
+            if(passDirs.contains(it.path)) { it.passcode = pass.get(it.path) }
+        }
+
+        return dirsExcluded
     }
 
     private fun groupDirectories(media: ArrayList<Medium>): Map<String, Directory> {

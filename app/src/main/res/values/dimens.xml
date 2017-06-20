@@ -9,4 +9,8 @@
     <dimen name="tmb_shadow_height">50dp</dimen>
 
     <dimen name="dragselect_hotspot_height">56dp</dimen>
+    <dimen name="mal_baseline_half">8dp</dimen>
+    <dimen name="mal_baseline">16dp</dimen>
+    <dimen name="mal_action_action_item_image_height">32dp</dimen>
+    <dimen name="mal_action_item_image_width">24dp</dimen>
 </resources>

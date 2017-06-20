@@ -61,6 +61,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_medium)
+        logEvent("ActivityViewPager")
 
         if (!hasWriteStoragePermission()) {
             finish()

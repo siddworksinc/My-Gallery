@@ -5,9 +5,9 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
-import com.google.gson.Gson
 import com.simplemobiletools.commons.dialogs.FilePickerDialog
 import com.simplemobiletools.commons.extensions.setupDialogStuff
+import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.adapters.DirectoryAdapter
@@ -19,12 +19,14 @@ import com.simplemobiletools.gallery.models.Directory
 import kotlinx.android.synthetic.main.dialog_directory_picker.view.*
 import java.io.File
 
-class PickAlbumDialog(val activity: SimpleActivity, val filterDirs: List<String>, val callback: (dir: Directory?) -> Unit) {
+class PickAlbumDialog(val activity: SimpleActivity, val sourcePath: String?,
+                      var filterDirs: ArrayList<String>?, val callback: (dir: Directory) -> Unit) {
     var dialog: AlertDialog
     var directoriesGrid: RecyclerView
     var shownDirectories: ArrayList<Directory> = ArrayList()
 
     init {
+        if(filterDirs == null) {filterDirs = ArrayList<String>()}
         val view = LayoutInflater.from(activity).inflate(R.layout.dialog_directory_picker, null)
         directoriesGrid = view.directories_grid
         view.directory_message.visibility = View.VISIBLE
@@ -44,8 +46,6 @@ class PickAlbumDialog(val activity: SimpleActivity, val filterDirs: List<String>
 
             GetDirectoriesAsynctask(activity, false, false) {
                 gotDirectories(it, view, false)
-                val directories = Gson().toJson(it)
-                activity.config.directories = directories
             }.execute()
         }
     }
@@ -69,7 +69,7 @@ class PickAlbumDialog(val activity: SimpleActivity, val filterDirs: List<String>
         if (directories.hashCode() == shownDirectories.hashCode())
             return
 
-        val filteredAllDirs = directories.filter { !filterDirs.contains(it.path) } as ArrayList<Directory>
+        val filteredAllDirs = directories.filter { !filterDirs!!.contains(it.path) } as ArrayList<Directory>
         if(!filteredAllDirs.isEmpty()) {
             view.directory_message.visibility = View.GONE
             view.directory_message.text = ""
@@ -79,11 +79,14 @@ class PickAlbumDialog(val activity: SimpleActivity, val filterDirs: List<String>
         }
 
         shownDirectories = filteredAllDirs
-        var adapter : DirectoryAdapter? = null;
-        adapter = DirectoryAdapter(activity, filteredAllDirs, null) {
-//            adapter?.adapterListener?.toggleItemSelectionAdapter(true, 1)
-            callback.invoke(it)
-            dialog.dismiss()
+        var adapter = DirectoryAdapter(activity, filteredAllDirs, null) {
+            if (sourcePath != null && it.path.trimEnd('/') == sourcePath) {
+                activity.toast(R.string.source_and_destination_same)
+                return@DirectoryAdapter
+            } else {
+                callback.invoke(it)
+                dialog.dismiss()
+            }
         }
         directoriesGrid.adapter = adapter
     }

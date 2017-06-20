@@ -94,6 +94,10 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getStringSet(EXCLUDED_FOLDERS, getDataFolder())
         set(excludedFolders) = prefs.edit().remove(EXCLUDED_FOLDERS).putStringSet(EXCLUDED_FOLDERS, excludedFolders).apply()
 
+    var thumbnailHiddenFolders: MutableSet<String>
+        get() = prefs.getStringSet(THUMBNAIL_HIDDEN_FOLDERS, getDataFolder())
+        set(excludedFolders) = prefs.edit().remove(THUMBNAIL_HIDDEN_FOLDERS).putStringSet(THUMBNAIL_HIDDEN_FOLDERS, excludedFolders).apply()
+
     private fun getDataFolder(): Set<String> {
         val folders = HashSet<String>()
         val dataFolder = context.externalCacheDir?.parentFile?.parent?.trimEnd('/') ?: ""
@@ -194,4 +198,8 @@ class Config(context: Context) : BaseConfig(context) {
     var shortcuts: String
         get() = prefs.getString(SHORTCUTS, "")
         set(shortcuts) = prefs.edit().putString(SHORTCUTS, shortcuts).apply()
+
+    var passwords: String
+        get() = prefs.getString(PASSWORDS, "")
+        set(pass) = prefs.edit().putString(PASSWORDS, pass).apply()
 }

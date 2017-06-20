@@ -9,6 +9,7 @@ import com.simplemobiletools.commons.extensions.beVisibleIf
 import com.simplemobiletools.commons.extensions.scanPath
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.extensions.config
+import com.simplemobiletools.gallery.helpers.logEvent
 import kotlinx.android.synthetic.main.activity_included_folders.*
 import kotlinx.android.synthetic.main.item_manage_folder.view.*
 
@@ -16,6 +17,7 @@ class IncludedFoldersActivity : SimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_included_folders)
+        logEvent("ActivityIncludedFolders")
         updateIncludedFolders()
     }
 

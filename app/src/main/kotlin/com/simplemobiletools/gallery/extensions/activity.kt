@@ -29,7 +29,6 @@ import com.simplemobiletools.gallery.helpers.REQUEST_EDIT_IMAGE
 import com.simplemobiletools.gallery.helpers.REQUEST_SET_WALLPAPER
 import com.simplemobiletools.gallery.models.Directory
 import com.simplemobiletools.gallery.models.Medium
-import com.simplemobiletools.gallery.models.Shortcut
 import com.simplemobiletools.gallery.views.MySquareImageView
 import java.io.File
 import java.util.*
@@ -336,9 +335,9 @@ fun Activity.getCachedDirectories(): ArrayList<Directory> {
     return Gson().fromJson<ArrayList<Directory>>(config.directories, token) ?: ArrayList<Directory>(1)
 }
 
-fun Activity.loadImageForShortcut(shortcut: Shortcut, target: MySquareImageView) {
+fun Activity.loadImageForShortcut(shortcut: Directory, target: MySquareImageView) {
     if(shortcut.isThumbnailHidden) {
-        loadImageFromResource(R.drawable.ic_folder_gallery, target)
+        loadImageFromResource(R.drawable.ic_folder_gallery3, target)
     } else {
         if(shortcut.coverImage != null) {
             loadImage(shortcut.coverImage as String, target)

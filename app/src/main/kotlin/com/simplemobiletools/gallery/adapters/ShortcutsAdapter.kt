@@ -10,11 +10,10 @@ import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback
 import com.bignerdranch.android.multiselector.MultiSelector
 import com.bignerdranch.android.multiselector.SwappingHolder
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.siddworks.android.mygallery.ShortcutsActivity
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
 import com.simplemobiletools.commons.dialogs.PropertiesDialog
+import com.simplemobiletools.commons.extensions.needsStupidWritePermissions
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.dialogs.EditShortcutDialog
@@ -22,14 +21,14 @@ import com.simplemobiletools.gallery.dialogs.PasswordDialog
 import com.simplemobiletools.gallery.extensions.config
 import com.simplemobiletools.gallery.extensions.createSelector
 import com.simplemobiletools.gallery.extensions.loadImageForShortcut
-import com.simplemobiletools.gallery.models.Shortcut
+import com.simplemobiletools.gallery.models.Directory
 import kotlinx.android.synthetic.main.directory_item.view.*
 import kotlinx.android.synthetic.main.directory_tmb.view.*
 import java.io.File
 import java.util.*
 
-class ShortcutsAdapter(val activity: ShortcutsActivity, val dirs: MutableList<Shortcut>,
-                       val listener: ShortcutsAdapter.DirOperationsListener?, val itemClick: (Shortcut) -> Unit) :
+class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Directory>,
+                       val listener: ShortcutsAdapter.DirOperationsListener?, val itemClick: (Directory) -> Unit) :
         RecyclerView.Adapter<ShortcutsAdapter.ViewHolder>() {
 
     val multiSelector = MultiSelector()
@@ -102,7 +101,8 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, val dirs: MutableList<Sh
     val multiSelectorMode = object : ModalMultiSelectorCallback(multiSelector) {
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             when (item.itemId) {
-                R.id.cab_edit -> editShortcut()
+                R.id.cab_edit -> editDirectory()
+                R.id.cab_hide -> hideDirectories()
                 R.id.cab_properties -> showProperties()
                 R.id.cab_pin -> pinFolders(true)
                 R.id.cab_unpin -> pinFolders(false)
@@ -152,7 +152,22 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, val dirs: MutableList<Sh
         }
     }
 
-    private fun editShortcut() {
+    private fun hideDirectories() {
+        val removeFolders = ArrayList<Directory>(selectedPositions.size)
+        selectedPositions.forEach {
+            if (dirs.size > it) {
+                val path = dirs[it].path
+                config.addExcludedFolder(path)
+                removeFolders.add(dirs[it])
+            }
+        }
+        dirs.removeAll(removeFolders)
+        selectedPositions.clear()
+        notifyDataSetChanged()
+        actMode?.finish()
+    }
+
+    private fun editDirectory() {
         val shortcut = dirs[selectedPositions.first()]
         if(shortcut.passcode != null) {
             PasswordDialog(activity, R.string.edit, shortcut) {
@@ -217,20 +232,43 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, val dirs: MutableList<Sh
     }
 
     private fun deleteFiles() {
-        val token = object : TypeToken<List<Shortcut>>() {}.type
-        var shortcuts =  Gson().fromJson<ArrayList<Shortcut>>(config.shortcuts, token) ?: ArrayList<Shortcut>(1)
+        val folders = ArrayList<File>(selectedPositions.size)
+        val removeFolders = ArrayList<Directory>(selectedPositions.size)
 
-        selectedPositions.sortedDescending().forEach {
-            val directory = dirs[it]
-            shortcuts = shortcuts.filter { skt -> skt.path != directory.path  } as ArrayList<Shortcut>
+        var needPermissionForPath = ""
+        selectedPositions.forEach {
+            if (dirs.size > it) {
+                val path = dirs[it].path
+                if (activity.needsStupidWritePermissions(path) && config.treeUri.isEmpty()) {
+                    needPermissionForPath = path
+                }
+            }
         }
 
-        val directories = Gson().toJson(shortcuts)
-        config.shortcuts = directories
+        activity.handleSAFDialog(File(needPermissionForPath)) {
+            selectedPositions.sortedDescending().forEach {
+                val directory = dirs[it]
+                folders.add(File(directory.path))
+                removeFolders.add(directory)
+                notifyItemRemoved(it)
+                itemViews.put(it, null)
+            }
 
-        listener?.refreshItems()
-        notifyDataSetChanged()
-        actMode?.finish()
+            dirs.removeAll(removeFolders)
+            selectedPositions.clear()
+            listener?.tryDeleteFolders(folders)
+
+            val newItems = SparseArray<View>()
+            var curIndex = 0
+            for (i in 0..itemViews.size() - 1) {
+                if (itemViews[i] != null) {
+                    newItems.put(curIndex, itemViews[i])
+                    curIndex++
+                }
+            }
+
+            itemViews = newItems
+        }
     }
 
     private fun getSelectedPaths(): HashSet<String> {
@@ -298,10 +336,10 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, val dirs: MutableList<Sh
     }
 
     class ViewHolder(val view: View, val adapter: MyAdapterListener,
-                     val itemClick: (Shortcut) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
+                     val itemClick: (Directory) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
 
         fun bindView(activity: SimpleActivity, multiSelectorCallback: ModalMultiSelectorCallback, multiSelector: MultiSelector,
-                     shortcut: Shortcut,
+                     shortcut: Directory,
                      isPinned: Boolean, listener: DirOperationsListener?): View {
             itemView.apply {
                 dir_name.text = shortcut.name + " (" + shortcut.mediaCnt + ")"
@@ -326,7 +364,7 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, val dirs: MutableList<Sh
             return itemView
         }
 
-        fun viewClicked(multiSelector: MultiSelector, directory: Shortcut) {
+        fun viewClicked(multiSelector: MultiSelector, directory: Directory) {
             if (multiSelector.isSelectable) {
                 val isSelected = adapter.getSelectedPositions().contains(layoutPosition)
                 adapter.toggleItemSelectionAdapter(!isSelected, layoutPosition)
@@ -354,5 +392,10 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, val dirs: MutableList<Sh
         fun tryDeleteFolders(folders: ArrayList<File>)
 
         fun itemLongClicked(position: Int)
+    }
+
+    fun updateDirs(newDirs: ArrayList<Directory>) {
+        dirs = newDirs
+        notifyDataSetChanged()
     }
 }

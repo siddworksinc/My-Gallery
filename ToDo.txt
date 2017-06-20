@@ -1,40 +1,52 @@
 Enhancements:
-tutorial
-ShortcutActivity:
-    Shortcuts are not ordered as per last modified pic as last modified date is never updated.
+
+have drawer open and close on first run
+
+rename temporarily show hidden to hide hidden when it is selected
+
 Add edit shortcut in bottom sheet dialog
+
+tutorial
+
 Settings:
     Add security section in settings
     Master password
     hide password protected folders on startup
+
+
+
+
+Future:
 Add option to open app in locked state and have logo long press listener to open unlock prompt and show locked folders after unlock prompt
+
+did we loose functionality to browse and pick album? (see included folders)
+
 Navigation Drawer
-    Gallery
-    About
     Tips & Help
         Privacy and Security
         Settings
     Be an amazing user
-        Feedback
-        Rate us
         Donate
-        Share
         Social
             Website
             Twitter
             G+
 
-
-Future:
-Analytics
 Donate option
+
 PickDirectoryDialog
     Show only albums in shortcut activity
     show unlock icon and show all albums on unlocking
 CopyTo/MoveTo
     show only albums added in shortcuts activity
 
+Fingerprint support to unlock
+
+Detailed Analytics
+
+Change accent color of drawer
 
 Debatable:
 AlbumPickerDialog:
     Multiselect albums
+

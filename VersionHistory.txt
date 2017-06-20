@@ -15,4 +15,22 @@ PickDirectoryDialog
 Remove donate notice
 Enter Password dialog
     Keyboard is not pulled up automatically
+Drawer implementation started
 
+v4
+Navigation Drawer
+    Gallery
+    Settings
+    About
+    Be an amazing user
+        Feedback
+        Rate us
+        Share
+Migrated shortcut activity to Directory
+copyto/moveto does not hide thumbnails
+Update folder logo (with album logo)
+Change drawer image
+fixed bug where changing color would revert statusbar color to yellow
+drawer header color does not refresh if color is changed
+
+v5
