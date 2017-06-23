@@ -93,29 +93,29 @@ class EditShortcutDialog() {
             }
         }
 
-        view.passcode_protection.isChecked = shortcut.passcode!=null
+        view.password_protection.isChecked = shortcut.passcode!=null
         view.passcode_protection_holder.setOnClickListener {
-            view.passcode_protection.toggle()
+            view.password_protection.toggle()
             val password = null;
 
-            if(view.passcode_protection.isChecked) {
-                view.passcode_pass.visibility = View.VISIBLE
+            if(view.password_protection.isChecked) {
+                view.password_pass.visibility = View.VISIBLE
                 view.passcode_pass_confirm.visibility = View.VISIBLE
-                view.passcode_warning.visibility = View.VISIBLE
-                view.passcode_warning.text = "Enter a Password to activate protection"
+                view.password_warning.visibility = View.VISIBLE
+                view.password_warning.text = "Enter a Password to activate protection"
 
                 view.passcode_pass_confirm.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {
-                        if(view.passcode_pass.text?.toString() == view.passcode_pass_confirm.text?.toString()) {
-                            if(view.passcode_pass.text?.toString() != null &&
-                                    view.passcode_pass.text.toString() != "") {
-                                savePassword(activity, shortcut, view.passcode_pass.text?.toString())
-                                view.passcode_warning.text = "Password saved"
+                        if(view.password_pass.text?.toString() == view.passcode_pass_confirm.text?.toString()) {
+                            if(view.password_pass.text?.toString() != null &&
+                                    view.password_pass.text.toString() != "") {
+                                savePassword(activity, shortcut, view.password_pass.text?.toString())
+                                view.password_warning.text = "Password saved"
                             } else {
-                                view.passcode_warning.text = "Enter a Password to activate protection"
+                                view.password_warning.text = "Enter a Password to activate protection"
                             }
                         } else {
-                            view.passcode_warning.text = "Passwords do not match. Protection will not be activated"
+                            view.password_warning.text = "Passwords do not match. Protection will not be activated"
                         }
                     }
 
@@ -126,18 +126,18 @@ class EditShortcutDialog() {
                     }
                 })
 
-                view.passcode_pass.addTextChangedListener(object : TextWatcher {
+                view.password_pass.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {
-                        if(view.passcode_pass.text?.toString() == view.passcode_pass_confirm.text?.toString()) {
-                            if(view.passcode_pass.text?.toString() != null &&
-                                    view.passcode_pass.text.toString() != "") {
-                                savePassword(activity, shortcut, view.passcode_pass.text?.toString())
-                                view.passcode_warning.text = "Password saved"
+                        if(view.password_pass.text?.toString() == view.passcode_pass_confirm.text?.toString()) {
+                            if(view.password_pass.text?.toString() != null &&
+                                    view.password_pass.text.toString() != "") {
+                                savePassword(activity, shortcut, view.password_pass.text?.toString())
+                                view.password_warning.text = "Password saved"
                             } else {
-                                view.passcode_warning.text = "Enter a Password to activate protection"
+                                view.password_warning.text = "Enter a Password to activate protection"
                             }
                         } else {
-                            view.passcode_warning.text = "Passwords do not match. Protection will not be activated"
+                            view.password_warning.text = "Passwords do not match. Protection will not be activated"
                         }
                     }
 
@@ -149,12 +149,12 @@ class EditShortcutDialog() {
                 })
             }
             else {
-                view.passcode_pass.visibility = View.GONE
+                view.password_pass.visibility = View.GONE
                 view.passcode_pass_confirm.visibility = View.GONE
-                view.passcode_warning.visibility = View.VISIBLE
-                view.passcode_pass.setText("")
+                view.password_warning.visibility = View.VISIBLE
+                view.password_pass.setText("")
                 view.passcode_pass_confirm.setText("")
-                view.passcode_warning.text = "Password Protection Disabled"
+                view.password_warning.text = "Password Protection Disabled"
 
                 savePassword(activity, shortcut, password)
             }
@@ -175,10 +175,10 @@ class EditShortcutDialog() {
         val listType = object : TypeToken<HashMap<String, String>>() {}.type
         val pass =  Gson().fromJson<HashMap<String, String>>(passwordsString, listType) ?: HashMap(1)
 
-        if(pass.keys.contains(dir.path)) {
+        if(pass.keys.contains(dir.path) || password == null) {
             pass.remove(dir.path)
         } else {
-            pass.put(dir.path, password!!)
+            pass.put(dir.path, password)
         }
 
         val newPasswords = Gson().toJson(pass)

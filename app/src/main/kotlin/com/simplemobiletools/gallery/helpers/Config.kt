@@ -202,4 +202,8 @@ class Config(context: Context) : BaseConfig(context) {
     var passwords: String
         get() = prefs.getString(PASSWORDS, "")
         set(pass) = prefs.edit().putString(PASSWORDS, pass).apply()
+
+    var masterPass: String?
+        get() = prefs.getString(MASTER_PASSWORD, null)
+        set(pass) = prefs.edit().putString(MASTER_PASSWORD, pass).apply()
 }

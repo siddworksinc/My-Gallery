@@ -10,7 +10,7 @@ import com.simplemobiletools.commons.helpers.SORT_BY_DATE_MODIFIED
 import com.simplemobiletools.commons.helpers.SORT_BY_NAME
 import com.simplemobiletools.commons.helpers.SORT_BY_SIZE
 import com.simplemobiletools.commons.helpers.SORT_DESCENDING
-import com.simplemobiletools.gallery.activities.SettingsActivity
+import com.simplemobiletools.gallery.activities.SettingsNewActivity
 import com.simplemobiletools.gallery.helpers.Config
 import com.simplemobiletools.gallery.helpers.IMAGES
 import com.simplemobiletools.gallery.helpers.NOMEDIA
@@ -41,7 +41,7 @@ fun Context.getHumanizedFilename(path: String): String {
 }
 
 fun Context.launchSettings() {
-    startActivity(Intent(this, SettingsActivity::class.java))
+    startActivity(Intent(this, SettingsNewActivity::class.java))
 }
 
 val Context.config: Config get() = Config.newInstance(this)
@@ -106,26 +106,7 @@ private fun parseCursor(context: Context, cur: Cursor, isPickImage: Boolean, isP
                     if (!showHidden && filename.startsWith('.'))
                         continue
 
-                    var isExcluded = false
-                    excludedFolders.forEach {
-                        if (path.startsWith(it)) {
-                            isExcluded = true
-                        }
-                    }
-
-                    if (!isExcluded && !showHidden) {
-                        noMediaFolders.forEach {
-                            if (path.startsWith(it)) {
-                                isExcluded = true
-                            }
-                        }
-                    }
-
-                    if (!isExcluded && !showHidden && path.contains("/.")) {
-                        isExcluded = true
-                    }
-
-                    if (!isExcluded) {
+                    if (!path.contains("/.") || showHidden) {
                         val dateTaken = cur.getLongValue(MediaStore.Images.Media.DATE_TAKEN)
                         val dateModified = cur.getIntValue(MediaStore.Images.Media.DATE_MODIFIED) * 1000L
 

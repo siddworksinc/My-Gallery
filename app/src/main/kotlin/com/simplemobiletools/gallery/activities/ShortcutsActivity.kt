@@ -68,6 +68,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shortcuts)
         logEvent("ActivityShortcuts")
+        config.temporarilyShowHidden = false
 
         toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -294,16 +295,29 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        menu?.findItem(R.id.temporarily_show_hidden)?.isVisible = !config.temporarilyShowHidden && !config.showHiddenMedia
+        menu?.findItem(R.id.hide_hidden)?.isVisible = config.temporarilyShowHidden && !config.showHiddenMedia
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sort -> showSortingDialog()
             R.id.open_camera -> launchCamera()
             R.id.temporarily_show_hidden -> temporarilyShowHidden()
+            R.id.hide_hidden -> hideHidden()
             R.id.increase_column_count -> increaseColumnCount()
             R.id.reduce_column_count -> reduceColumnCount()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    private fun hideHidden() {
+        config.temporarilyShowHidden = false
+        getDirectories()
     }
 
     private fun temporarilyShowHidden() {

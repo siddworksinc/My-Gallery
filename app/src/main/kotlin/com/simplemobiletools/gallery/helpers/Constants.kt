@@ -29,6 +29,7 @@ val INCLUDED_FOLDERS = "included_folders"
 val ALBUM_COVERS = "album_covers"
 val SHORTCUTS = "shortcuts"
 val PASSWORDS = "passwords"
+val MASTER_PASSWORD = "master_password"
 
 val NOMEDIA = ".nomedia"
 

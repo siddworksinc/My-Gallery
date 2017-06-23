@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
 import android.support.annotation.UiThread
 import android.support.v4.content.ContextCompat
@@ -99,14 +100,22 @@ fun openUrl(activity: Activity, yattoUrl: String) {
 }
 
 fun shareApp(activity: Activity) {
-        val intent = Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, "I found this awesome Gallery App. Check it out " +
-                "https://play.google.com/store/apps/details?id=com.siddworks.mygallery" );
-        intent.setType("text/plain");
-        try {
-            activity.startActivity(Intent.createChooser(intent, "Sharing Helper For Tap Titans:"));
-        } catch (anfe: ActivityNotFoundException) {
-            logException(anfe)
-        }
+    val intent = Intent();
+    intent.setAction(Intent.ACTION_SEND);
+    intent.putExtra(Intent.EXTRA_TEXT, "I found this awesome Gallery App. Check it out " +
+            "https://play.google.com/store/apps/details?id=com.siddworks.mygallery" );
+    intent.setType("text/plain");
+    try {
+        activity.startActivity(Intent.createChooser(intent, "Sharing Helper For Tap Titans:"));
+    } catch (anfe: ActivityNotFoundException) {
+        logException(anfe)
     }
+}
+
+fun dpToPx(dp: Int): Int {
+    return ((dp * Resources.getSystem().getDisplayMetrics().density).toInt());
+}
+
+fun pxToDp(px: Int): Int {
+    return ((px / Resources.getSystem().getDisplayMetrics().density).toInt());
+}

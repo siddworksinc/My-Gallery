@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.view.KeyCharacterMap
@@ -21,12 +22,14 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.commons.helpers.*
+import com.simplemobiletools.commons.views.MyTextView
 import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.helpers.NOMEDIA
 import com.simplemobiletools.gallery.helpers.REQUEST_EDIT_IMAGE
 import com.simplemobiletools.gallery.helpers.REQUEST_SET_WALLPAPER
+import com.simplemobiletools.gallery.helpers.dpToPx
 import com.simplemobiletools.gallery.models.Directory
 import com.simplemobiletools.gallery.models.Medium
 import com.simplemobiletools.gallery.views.MySquareImageView
@@ -363,3 +366,15 @@ fun Activity.init() {
         baseConfig.sdCardPath = getSDCardPath().trimEnd('/')
     }).start()
 }
+
+fun Activity.alert(okText: String, message: String) {
+    val view  = MyTextView(this)
+    view.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16))
+    view.text = message
+    AlertDialog.Builder(this)
+            .setPositiveButton(okText, null)
+            .create().apply {
+        setupDialogStuff(view, this, R.string.additional_info)
+    }
+}
+

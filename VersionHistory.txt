@@ -1,5 +1,5 @@
 v1
-GAdded Shortcuts Activity
+Added Shortcuts Activity
 Added password functionality
 
 v2
@@ -34,3 +34,13 @@ fixed bug where changing color would revert statusbar color to yellow
 drawer header color does not refresh if color is changed
 
 v5
+consider moving warning label to top in edit shortcut > set password
+New settings
+Add security section in settings
+Master password
+    dividers between items
+Right padding for switches in settings
+rename temporarily show hidden to hide hidden when it is enabled
+Change behaviour where it ignores folder whose any parent is hidden or parent has .nomedia
+
+

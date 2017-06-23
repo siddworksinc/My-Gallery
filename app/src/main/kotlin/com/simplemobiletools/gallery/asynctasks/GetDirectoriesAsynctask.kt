@@ -2,6 +2,7 @@ package com.simplemobiletools.gallery.asynctasks
 
 import android.content.Context
 import android.os.AsyncTask
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.extensions.getFilenameFromPath
@@ -28,6 +29,7 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         if (!context.hasWriteStoragePermission())
             return ArrayList()
 
+        val st = System.nanoTime()
         val media = context.getFilesFrom("", isPickImage, isPickVideo)
         val excludedPaths = config.excludedFolders
         val directories = groupDirectories(media)
@@ -35,6 +37,8 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         val dirs = processDirs(dirsExcluded)
         Directory.sorting = config.directorySorting
         dirs.sort()
+        val end = System.nanoTime()
+        Log.d("Adapter", ((end-st)/1000000).toString());
         return movePinnedToFront(dirs)
     }
 
@@ -98,12 +102,12 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
 
     private fun shouldFolderBeVisible(path: String, excludedPaths: MutableSet<String>): Boolean {
         val file = File(path)
-        return if (isThisOrParentExcluded(path, excludedPaths))
+        return if (isThisExcluded(path, excludedPaths))
             false
         else if (!config.shouldShowHidden && file.isDirectory && file.canonicalFile == file.absoluteFile) {
             var containsNoMediaOrDot = file.containsNoMedia() || path.contains("/.")
             if (!containsNoMediaOrDot) {
-                containsNoMediaOrDot = checkParentHasNoMedia(file.parentFile)
+                containsNoMediaOrDot = checkHasNoMedia(file.parentFile)
             }
             !containsNoMediaOrDot
         } else {
@@ -111,20 +115,11 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         }
     }
 
-    private fun checkParentHasNoMedia(file: File): Boolean {
-        var curFile = file
-        while (true) {
-            if (curFile.containsNoMedia()) {
-                return true
-            }
-            curFile = curFile.parentFile
-            if (curFile.absolutePath == "/")
-                break
-        }
-        return false
+    private fun checkHasNoMedia(file: File): Boolean {
+        return file.containsNoMedia()
     }
 
-    private fun isThisOrParentExcluded(path: String, excludedPaths: MutableSet<String>) = excludedPaths.any { path.startsWith(it) }
+    private fun isThisExcluded(path: String, excludedPaths: MutableSet<String>) = excludedPaths.any { path == it }
 
     private fun movePinnedToFront(dirs: ArrayList<Directory>): ArrayList<Directory> {
         val foundFolders = ArrayList<Directory>()

@@ -1,26 +1,19 @@
-Enhancements:
+This release
+    check menu of every screen
+    require master password to temporarily show hidden media id enabled
+    tutorial
 
-have drawer open and close on first run
-
-rename temporarily show hidden to hide hidden when it is selected
-
-Add edit shortcut in bottom sheet dialog
-
-tutorial
-
-Settings:
-    Add security section in settings
-    Master password
+Next release
+    have drawer open and close on first run
     hide password protected folders on startup
-
+    Add edit shortcut in bottom sheet dialog
+    More themes
 
 
 
 Future:
 Add option to open app in locked state and have logo long press listener to open unlock prompt and show locked folders after unlock prompt
-
 did we loose functionality to browse and pick album? (see included folders)
-
 Navigation Drawer
     Tips & Help
         Privacy and Security

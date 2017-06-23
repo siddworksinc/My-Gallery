@@ -1,0 +1,1038 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    >
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:background="@color/bg_grey">
+
+            <!-- Look & feel Card -->
+            <android.support.v7.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mal_baseline_half"
+                android:layout_marginStart="@dimen/mal_baseline_half"
+                android:layout_marginRight="@dimen/mal_baseline_half"
+                android:layout_marginEnd="@dimen/mal_baseline_half"
+                android:layout_marginTop="@dimen/mal_baseline_half"
+                android:paddingLeft="@dimen/mal_baseline_half"
+                android:paddingStart="@dimen/mal_baseline_half"
+                android:paddingRight="@dimen/mal_baseline_half"
+                android:paddingEnd="@dimen/mal_baseline_half"
+                android:paddingTop="@dimen/mal_baseline"
+                android:paddingBottom="@dimen/mal_baseline"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/mal_list_card_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/mal_baseline"
+                        android:layout_marginStart="@dimen/mal_baseline"
+                        android:layout_marginRight="@dimen/mal_baseline"
+                        android:layout_marginEnd="@dimen/mal_baseline"
+                        android:layout_marginTop="@dimen/mal_baseline"
+                        android:layout_marginBottom="@dimen/mal_baseline_half"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:text="Look &amp; Feel" />
+
+                    <LinearLayout
+                        android:id="@+id/customize_colors_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/customize_colors_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/mal_item_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/customize_colors"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:id="@+id/mal_action_item_subtext"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Customize Themes and Colors"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <!-- Privacy & security -->
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mal_baseline_half"
+                android:layout_marginStart="@dimen/mal_baseline_half"
+                android:layout_marginRight="@dimen/mal_baseline_half"
+                android:layout_marginEnd="@dimen/mal_baseline_half"
+                android:layout_marginTop="@dimen/mal_baseline_half"
+                android:paddingLeft="@dimen/mal_baseline_half"
+                android:paddingStart="@dimen/mal_baseline_half"
+                android:paddingRight="@dimen/mal_baseline_half"
+                android:paddingEnd="@dimen/mal_baseline_half"
+                android:paddingTop="@dimen/mal_baseline"
+                android:paddingBottom="@dimen/mal_baseline"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:animateLayoutChanges="true">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/mal_baseline"
+                        android:layout_marginStart="@dimen/mal_baseline"
+                        android:layout_marginRight="@dimen/mal_baseline"
+                        android:layout_marginEnd="@dimen/mal_baseline"
+                        android:layout_marginTop="@dimen/mal_baseline"
+                        android:layout_marginBottom="@dimen/mal_baseline_half"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:text="Privacy &amp; Security" />
+
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/privacy_settings_password_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/mal_baseline"
+                        android:layout_marginLeft="@dimen/mal_baseline"
+                        android:layout_marginRight="@dimen/mal_baseline"
+                        android:layout_marginStart="@dimen/mal_baseline"
+                        android:layout_marginBottom="@dimen/mal_baseline_half"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_marginTop="8dp"
+                            android:id="@+id/password_warning"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                            android:text="Enter Master Password to unlock Privacy &amp; Security settings"/>
+
+                        <EditText
+                            android:id="@+id/password_pass"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <Button
+                            android:background="@color/bg_black"
+                            android:id="@+id/password_done"
+                            android:text="GO"
+                            android:layout_marginRight="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/privacy_settings_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <!-- master pass -->
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:id="@+id/master_pass_parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/mal_baseline_half"
+                            android:paddingBottom="@dimen/mal_baseline_half"
+                            android:orientation="horizontal"
+                            android:background="?android:attr/selectableItemBackground">
+
+                            <ImageView
+                                android:id="@+id/master_pass_image"
+                                android:layout_width="@dimen/mal_action_item_image_width"
+                                android:layout_height="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="@dimen/mal_baseline_half"
+                                android:layout_marginLeft="@dimen/mal_baseline"
+                                android:layout_marginRight="@dimen/mal_baseline_half"
+                                android:layout_marginStart="@dimen/mal_baseline"
+                                android:adjustViewBounds="false"
+                                android:cropToPadding="false"
+                                android:scaleType="centerInside"/>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:layout_marginEnd="@dimen/mal_baseline"
+                                android:layout_marginLeft="@dimen/mal_baseline"
+                                android:layout_marginRight="@dimen/mal_baseline"
+                                android:layout_marginStart="@dimen/mal_baseline"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Master Password"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                                <TextView
+                                    android:id="@+id/master_pass_hint"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:text="Manage Master Password"/>
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/master_pass_help"
+                                android:layout_width="40dp"
+                                android:layout_height="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center"
+                                android:paddingLeft="@dimen/mal_baseline_half"
+                                android:paddingStart="@dimen/mal_baseline_half"
+                                android:paddingEnd="@dimen/mal_baseline_half"
+                                android:paddingRight="@dimen/mal_baseline_half"
+                                android:adjustViewBounds="false"
+                                android:cropToPadding="false"
+                                android:scaleType="centerInside"
+                                android:background="?android:attr/selectableItemBackground"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/bg_grey"/>
+
+                        <!-- Show Hidden media -->
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:id="@+id/settings_hidden_media_root"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/mal_baseline_half"
+                            android:paddingBottom="@dimen/mal_baseline_half"
+                            android:orientation="horizontal"
+                            android:background="?android:attr/selectableItemBackground">
+
+                            <ImageView
+                                android:id="@+id/show_hidden_media_image"
+                                android:layout_width="@dimen/mal_action_item_image_width"
+                                android:layout_height="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="@dimen/mal_baseline_half"
+                                android:layout_marginLeft="@dimen/mal_baseline"
+                                android:layout_marginRight="@dimen/mal_baseline_half"
+                                android:layout_marginStart="@dimen/mal_baseline"
+                                android:adjustViewBounds="false"
+                                android:cropToPadding="false"
+                                android:scaleType="centerInside"/>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:layout_marginEnd="@dimen/mal_baseline"
+                                android:layout_marginLeft="@dimen/mal_baseline"
+                                android:layout_marginRight="@dimen/mal_baseline"
+                                android:layout_marginStart="@dimen/mal_baseline"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/show_hidden_media"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                                <TextView
+                                    android:id="@+id/show_hidden_media_hint"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    />
+                            </LinearLayout>
+
+                            <com.simplemobiletools.commons.views.MySwitchCompat
+                                android:id="@+id/show_hidden_media"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:layout_gravity="center"
+                                android:clickable="false"
+                                android:paddingEnd="@dimen/medium_margin"
+                                android:paddingStart="@dimen/medium_margin" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/bg_grey"/>
+
+                        <!-- Excluded Albums -->
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:id="@+id/excluded_albums_parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/mal_baseline_half"
+                            android:paddingBottom="@dimen/mal_baseline_half"
+                            android:orientation="horizontal"
+                            android:background="?android:attr/selectableItemBackground">
+
+                            <ImageView
+                                android:id="@+id/excluded_albums_image"
+                                android:layout_width="@dimen/mal_action_item_image_width"
+                                android:layout_height="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="@dimen/mal_baseline_half"
+                                android:layout_marginLeft="@dimen/mal_baseline"
+                                android:layout_marginRight="@dimen/mal_baseline_half"
+                                android:layout_marginStart="@dimen/mal_baseline"
+                                android:adjustViewBounds="false"
+                                android:cropToPadding="false"
+                                android:scaleType="centerInside" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:layout_marginEnd="@dimen/mal_baseline"
+                                android:layout_marginLeft="@dimen/mal_baseline"
+                                android:layout_marginRight="@dimen/mal_baseline"
+                                android:layout_marginStart="@dimen/mal_baseline"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Manage Excluded Albums"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                                <TextView
+                                    android:id="@+id/excluded_albums_hint"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/excluded_albums_help"
+                                android:layout_width="40dp"
+                                android:layout_height="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center"
+                                android:paddingLeft="@dimen/mal_baseline_half"
+                                android:paddingStart="@dimen/mal_baseline_half"
+                                android:paddingEnd="@dimen/mal_baseline_half"
+                                android:paddingRight="@dimen/mal_baseline_half"
+                                android:adjustViewBounds="false"
+                                android:cropToPadding="false"
+                                android:scaleType="centerInside"
+                                android:background="?android:attr/selectableItemBackground"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/bg_grey"/>
+
+                        <!-- Custom albums -->
+                        <LinearLayout
+                            android:id="@+id/custom_albums_root"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/mal_baseline_half"
+                            android:paddingBottom="@dimen/mal_baseline_half"
+                            android:orientation="horizontal"
+                            android:background="?android:attr/selectableItemBackground">
+
+                            <ImageView
+                                android:id="@+id/custom_albums_image"
+                                android:layout_width="@dimen/mal_action_item_image_width"
+                                android:layout_height="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="@dimen/mal_baseline_half"
+                                android:layout_marginLeft="@dimen/mal_baseline"
+                                android:layout_marginRight="@dimen/mal_baseline_half"
+                                android:layout_marginStart="@dimen/mal_baseline"
+                                android:adjustViewBounds="false"
+                                android:cropToPadding="false"
+                                android:scaleType="centerInside"
+                                android:src="@drawable/ic_about_current_ver"/>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:minHeight="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:layout_marginEnd="@dimen/mal_baseline"
+                                android:layout_marginLeft="@dimen/mal_baseline"
+                                android:layout_marginRight="@dimen/mal_baseline"
+                                android:layout_marginStart="@dimen/mal_baseline"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Manage Custom Albums"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                                <TextView
+                                    android:id="@+id/custom_albums_hint"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/custom_albums_help"
+                                android:layout_width="40dp"
+                                android:layout_height="@dimen/mal_action_action_item_image_height"
+                                android:layout_gravity="center"
+                                android:paddingLeft="@dimen/mal_baseline_half"
+                                android:paddingStart="@dimen/mal_baseline_half"
+                                android:paddingEnd="@dimen/mal_baseline_half"
+                                android:paddingRight="@dimen/mal_baseline_half"
+                                android:adjustViewBounds="false"
+                                android:cropToPadding="false"
+                                android:scaleType="centerInside"
+                                android:background="?android:attr/selectableItemBackground"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <!-- General settings Card -->
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mal_baseline_half"
+                android:layout_marginStart="@dimen/mal_baseline_half"
+                android:layout_marginRight="@dimen/mal_baseline_half"
+                android:layout_marginEnd="@dimen/mal_baseline_half"
+                android:layout_marginTop="@dimen/mal_baseline_half"
+                android:paddingLeft="@dimen/mal_baseline_half"
+                android:paddingStart="@dimen/mal_baseline_half"
+                android:paddingRight="@dimen/mal_baseline_half"
+                android:paddingEnd="@dimen/mal_baseline_half"
+                android:paddingTop="@dimen/mal_baseline"
+                android:paddingBottom="@dimen/mal_baseline"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/mal_baseline"
+                        android:layout_marginStart="@dimen/mal_baseline"
+                        android:layout_marginRight="@dimen/mal_baseline"
+                        android:layout_marginEnd="@dimen/mal_baseline"
+                        android:layout_marginTop="@dimen/mal_baseline"
+                        android:layout_marginBottom="@dimen/mal_baseline_half"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:text="General Settings" />
+
+                    <!-- autoplay vids -->
+                    <LinearLayout
+                        android:id="@+id/autoplay_videos_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/autoplay_videos_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/autoplay_videos"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Start playing video as soon as it is opened"/>
+                        </LinearLayout>
+
+                        <com.simplemobiletools.commons.views.MySwitchCompat
+                            android:id="@+id/autoplay_videos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:clickable="false"
+                            android:paddingEnd="@dimen/medium_margin"
+                            android:paddingStart="@dimen/medium_margin" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_grey"/>
+
+                    <!-- loop vids -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/loop_videos_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/loop_videos_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/loop_videos"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Play opened video in loop"/>
+                        </LinearLayout>
+
+                        <com.simplemobiletools.commons.views.MySwitchCompat
+                            android:id="@+id/loop_videos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:clickable="false"
+                            android:paddingEnd="@dimen/medium_margin"
+                            android:paddingStart="@dimen/medium_margin" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_grey"/>
+
+                    <!-- animate_gifs_root -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/animate_gifs_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/animate_gifs_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/animate_gifs"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Start playing GIF images while browsing"/>
+
+                        </LinearLayout>
+
+                        <com.simplemobiletools.commons.views.MySwitchCompat
+                            android:id="@+id/animate_gifs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:clickable="false"
+                            android:paddingEnd="@dimen/medium_margin"
+                            android:paddingStart="@dimen/medium_margin" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_grey"/>
+
+                    <!-- max_brightness_root -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/max_brightness_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/max_brightness_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/max_brightness"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Temporarily increase brightness to maximum while viewing media"/>
+
+                        </LinearLayout>
+
+                        <com.simplemobiletools.commons.views.MySwitchCompat
+                            android:id="@+id/max_brightness"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:clickable="false"
+                            android:paddingEnd="@dimen/medium_margin"
+                            android:paddingStart="@dimen/medium_margin" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_grey"/>
+
+                    <!-- crop_thumbnails_root -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/crop_thumbnails_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/crop_thumbnails_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/crop_thumbnails"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Crop thumbnails to fit square grid while browsing media"/>
+
+                        </LinearLayout>
+
+                        <com.simplemobiletools.commons.views.MySwitchCompat
+                            android:id="@+id/crop_thumbnails"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:clickable="false"
+                            android:paddingEnd="@dimen/medium_margin"
+                            android:paddingStart="@dimen/medium_margin" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_grey"/>
+
+                    <!-- dark_background -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/dark_background_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/dark_background_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/dark_background_at_fullscreen"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Use black background while viewing media"/>
+
+                        </LinearLayout>
+
+                        <com.simplemobiletools.commons.views.MySwitchCompat
+                            android:id="@+id/dark_background"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:clickable="false"
+                            android:paddingEnd="@dimen/medium_margin"
+                            android:paddingStart="@dimen/medium_margin" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_grey"/>
+
+                    <!-- screen_rotation_root -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/screen_rotation_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/screen_rotation_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/screen_rotation_by"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:id="@+id/screen_rotation_value"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="Use black background while viewing media"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_grey"/>
+
+                    <!-- show_media -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/show_media_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/show_media_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/show_media"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:id="@+id/show_media_value"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
+

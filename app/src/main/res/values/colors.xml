@@ -13,6 +13,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="bg_grey">#FFebebeb</color>
+    <color name="bg_black">#FF888888</color>
     <color name="redbody">#FFe53935</color>
     <color name="bluebg">#133572</color>
     <color name="veryTransparentWhite">#22FFFFFF</color>
