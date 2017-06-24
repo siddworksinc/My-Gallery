@@ -44,3 +44,7 @@ rename temporarily show hidden to hide hidden when it is enabled
 Change behaviour where it ignores folder whose any parent is hidden or parent has .nomedia
 
 
+v6
+Fixed: Open image with intent, copyto shows all folders including hidden
+hide path in album/properties if album is password locked. also check in group properties dialog where albums having same parent is selected
+require master password to temporarily show hidden media id enabled

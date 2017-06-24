@@ -95,7 +95,7 @@ class SettingsNewActivity : SimpleActivity() {
                     "\n\n - Accessing and changing Privacy & Security Settings" +
                     "\n - Temporarily Showing Hidden Media (On Main Screen)" +
                     "\n\nSetting up master password will ensure that Hidden/Excluded Media cannot be seen without entering this password" +
-                    "\n\nTo Change Master Password, disable it and set new password by enabling it again")
+                    "\n\nTo Change Master Password, disable it and set new password by enabling it again") {}
         }
     }
 
@@ -126,7 +126,7 @@ class SettingsNewActivity : SimpleActivity() {
         }
 
         custom_albums_help.setOnClickListener {
-            alert("Ok", getString(R.string.included_activity_placeholder))
+            alert("Ok", getString(R.string.included_activity_placeholder)) {}
         }
     }
 
@@ -147,7 +147,7 @@ class SettingsNewActivity : SimpleActivity() {
         }
 
         excluded_albums_help.setOnClickListener {
-            alert("Ok", getString(R.string.excluded_activity_placeholder))
+            alert("Ok", getString(R.string.excluded_activity_placeholder)) {}
         }
     }
 

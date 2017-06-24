@@ -367,7 +367,7 @@ fun Activity.init() {
     }).start()
 }
 
-fun Activity.alert(okText: String, message: String) {
+fun Activity.alert(okText: String, message: String, function: () -> Unit?) {
     val view  = MyTextView(this)
     view.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16))
     view.text = message

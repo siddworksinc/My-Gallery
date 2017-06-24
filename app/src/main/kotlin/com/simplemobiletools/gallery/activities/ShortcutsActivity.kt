@@ -321,8 +321,15 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     }
 
     private fun temporarilyShowHidden() {
-        config.temporarilyShowHidden = true
-        getDirectories()
+        if(config.masterPass != null) {
+            PasswordDialog(this, R.string.show_hidden, Directory("", "", "", 0, 0, 0, 0, false, config.masterPass), "Enter master password to continue") {
+                config.temporarilyShowHidden = true
+                getDirectories()
+            }
+        } else {
+            config.temporarilyShowHidden = true
+            getDirectories()
+        }
     }
 
     private fun increaseColumnCount() {

@@ -37,6 +37,10 @@
         android:title="@string/temporarily_show_hidden"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/hide_hidden"
+        android:title="@string/hide_hidden"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/increase_column_count"
         android:title="@string/increase_column_count"
         app:showAsAction="never"/>
@@ -45,10 +49,12 @@
         android:title="@string/reduce_column_count"
         app:showAsAction="never"/>
     <item
+        android:visible="false"
         android:id="@+id/settings"
         android:title="@string/settings"
         app:showAsAction="never"/>
     <item
+        android:visible="false"
         android:id="@+id/about"
         android:title="@string/about"
         app:showAsAction="never"/>

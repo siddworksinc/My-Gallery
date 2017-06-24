@@ -1,6 +1,8 @@
 package com.simplemobiletools.gallery.adapters
 
+import android.content.DialogInterface
 import android.os.Build
+import android.support.v7.app.AlertDialog
 import android.support.v7.view.ActionMode
 import android.support.v7.widget.RecyclerView
 import android.util.SparseArray
@@ -13,14 +15,17 @@ import com.bumptech.glide.Glide
 import com.siddworks.android.mygallery.ShortcutsActivity
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
 import com.simplemobiletools.commons.dialogs.PropertiesDialog
+import com.simplemobiletools.commons.extensions.isImageVideoGif
 import com.simplemobiletools.commons.extensions.needsStupidWritePermissions
+import com.simplemobiletools.commons.extensions.setupDialogStuff
+import com.simplemobiletools.commons.views.MyTextView
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.dialogs.EditShortcutDialog
+import com.simplemobiletools.gallery.dialogs.MyPropertiesDialog
 import com.simplemobiletools.gallery.dialogs.PasswordDialog
-import com.simplemobiletools.gallery.extensions.config
-import com.simplemobiletools.gallery.extensions.createSelector
-import com.simplemobiletools.gallery.extensions.loadImageForShortcut
+import com.simplemobiletools.gallery.extensions.*
+import com.simplemobiletools.gallery.helpers.dpToPx
 import com.simplemobiletools.gallery.models.Directory
 import kotlinx.android.synthetic.main.directory_item.view.*
 import kotlinx.android.synthetic.main.directory_tmb.view.*
@@ -102,15 +107,54 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             when (item.itemId) {
                 R.id.cab_edit -> editDirectory()
-                R.id.cab_hide -> hideDirectories()
-                R.id.cab_properties -> showProperties()
+                R.id.cab_hide -> toggleFoldersVisibility(true)
+                R.id.cab_unhide -> toggleFoldersVisibility(false)
                 R.id.cab_pin -> pinFolders(true)
                 R.id.cab_unpin -> pinFolders(false)
                 R.id.cab_select_all -> selectAll()
                 R.id.cab_delete -> askConfirmDelete()
+                R.id.cab_exclude -> tryExcludeFolder()
+                R.id.cab_copy_to -> copyMoveTo(true)
+                R.id.cab_move_to -> copyMoveTo(false)
+                R.id.cab_properties -> showProperties()
                 else -> return false
             }
             return true
+        }
+
+        private fun copyMoveTo(isCopyOperation: Boolean) {
+            if (selectedPositions.isEmpty())
+                return
+
+            val files = ArrayList<File>()
+            selectedPositions.forEach {
+                val dir = File(dirs[it].path)
+                files.addAll(dir.listFiles().filter { it.isFile && it.isImageVideoGif() })
+            }
+
+            activity.tryCopyMoveFilesTo(files, isCopyOperation) {
+                listener?.refreshItems()
+                actMode?.finish()
+            }
+        }
+
+        private fun tryExcludeFolder() {
+            val excludeText = activity.getString(R.string.exclude_folder_description) + "\n\n" + getSelectedPaths().toList().reduce { acc, s -> acc + "\n" + s }
+            val view = MyTextView(activity)
+            view.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16))
+            view.text = excludeText
+            AlertDialog.Builder(activity)
+                    .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                        run {
+                            activity.config.addExcludedFolders(getSelectedPaths())
+                            listener?.refreshItems()
+                            actMode?.finish()
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create().apply {
+                activity.setupDialogStuff(view, this, R.string.additional_info)
+            }
         }
 
         override fun onCreateActionMode(actionMode: ActionMode?, menu: Menu?): Boolean {
@@ -123,6 +167,7 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
         override fun onPrepareActionMode(actionMode: ActionMode?, menu: Menu): Boolean {
             menu.findItem(R.id.cab_edit).isVisible = selectedPositions.size <= 1
             checkPinBtnVisibility(menu)
+            checkHideBtnVisibility(menu)
             return true
         }
 
@@ -134,6 +179,20 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
             }
             selectedPositions.clear()
             actMode = null
+        }
+
+        fun checkHideBtnVisibility(menu: Menu) {
+            var hiddenCnt = 0
+            var unhiddenCnt = 0
+            selectedPositions.map { dirs.getOrNull(it)?.path }.filterNotNull().forEach {
+                if (File(it).containsNoMedia())
+                    hiddenCnt++
+                else
+                    unhiddenCnt++
+            }
+
+            menu.findItem(R.id.cab_hide).isVisible = unhiddenCnt > 0
+            menu.findItem(R.id.cab_unhide).isVisible = hiddenCnt > 0
         }
 
         fun checkPinBtnVisibility(menu: Menu) {
@@ -152,24 +211,41 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
         }
     }
 
-    private fun hideDirectories() {
-        val removeFolders = ArrayList<Directory>(selectedPositions.size)
-        selectedPositions.forEach {
-            if (dirs.size > it) {
-                val path = dirs[it].path
-                config.addExcludedFolder(path)
-                removeFolders.add(dirs[it])
+    private fun toggleFoldersVisibility(hide: Boolean) {
+        getSelectedPaths().forEach {
+            if (hide) {
+                if (config.wasHideFolderTooltipShown) {
+                    hideFolder(it)
+                } else {
+                    config.wasHideFolderTooltipShown = true
+                    ConfirmationDialog(activity, activity.getString(R.string.hide_folder_description)) {
+                        hideFolder(it)
+                    }
+                }
+            } else {
+                activity.removeNoMedia(it) {
+                    noMediaHandled()
+                }
             }
         }
-        dirs.removeAll(removeFolders)
-        selectedPositions.clear()
-        notifyDataSetChanged()
-        actMode?.finish()
+    }
+
+    private fun hideFolder(path: String) {
+        activity.addNoMedia(path) {
+            noMediaHandled()
+        }
+    }
+
+    private fun noMediaHandled() {
+        activity.runOnUiThread {
+            listener?.refreshItems()
+            actMode?.finish()
+        }
     }
 
     private fun editDirectory() {
         val shortcut = dirs[selectedPositions.first()]
-        if(shortcut.passcode != null) {
+        if (shortcut.passcode != null) {
             PasswordDialog(activity, R.string.edit, shortcut) {
                 EditShortcutDialog(activity, shortcut) {
                     listener?.refreshItems()
@@ -188,7 +264,7 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
 
     private fun showProperties() {
         if (selectedPositions.size <= 1) {
-            if(dirs[selectedPositions.first()].passcode != null) {
+            if (dirs[selectedPositions.first()].passcode != null) {
                 PasswordDialog(activity, R.string.properties, dirs[selectedPositions.first()]) {
                     PropertiesDialog(activity, dirs[selectedPositions.first()].path, config.shouldShowHidden)
                 }
@@ -198,7 +274,7 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
         } else {
             val paths = ArrayList<String>()
             selectedPositions.forEach { paths.add(dirs[it].path) }
-            PropertiesDialog(activity, paths, config.shouldShowHidden)
+            MyPropertiesDialog(activity, paths, config.shouldShowHidden)
         }
     }
 

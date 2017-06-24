@@ -70,8 +70,6 @@ private fun parseCursor(context: Context, cur: Cursor, isPickImage: Boolean, isP
     val config = context.config
     val showMedia = config.showMedia
     val showHidden = config.shouldShowHidden
-    val excludedFolders = config.excludedFolders
-    val noMediaFolders = context.getNoMediaFolders()
 
     cur.use { cur ->
         if (cur.moveToFirst()) {

@@ -92,9 +92,9 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             return
         }
 
-        if (intent.extras?.containsKey(IS_VIEW_INTENT) == true) {
-            config.temporarilyShowHidden = true
-        }
+//        if (intent.extras?.containsKey(IS_VIEW_INTENT) == true) {
+//            config.temporarilyShowHidden = true
+//        }
 
         showSystemUI()
 

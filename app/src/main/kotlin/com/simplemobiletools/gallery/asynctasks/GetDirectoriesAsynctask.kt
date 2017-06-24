@@ -24,6 +24,8 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
     var config = context.config
     var shouldStop = false
     val showHidden = config.shouldShowHidden
+    val a = config.temporarilyShowHidden
+    val b = config.showHiddenMedia
 
     override fun doInBackground(vararg params: Void): ArrayList<Directory> {
         if (!context.hasWriteStoragePermission())

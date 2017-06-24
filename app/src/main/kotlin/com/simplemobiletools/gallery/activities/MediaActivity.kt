@@ -2,12 +2,14 @@ package com.simplemobiletools.gallery.activities
 
 import android.app.Activity
 import android.app.WallpaperManager
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.view.Menu
@@ -19,11 +21,11 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
 import com.simplemobiletools.commons.extensions.*
+import com.simplemobiletools.commons.views.MyTextView
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.adapters.MediaAdapter
 import com.simplemobiletools.gallery.asynctasks.GetMediaAsynctask
 import com.simplemobiletools.gallery.dialogs.ChangeSortingDialog
-import com.simplemobiletools.gallery.dialogs.ExcludeFolderDialog
 import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.helpers.*
 import com.simplemobiletools.gallery.models.Medium
@@ -159,6 +161,13 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         }, LAST_MEDIA_CHECK_PERIOD)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        menu?.findItem(R.id.temporarily_show_hidden)?.isVisible = !config.temporarilyShowHidden && !config.showHiddenMedia
+        menu?.findItem(R.id.hide_hidden)?.isVisible = config.temporarilyShowHidden && !config.showHiddenMedia
+        return true
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_media, menu)
 
@@ -194,9 +203,15 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
             R.id.reduce_column_count -> reduceColumnCount()
             R.id.settings -> launchSettings()
             R.id.about -> launchAbout()
+            R.id.hide_hidden -> hideHidden()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    private fun hideHidden() {
+        config.temporarilyShowHidden = false
+        getMedia()
     }
 
     private fun toggleFilenameVisibility() {
@@ -248,8 +263,20 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     }
 
     private fun tryExcludeFolder() {
-        ExcludeFolderDialog(this, arrayListOf(mPath)) {
-            finish()
+        val excludeText = getString(R.string.exclude_folder_description) + "\n\n" + arrayListOf(mPath).reduce { acc, s -> acc + "\n" + s }
+        val view  = MyTextView(this)
+        view.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16))
+        view.text = excludeText
+        AlertDialog.Builder(this)
+                .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                    run {
+                        config.addExcludedFolders(setOf(mPath))
+                        finish()
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create().apply {
+            setupDialogStuff(view, this, R.string.additional_info)
         }
     }
 
