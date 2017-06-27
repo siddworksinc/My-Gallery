@@ -30,6 +30,8 @@ val ALBUM_COVERS = "album_covers"
 val SHORTCUTS = "shortcuts"
 val PASSWORDS = "passwords"
 val MASTER_PASSWORD = "master_password"
+val APP_LOCKED = "app_locked"
+val TUTORIAL_COMPLETED = "tutorial_completed"
 
 val NOMEDIA = ".nomedia"
 

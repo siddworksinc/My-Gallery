@@ -8,6 +8,7 @@ import android.view.View
 import com.simplemobiletools.commons.dialogs.RadioGroupDialog
 import com.simplemobiletools.commons.extensions.baseConfig
 import com.simplemobiletools.commons.extensions.hideKeyboard
+import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.commons.extensions.updateTextColors
 import com.simplemobiletools.commons.models.RadioItem
 import com.simplemobiletools.gallery.R
@@ -36,6 +37,7 @@ class SettingsNewActivity : SimpleActivity() {
         setupCustomizeColors()
         setupExcludedAlbums()
         setupCustomAlbumsFolders()
+        setupAppLock()
         setupShowHiddenMedia()
         setupAutoplayVideos()
         setupLoopVideos()
@@ -48,6 +50,33 @@ class SettingsNewActivity : SimpleActivity() {
         setupMasterPass()
         setupPrivacyAndSecurity()
         updateTextColors(main_content)
+    }
+
+    private fun setupAppLock() {
+        app_lock_image.setColorFilter(accentColor)
+        app_lock_image.setImageResource(R.drawable.security_app_lock)
+
+        app_lock.isChecked = config.appLocked != null
+        app_lock_root.setOnClickListener {
+            if(config.masterPass == null) {
+                toast("Setup Master Password to enable App Lock")
+            } else {
+                app_lock.toggle()
+                if(app_lock.isChecked) {
+                    config.appLocked = config.masterPass
+                    app_lock_hint.text = "Password required to open Gallery"
+                } else {
+                    app_lock_hint.text = "Password not required to open Gallery"
+                    config.appLocked = null
+                }
+            }
+        }
+
+        if(config.appLocked != null) {
+            app_lock_hint.text = "Password required to open Gallery"
+        } else {
+            app_lock_hint.text = "Password not required to open Gallery"
+        }
     }
 
     private fun setupPrivacyAndSecurity() {
@@ -84,6 +113,8 @@ class SettingsNewActivity : SimpleActivity() {
             MasterPassDialog(this) {
                 if(config.masterPass == null) {
                     master_pass_hint.text = "Master Password is Disabled"
+                    app_lock.isChecked = false
+                    app_lock_hint.text = "Password not required to open Gallery"
                 } else {
                     master_pass_hint.text = "Master Password is Enabled"
                 }
@@ -157,7 +188,7 @@ class SettingsNewActivity : SimpleActivity() {
         show_hidden_media_image.setImageResource(R.drawable.ic_hide)
 
         show_hidden_media.isChecked = config.showHiddenMedia
-        settings_hidden_media_root.setOnClickListener {
+        show_hidden_media_root.setOnClickListener {
             show_hidden_media.toggle()
             config.showHiddenMedia = show_hidden_media.isChecked
 

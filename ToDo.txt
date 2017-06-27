@@ -1,21 +1,23 @@
 This release
+    ask for permission at first slide maybe?
+    does changing name in edit shortcut work?
+    hide password protected folders on startup
     tutorial
         Welcome to My Gallery
-        Privacy & Security
-        Fast and Simple
-        Make it yours, customizable
+        Simple
+        Complete Gallery app
 
 Next release
-    .statuses shows only 7 entries while it has 10 pics
     Settings, About activity should be themed as per theme selected
     have drawer open and close on first run
-    hide password protected folders on startup
-    Add edit shortcut in bottom sheet dialog
-    More themes
-
 
 
 Future:
+Add edit shortcut in bottom sheet dialog
+More themes
+.statuses shows only 7 entries while it has 10 pics
+set as cover image for this album on media selection menu
+custom album arrangement
 Themes like leafpic gallery
 Setting > Use alternate media provider like leafpic gallery
 Drawer like leafpic

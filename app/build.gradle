@@ -11,12 +11,16 @@ android {
         applicationId "com.siddworks.mygallery"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 109
-        versionName "2.10.10"
+        versionCode 1
+        versionName "1.0"
     }
 
     signingConfigs {
         release
+    }
+
+    dataBinding {
+        enabled = true
     }
 
     buildTypes {
@@ -29,6 +33,11 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+
+    lintOptions {
+        disable 'MissingTranslation'
     }
 }
 
@@ -61,6 +70,7 @@ dependencies {
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    compile 'com.heinrichreimersoftware:material-intro:1.6.2'
 }
 
 buildscript {

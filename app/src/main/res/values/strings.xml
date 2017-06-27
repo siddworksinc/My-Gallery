@@ -118,6 +118,10 @@
     <string name="master_password">Master Password</string>
     <string name="hide_hidden">Hide Hidden</string>
     <string name="album_password_needed">This Album is Password Protected. Enter password to continue</string>
+    <string name="app_lock">App Lock</string>
+    <string name="password_needed">Password is needed</string>
+    <string name="app_password_protected">This App is password protected. Enter password to continue</string>
+    <string name="shall_not_pass">Thou shall not Pass!</string>
 
     <!--
         Haven't found some strings? There's more at

@@ -206,4 +206,13 @@ class Config(context: Context) : BaseConfig(context) {
     var masterPass: String?
         get() = prefs.getString(MASTER_PASSWORD, null)
         set(pass) = prefs.edit().putString(MASTER_PASSWORD, pass).apply()
+
+    var appLocked: String?
+        get() = prefs.getString(APP_LOCKED, null)
+        set(pass) = prefs.edit().putString(APP_LOCKED, pass).apply()
+
+    var tutorialCompleted: Boolean
+        get() = prefs.getBoolean(TUTORIAL_COMPLETED, false)
+        set(completed) = prefs.edit().putBoolean(TUTORIAL_COMPLETED, completed).apply()
+
 }

@@ -3,17 +3,17 @@ package com.simplemobiletools.gallery.dialogs
 import android.content.Context
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.R
-import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.models.Directory
 import kotlinx.android.synthetic.main.dialog_password.view.*
 
 
-class PasswordDialog(val activity: SimpleActivity, val name: Int, val shortcut: Directory, val message: String = activity.getString(R.string.album_password_needed), val callback: (dir: Directory) -> Unit) {
+class PasswordDialog(val activity: AppCompatActivity, val name: Int, val shortcut: Directory, val message: String = activity.getString(R.string.album_password_needed), val callback: (dir: Directory) -> Unit) {
 
     init {
         val view = LayoutInflater.from(activity).inflate(R.layout.dialog_password, null)
@@ -25,6 +25,7 @@ class PasswordDialog(val activity: SimpleActivity, val name: Int, val shortcut: 
                             view.password_value.text.toString() == shortcut.passcode) {
                         callback(shortcut)
                     } else {
+                        view.password_value.setText("")
                         activity.toast("Incorrect Password")
                     }
                 }

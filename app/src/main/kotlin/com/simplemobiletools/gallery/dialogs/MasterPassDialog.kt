@@ -119,5 +119,8 @@ class MasterPassDialog() {
 
     private fun savePassword(activity: Activity, password: String?) {
         activity.config.masterPass = password
+        if(password == null) {
+            activity.config.appLocked = null
+        }
     }
 }

@@ -73,7 +73,7 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
         storeStoragePaths()
-        checkWhatsNewDialog()
+//        checkWhatsNewDialog()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

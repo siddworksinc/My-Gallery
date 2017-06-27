@@ -22,4 +22,9 @@
     <color name="transparentWhite55">#55FFFFFF</color>
     <color name="transparent_white">#DDFFFFFF</color>
     <color name="transparent_white_more">#AAFFFFFF</color>
+
+    <color name="brown">#e7b080</color>
+    <color name="green">#22c384</color>
+    <color name="yellow">#FFC107</color>
+    <color name="intro_bg">#1e1e23</color>
 </resources>

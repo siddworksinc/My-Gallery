@@ -48,3 +48,31 @@ v6
 Fixed: Open image with intent, copyto shows all folders including hidden
 hide path in album/properties if album is password locked. also check in group properties dialog where albums having same parent is selected
 require master password to temporarily show hidden media id enabled
+App lock
+Tutorial
+    Blazing fast
+    Privacy & Security
+    Make it yours, customizable
+    Feature filled
+        Image Viewer
+        Increase/Decrease Grid Size
+        Image Editor
+        Copy
+        Video Player
+        Hide
+        App Lock
+        Excluded Albums
+        Theme support
+        Show only Images, Videos or both
+        Move
+        Custom Cover Image for Albums
+        Rename
+        Delete
+        Gestures Support
+        Included Albums
+        Properties
+        Share
+https://github.com/HeinrichReimer/material-intro
+https://github.com/rubengees/introduction
+https://github.com/apl-devs/AppIntro
+released as v1
