@@ -6,7 +6,7 @@ import com.simplemobiletools.commons.helpers.SORT_BY_SIZE
 import com.simplemobiletools.commons.helpers.SORT_DESCENDING
 import java.io.Serializable
 
-data class Directory(val path: String, val tmb: String, val name: String, var mediaCnt: Int, val modified: Long, val taken: Long,
+data class Directory(val path: String, val tmb: String, var name: String, var mediaCnt: Int, val modified: Long, val taken: Long,
                      var size: Long, var isThumbnailHidden: Boolean = false,
                      var passcode: String? = null, var coverImage: String? = null) : Serializable, Comparable<Directory> {
     companion object {

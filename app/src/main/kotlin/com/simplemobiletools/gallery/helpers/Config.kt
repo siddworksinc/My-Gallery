@@ -98,7 +98,7 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getStringSet(THUMBNAIL_HIDDEN_FOLDERS, getDataFolder())
         set(excludedFolders) = prefs.edit().remove(THUMBNAIL_HIDDEN_FOLDERS).putStringSet(THUMBNAIL_HIDDEN_FOLDERS, excludedFolders).apply()
 
-    private fun getDataFolder(): Set<String> {
+    fun getDataFolder(): Set<String> {
         val folders = HashSet<String>()
         val dataFolder = context.externalCacheDir?.parentFile?.parent?.trimEnd('/') ?: ""
         if (dataFolder.endsWith("data"))
@@ -215,4 +215,15 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getBoolean(TUTORIAL_COMPLETED, false)
         set(completed) = prefs.edit().putBoolean(TUTORIAL_COMPLETED, completed).apply()
 
+    var passProtectedAlbumsHidden: Boolean
+        get() = prefs.getBoolean(PASS_PRO_ALBUMS_HIDDEN, false)
+        set(hidden) = prefs.edit().putBoolean(PASS_PRO_ALBUMS_HIDDEN, hidden).apply()
+
+    var customNames: String
+        get() = prefs.getString(CUSTOM_NAMES, "")
+        set(names) = prefs.edit().putString(CUSTOM_NAMES, names).apply()
+
+    var showAllDirectories: String
+        get() = prefs.getString(SHOW_ALL_DIRECTORIES, "")
+        set(directories) = prefs.edit().putString(SHOW_ALL_DIRECTORIES, directories).apply()
 }

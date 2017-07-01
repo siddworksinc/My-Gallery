@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.simplemobiletools.commons.extensions.getFilenameFromPath
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.commons.extensions.updateTextColors
 import com.simplemobiletools.gallery.R
@@ -16,7 +17,6 @@ import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.extensions.config
 import com.simplemobiletools.gallery.models.AlbumCover
 import com.simplemobiletools.gallery.models.Directory
-import com.simplemobiletools.gallery.models.Shortcut
 import kotlinx.android.synthetic.main.dialog_shortcut.view.*
 import java.util.*
 
@@ -31,27 +31,27 @@ class EditShortcutDialog() {
      * @param path the file path
      * @param countHiddenItems toggle determining if we will count hidden files themselves and their sizes (reasonable only at directory properties)
      */
-    constructor(activity: SimpleActivity, shortcut: Directory, callback: () -> Unit) : this() {
+    constructor(activity: SimpleActivity, dir: Directory, callback: () -> Unit) : this() {
         mInflater = LayoutInflater.from(activity)
         mResources = activity.resources
         val view = mInflater.inflate(R.layout.dialog_shortcut, null)
 
-        val name = shortcut.name
-        val path = shortcut.path
+        val name = dir.name
+        val path = dir.path
 
         view.property_label_name.text = mResources.getString(R.string.name)
         view.property_value_name_value.setText(name)
         view.property_value_name_value.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
-                val token = object : TypeToken<List<Shortcut>>() {}.type
-                val shortcuts =  Gson().fromJson<ArrayList<Shortcut>>(activity.config.shortcuts, token) ?: ArrayList<Shortcut>(1)
-                shortcuts.forEach {
-                    if(it.path == shortcut.path) {
-                        it.name = view.property_value_name_value.text.toString()
-                    }
+                val newName = view.property_value_name_value.text?.toString()
+                if(newName != dir.name && newName != null) {
+                    var customNamesString = activity.config.customNames
+                    val listType = object : TypeToken<HashMap<String, String>>() {}.type
+                    val customNames =  Gson().fromJson<HashMap<String, String>>(customNamesString, listType) ?: HashMap(1)
+                    customNames.put(dir.path, newName)
+                    customNamesString = Gson().toJson(customNames)
+                    activity.config.customNames = customNamesString
                 }
-                val directories = Gson().toJson(shortcuts)
-                activity.config.shortcuts = directories
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -60,41 +60,54 @@ class EditShortcutDialog() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
         })
+        view.name_reset.setColorFilter(activity.config.primaryColor)
+        view.name_reset.setImageResource(R.drawable.ic_restore)
+        view.name_reset.setOnClickListener {
+            var customNamesString = activity.config.customNames
+            val listType = object : TypeToken<HashMap<String, String>>() {}.type
+            val customNames =  Gson().fromJson<HashMap<String, String>>(customNamesString, listType) ?: HashMap(1)
+            customNames.remove(dir.path)
+            customNamesString = Gson().toJson(customNames)
+            activity.config.customNames = customNamesString
+            view.property_value_name_value.setText(dir.path.getFilenameFromPath())
+        }
 
         view.property_label_path.text = mResources.getString(R.string.path)
         view.property_value_path_value.text = path
 
-        view.hide_thumbnail.isChecked = shortcut.isThumbnailHidden
+        view.hide_thumbnail.isChecked = dir.isThumbnailHidden
         view.hide_thumbnail_holder.setOnClickListener {
             view.hide_thumbnail.toggle()
 
             val thumbnailHiddenFolders = activity.config.thumbnailHiddenFolders
-            if(thumbnailHiddenFolders.contains(shortcut.path)) {
-                thumbnailHiddenFolders.remove(shortcut.path)
+            if(thumbnailHiddenFolders.contains(dir.path)) {
+                thumbnailHiddenFolders.remove(dir.path)
             } else {
-                thumbnailHiddenFolders.add(shortcut.path)
+                thumbnailHiddenFolders.add(dir.path)
             }
             activity.config.thumbnailHiddenFolders = thumbnailHiddenFolders
         }
 
         var albumCovers = activity.config.parseAlbumCovers()
-        view.cover_image.isChecked = !albumCovers.filter { it.path == shortcut.path }.isEmpty()
+        view.cover_image.isChecked = !albumCovers.filter { it.path == dir.path }.isEmpty()
         view.cover_image_holder.setOnClickListener {
             view.cover_image.toggle()
             if(view.cover_image.isChecked) {
-                PickMediumDialog(activity, shortcut.path) {
+                PickMediumDialog(activity, dir.path) {
                     albumCovers = albumCovers.filterNot { it.path == path } as ArrayList
                     albumCovers.add(AlbumCover(path, it))
                     activity.config.albumCovers = Gson().toJson(albumCovers)
+                    view.cover_image.isChecked = true
                 }
+                view.cover_image.isChecked = false
             } else {
                 albumCovers = albumCovers.filterNot { it.path == path } as ArrayList
                 activity.config.albumCovers = Gson().toJson(albumCovers)
             }
         }
 
-        view.password_protection.isChecked = shortcut.passcode!=null
-        view.passcode_protection_holder.setOnClickListener {
+        view.password_protection.isChecked = dir.passcode!=null
+        view.password_protection_holder.setOnClickListener {
             view.password_protection.toggle()
             val password = null;
 
@@ -109,7 +122,7 @@ class EditShortcutDialog() {
                         if(view.password_pass.text?.toString() == view.passcode_pass_confirm.text?.toString()) {
                             if(view.password_pass.text?.toString() != null &&
                                     view.password_pass.text.toString() != "") {
-                                savePassword(activity, shortcut, view.password_pass.text?.toString())
+                                savePassword(activity, dir, view.password_pass.text?.toString())
                                 view.password_warning.text = "Password saved"
                             } else {
                                 view.password_warning.text = "Enter a Password to activate protection"
@@ -131,7 +144,7 @@ class EditShortcutDialog() {
                         if(view.password_pass.text?.toString() == view.passcode_pass_confirm.text?.toString()) {
                             if(view.password_pass.text?.toString() != null &&
                                     view.password_pass.text.toString() != "") {
-                                savePassword(activity, shortcut, view.password_pass.text?.toString())
+                                savePassword(activity, dir, view.password_pass.text?.toString())
                                 view.password_warning.text = "Password saved"
                             } else {
                                 view.password_warning.text = "Enter a Password to activate protection"
@@ -156,7 +169,7 @@ class EditShortcutDialog() {
                 view.passcode_pass_confirm.setText("")
                 view.password_warning.text = "Password Protection Disabled"
 
-                savePassword(activity, shortcut, password)
+                savePassword(activity, dir, password)
             }
         }
 

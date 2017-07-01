@@ -1,7 +1,7 @@
 This release
+    add subtitle to all album title in media activity
+    have drawer open and close on first run
     ask for permission at first slide maybe?
-    does changing name in edit shortcut work?
-    hide password protected folders on startup
     tutorial
         Welcome to My Gallery
         Simple
@@ -9,23 +9,23 @@ This release
 
 Next release
     Settings, About activity should be themed as per theme selected
-    have drawer open and close on first run
 
 
 Future:
-Add edit shortcut in bottom sheet dialog
-More themes
+slideshow
+Add edit shortcut in bottom sheet or top sheet
+Change color for actionmodetoolbar to current accent color
+    tough to do currently. Maybe change to black or look into theming
 .statuses shows only 7 entries while it has 10 pics
 set as cover image for this album on media selection menu
-custom album arrangement
-Themes like leafpic gallery
 Setting > Use alternate media provider like leafpic gallery
-Drawer like leafpic
+
+custom album arrangement
+
+Themes like leafpic gallery
 Search functionality
-slideshow
 translation options like quickpic
 album effect like quickpic
-Add option to open app in locked state and have logo long press listener to open unlock prompt and show locked folders after unlock prompt
 did we loose functionality to browse and pick album? (see included folders)
 Navigation Drawer
     Tips & Help

@@ -1,5 +1,6 @@
 package com.simplemobiletools.gallery.activities
 
+import android.os.Build
 import com.simplemobiletools.commons.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.R
@@ -17,6 +18,12 @@ open class SimpleActivity : BaseSimpleActivity() {
         val source = if (files[0].isFile) files[0].parent else files[0].absolutePath
         PickAlbumDialog(this, source, null) {
             copyMoveFilesTo(files, source.trimEnd('/'), it.path, isCopyOperation, true, callback)
+        }
+    }
+
+    fun updateStatusBarColor(color: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = color
         }
     }
 }

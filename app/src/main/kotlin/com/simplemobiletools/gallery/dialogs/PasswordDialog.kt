@@ -13,7 +13,7 @@ import com.simplemobiletools.gallery.models.Directory
 import kotlinx.android.synthetic.main.dialog_password.view.*
 
 
-class PasswordDialog(val activity: AppCompatActivity, val name: Int, val shortcut: Directory, val message: String = activity.getString(R.string.album_password_needed), val callback: (dir: Directory) -> Unit) {
+class PasswordDialog(val activity: AppCompatActivity, val name: Int, val shortcut: Directory, val message: String = activity.getString(R.string.album_password_protected), val callback: (dir: Directory) -> Unit) {
 
     init {
         val view = LayoutInflater.from(activity).inflate(R.layout.dialog_password, null)

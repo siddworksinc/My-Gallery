@@ -9,11 +9,12 @@ import android.net.Uri
 import android.support.annotation.UiThread
 import android.support.v4.content.ContextCompat
 import com.afollestad.materialdialogs.MaterialDialog
+import com.siddworks.android.mygallery.ShortcutsActivity
+import com.simplemobiletools.commons.extensions.baseConfig
+import com.simplemobiletools.commons.extensions.isFirstRunEver
 import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
-
-
-
+import com.simplemobiletools.gallery.models.Release
 
 
 /**
@@ -23,7 +24,7 @@ import com.simplemobiletools.gallery.R
 fun showWhatsNewPopup(activity: Activity) {
     val whatsNewContent = getWhatsNewContent(BuildConfig.VERSION_CODE)
     if (whatsNewContent != null) {
-        showAlertOneButton("", activity, "What's New", whatsNewContent)
+        showAlertOneButton("", activity, "What's New", " * $whatsNewContent")
     }
 }
 
@@ -64,34 +65,9 @@ fun openBetaFeedback(activity: Activity) {
     }
 }
 
-fun getWhatsNewContent(versionCode: Int): String? {
-    if (versionCode >= 31) {
-        val retVal = " - Added Shortcuts feature. Create shortcuts to multiple folders\n\n"
-        return retVal
-    }
-    else if (versionCode > 27) {
-        val retVal = " - Brand New UI\n\n" +
-                " - Added features like Share, delete, rename, rotate etc\n\n" +
-                " - Added Copy/Move\n\n" +
-                " - Added tip to show folders are being ignored in copy/move/share\n\n"
-        return retVal
-    }
-    else if (versionCode > 25) {
-        val retVal = " - Brand New UI\n\n" +
-                " - Added functionalities like Share, delete, rename, rotate etc\n\n" +
-                " - Added Whats new section in Settings. Never miss out in newly added features.\n\n" +
-                " - More faster and more quick\n\n" +
-                " - Added About Section\n\n" +
-                " - New Icons\n\n" +
-                " - Folders are also sorted as per sorting preferences"
-        return retVal
-    }
-    return null
-}
-
-fun openUrl(activity: Activity, yattoUrl: String) {
+fun openUrl(activity: Activity, url: String) {
     try {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(yattoUrl))
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         activity.startActivity(browserIntent)
     } catch (e: Exception) {
         e.printStackTrace()
@@ -118,4 +94,57 @@ fun dpToPx(dp: Int): Int {
 
 fun pxToDp(px: Int): Int {
     return ((px / Resources.getSystem().getDisplayMetrics().density).toInt());
+}
+
+fun checkWhatsNew(activity: ShortcutsActivity): ArrayList<Release>? {
+    if (activity.isFirstRunEver()) {
+        activity.baseConfig.lastVersion = BuildConfig.VERSION_CODE
+        return null
+    }
+
+    val releases = arrayListOf<Release>()
+    val newReleases = arrayListOf<Release>()
+    for (i in BuildConfig.VERSION_CODE downTo 1) {
+        val whatsNewContent = getWhatsNewContent(i)
+        if(whatsNewContent != null) {
+            releases.add(Release(i, whatsNewContent))
+        }
+    }
+    releases.filterTo(newReleases) { it.id > activity.baseConfig.lastVersion }
+
+    if (newReleases.isNotEmpty()) {
+        return newReleases
+    }
+
+    return null
+}
+
+fun showWhatsNewDialog(activity: ShortcutsActivity, releases: ArrayList<Release>) {
+    val newReleases = getNewReleases(releases)
+    showAlertOneButton("", activity, "What's New", newReleases)
+    activity.baseConfig.lastVersion = BuildConfig.VERSION_CODE
+}
+
+fun getNewReleases(releases: ArrayList<Release>): String {
+    val sb = StringBuilder()
+
+    releases.forEach {
+        sb.append(" * ${it.text}\n\n")
+    }
+
+    return sb.toString()
+}
+
+fun getWhatsNewContent(versionCode: Int): String? {
+    when (versionCode) {
+        2 -> return  "New: Hide password protected folders on startup\n\n" +
+                " - New: Show Everything as Album (Thanks @cuteriz22)\n\n" +
+                " - New: \"Whats New\" will show in drawer after update\n\n" +
+                " - BugFix: Exclude Albums from Android/Data folder (Thanks @sagarraythatha)\n\n" +
+                " - BugFix: Change all password fields to password type (Thanks @3sanket3)\n\n" +
+                " - BugFix: Change Actionbar color to black while selecting things.(For now) Pink looked out of place. (Thanks @3sanket3, @strngrINknowns)\n\n" +
+                " - Bug Fixes & Performance Improvements\n\n"
+        1 -> return "First Release"
+    }
+    return null
 }

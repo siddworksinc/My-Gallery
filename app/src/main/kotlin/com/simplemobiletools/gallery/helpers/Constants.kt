@@ -32,6 +32,8 @@ val PASSWORDS = "passwords"
 val MASTER_PASSWORD = "master_password"
 val APP_LOCKED = "app_locked"
 val TUTORIAL_COMPLETED = "tutorial_completed"
+val PASS_PRO_ALBUMS_HIDDEN = "pass_pro_albums_hidden"
+val CUSTOM_NAMES = "custom_names"
 
 val NOMEDIA = ".nomedia"
 
@@ -43,6 +45,7 @@ val GET_ANY_INTENT = "get_any_intent"
 val SET_WALLPAPER_INTENT = "set_wallpaper_intent"
 val DIRECTORIES = "directories2"
 val IS_VIEW_INTENT = "is_view_intent"
+val SHOW_ALL_DIRECTORIES = "show_all_dirs"
 
 val REQUEST_EDIT_IMAGE = 1
 val REQUEST_SET_WALLPAPER = 2

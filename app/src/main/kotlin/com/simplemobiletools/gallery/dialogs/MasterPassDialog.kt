@@ -41,7 +41,7 @@ class MasterPassDialog() {
         view.password_protection.text = "Enable Master Password"
         view.password_protection.visibility = View.VISIBLE
         view.password_protection.isChecked = activity.config.masterPass != null
-        view.passcode_protection_holder.setOnClickListener {
+        view.password_protection_holder.setOnClickListener {
             view.password_protection.toggle()
             val password = null;
 

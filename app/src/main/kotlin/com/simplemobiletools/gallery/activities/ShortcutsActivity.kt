@@ -20,6 +20,7 @@ import com.google.gson.Gson
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
+import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.SectionDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
@@ -30,6 +31,7 @@ import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.MediaActivity
+import com.simplemobiletools.gallery.activities.ShowAllActivity
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.adapters.ShortcutsAdapter
 import com.simplemobiletools.gallery.asynctasks.GetDirectoriesAsynctask
@@ -42,8 +44,6 @@ import com.simplemobiletools.gallery.views.MyScalableRecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import java.io.File
-import java.util.*
-import kotlin.collections.HashMap
 
 
 class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListener {
@@ -69,6 +69,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         setContentView(R.layout.activity_shortcuts)
         logEvent("ActivityShortcuts")
         config.temporarilyShowHidden = false
+        config.showAll = false
 
         toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -310,9 +311,19 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
             R.id.hide_hidden -> hideHidden()
             R.id.increase_column_count -> increaseColumnCount()
             R.id.reduce_column_count -> reduceColumnCount()
+            R.id.show_all -> showAllMedia()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    private fun showAllMedia() {
+        val directories = Gson().toJson(mDirs)
+        config.showAllDirectories = directories
+        Intent(this, ShowAllActivity::class.java).apply {
+            putExtra(DIRECTORY, "/")
+            startActivity(this)
+        }
     }
 
     private fun hideHidden() {
@@ -359,6 +370,10 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     }
 
     private fun setupDrawer() {
+        var whatsnew : PrimaryDrawerItem? = null
+        var whatsnewHeader : DividerDrawerItem? = null
+        val whatsNew = checkWhatsNew(this@ShortcutsActivity)
+
         //if you want to update the items at a later time it is recommended to keep it in a variable
         val gallery = PrimaryDrawerItem().withIdentifier(1).withName(R.string.gallery)
                 .withIcon(R.drawable.ic_image_black_24dp).withIconTintingEnabled(true)
@@ -367,6 +382,12 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         val about = PrimaryDrawerItem().withIdentifier(3).withName(R.string.about)
                 .withIcon(R.drawable.ic_info_black_24dp).withIconTintingEnabled(true)
 
+        if(whatsNew != null) {
+            whatsnewHeader = DividerDrawerItem()
+
+            whatsnew = PrimaryDrawerItem().withIdentifier(7).withName(R.string.whats_new)
+                    .withIcon(R.drawable.ic_whatshot_white_24dp).withIconTintingEnabled(true)
+        }
         val amazingUser = SectionDrawerItem().withName("Be An Amazing User :)").withDivider(true)
 
         val share = PrimaryDrawerItem().withIdentifier(4).withName(R.string.share)
@@ -385,6 +406,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         idToMap.put(4, "Share")
         idToMap.put(5, "Send Feedback")
         idToMap.put(6, "Rate Us")
+        idToMap.put(7, "Whats New")
 
         val customPrimaryColor = baseConfig.customPrimaryColor
         val view = LayoutInflater.from(this).inflate(R.layout.drawer_header, null)
@@ -403,44 +425,62 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
                     view.material_drawer_account_header_background.setColorFilter(primaryColorAlpha); }
         }
 
-        view.app_version.text = "v"+ BuildConfig.VERSION_NAME
+        view.app_version.text = "v${BuildConfig.VERSION_NAME}"
 
-        var header = AccountHeaderBuilder()
+        val header = AccountHeaderBuilder()
                 .withActivity(this)
                 .withAccountHeader(view)
                 .build()
 
-        drawer = DrawerBuilder()
+        val drawerBuilder = DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar as Toolbar)
                 .withAccountHeader(header)
                 .withScrollToTopAfterClick(true)
-                .addDrawerItems(
-                        gallery,
-                        settings,
-                        about,
-                        amazingUser,
-                        share,
-                        sendFeedback,
-                        rateUs
-                )
                 .withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener {
                     override fun onItemClick(view: View, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
-                        logEvent("Drawer"+idToMap.getValue(drawerItem.identifier.toInt()))
+                        logEvent("Drawer" + idToMap.getValue(drawerItem.identifier.toInt()))
                         when (drawerItem.identifier) {
-                            1L -> {}
-                            2L -> launchSettings()
-                            3L -> launchAbout()
-                            4L -> { shareApp(this@ShortcutsActivity)}
-                            5L -> showContactDeveloper(this@ShortcutsActivity)
-                            6L -> { openUrl(this@ShortcutsActivity, "https://play.google.com/store/apps/details?id=com.siddworks.mygallery")
+                            1L -> { }
+                            2L -> { launchSettings() }
+                            3L -> { launchAbout() }
+                            4L -> { shareApp(this@ShortcutsActivity) }
+                            5L -> { showContactDeveloper(this@ShortcutsActivity) }
+                            6L -> { openUrl(this@ShortcutsActivity, "https://play.google.com/store/apps/details?id=com.siddworks.mygallery") }
+                            7L -> {
+                                if (whatsNew != null) {
+                                    showWhatsNewDialog(this@ShortcutsActivity, whatsNew)
+                                }
                             }
                         }
                         resetSelection()
                         return false
                     }
                 })
-                .build()
+        if(whatsnew != null) {
+            drawerBuilder.addDrawerItems(
+                    gallery,
+                    settings,
+                    about,
+                    whatsnewHeader,
+                    whatsnew,
+                    amazingUser,
+                    share,
+                    sendFeedback,
+                    rateUs
+            )
+        } else {
+            drawerBuilder.addDrawerItems(
+                    gallery,
+                    settings,
+                    about,
+                    amazingUser,
+                    share,
+                    sendFeedback,
+                    rateUs
+            )
+        }
+        drawer = drawerBuilder.build()
     }
 
     private fun launchAbout() {
@@ -448,6 +488,6 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     }
 
     private fun resetSelection() {
-        drawer?.setSelection(1L, false);
+        drawer?.setSelection(1L, false)
     }
 }

@@ -20,6 +20,10 @@
         android:title="@string/hide_hidden"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/show_all"
+        android:title="@string/show_all"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/increase_column_count"
         android:title="@string/increase_column_count"
         app:showAsAction="never"/>

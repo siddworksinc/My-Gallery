@@ -24,36 +24,49 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
     var config = context.config
     var shouldStop = false
     val showHidden = config.shouldShowHidden
-    val a = config.temporarilyShowHidden
-    val b = config.showHiddenMedia
+    val temporarilyShowHidden = config.temporarilyShowHidden
+    val showHiddenMedia = config.showHiddenMedia
+    val dataFolders = config.getDataFolder()
 
     override fun doInBackground(vararg params: Void): ArrayList<Directory> {
         if (!context.hasWriteStoragePermission())
             return ArrayList()
 
         val st = System.nanoTime()
+
         val media = context.getFilesFrom("", isPickImage, isPickVideo)
-        val excludedPaths = config.excludedFolders
-        val directories = groupDirectories(media)
-        val dirsExcluded = ArrayList(directories.values.filter { File(it.path).exists() }).filter { shouldFolderBeVisible(it.path, excludedPaths) } as ArrayList<Directory>
-        val dirs = processDirs(dirsExcluded)
+        val allDirs = groupDirectories(media)
+        val filteredDirs = processDirs(allDirs)
         Directory.sorting = config.directorySorting
-        dirs.sort()
+        filteredDirs.sort()
         val end = System.nanoTime()
         Log.d("Adapter", ((end-st)/1000000).toString());
-        return movePinnedToFront(dirs)
+        return movePinnedToFront(filteredDirs)
     }
 
-    private fun processDirs(dirsExcluded: ArrayList<Directory>): ArrayList<Directory> {
+    private fun processDirs(dirsAll: Map<String, Directory>): ArrayList<Directory> {
         val thumbnailHiddenFolders = config.thumbnailHiddenFolders
         val passwordsString = config.passwords
+        val customNamesString = config.customNames
+
         val listType = object : TypeToken<HashMap<String, String>>() {}.type
         val pass =  Gson().fromJson<HashMap<String, String>>(passwordsString, listType) ?: HashMap(1)
         val passDirs = pass.keys
+        val customNames =  Gson().fromJson<HashMap<String, String>>(customNamesString, listType) ?: HashMap(1)
+        val customNameDirs = customNames.keys
+
+        // Filter non-existing dirs
+        var dirsExcluded = ArrayList(dirsAll.values.filter { File(it.path).exists() }).filter {
+            shouldFolderBeVisible(it.path, config.excludedFolders) } as ArrayList<Directory>
 
         dirsExcluded.forEach {
             if(thumbnailHiddenFolders.contains(it.path)) { it.isThumbnailHidden = true }
             if(passDirs.contains(it.path)) { it.passcode = pass.get(it.path) }
+            if(customNameDirs.contains(it.path)) { it.name = customNames.get(it.path)!! }
+        }
+
+        if(!temporarilyShowHidden && !showHiddenMedia && config.passProtectedAlbumsHidden) {
+            dirsExcluded = dirsExcluded.filterNot { it.passcode != null } as ArrayList<Directory>
         }
 
         return dirsExcluded
@@ -106,12 +119,8 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         val file = File(path)
         return if (isThisExcluded(path, excludedPaths))
             false
-        else if (!config.shouldShowHidden && file.isDirectory && file.canonicalFile == file.absoluteFile) {
-            var containsNoMediaOrDot = file.containsNoMedia() || path.contains("/.")
-            if (!containsNoMediaOrDot) {
-                containsNoMediaOrDot = checkHasNoMedia(file.parentFile)
-            }
-            !containsNoMediaOrDot
+        else if (!showHidden && file.isDirectory && file.canonicalFile == file.absoluteFile) {
+            return !file.containsNoMedia() && !path.contains("/.")
         } else {
             true
         }
@@ -121,7 +130,21 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         return file.containsNoMedia()
     }
 
-    private fun isThisExcluded(path: String, excludedPaths: MutableSet<String>) = excludedPaths.any { path == it }
+    private fun isThisExcluded(path: String, excludedPaths: MutableSet<String>): Boolean {
+        return if(excludedPaths.any { path == it }) true
+        else {
+            var isDataFolderExcluded = false
+            dataFolders.forEach {
+                if(excludedPaths.contains(it)) {
+                    isDataFolderExcluded = true
+                }
+            }
+            if(isDataFolderExcluded) {
+                return dataFolders.any { path.startsWith(it) }
+            }
+            return false
+        }
+    }
 
     private fun movePinnedToFront(dirs: ArrayList<Directory>): ArrayList<Directory> {
         val foundFolders = ArrayList<Directory>()

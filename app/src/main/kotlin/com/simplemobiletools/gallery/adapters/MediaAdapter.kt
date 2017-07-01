@@ -23,6 +23,8 @@ import kotlinx.android.synthetic.main.photo_video_tmb.view.*
 import java.io.File
 import java.util.*
 
+
+
 class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>, val listener: MediaOperationsListener?, val itemClick: (Medium) -> Unit) :
         RecyclerView.Adapter<MediaAdapter.ViewHolder>() {
 
@@ -115,6 +117,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
             super.onCreateActionMode(actionMode, menu)
             actMode = actionMode
             activity.menuInflater.inflate(R.menu.cab_media, menu)
+            activity.updateStatusBarColor(R.color.black)
             return true
         }
 
@@ -135,6 +138,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
             }
             selectedPositions.clear()
             actMode = null
+            activity.updateActionbarColor(config.primaryColor)
         }
 
         fun checkHideBtnVisibility(menu: Menu) {

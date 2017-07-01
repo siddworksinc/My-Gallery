@@ -22,6 +22,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.OrientationEventListener
 import android.view.View
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
 import com.simplemobiletools.commons.dialogs.PropertiesDialog
 import com.simplemobiletools.commons.dialogs.RenameItemDialog
@@ -30,11 +32,13 @@ import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.MediaActivity.Companion.mMedia
 import com.simplemobiletools.gallery.adapters.MyPagerAdapter
 import com.simplemobiletools.gallery.asynctasks.GetMediaAsynctask
+import com.simplemobiletools.gallery.asynctasks.GetMediaByDirsAsyncTask
 import com.simplemobiletools.gallery.dialogs.SaveAsDialog
 import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.fragments.PhotoFragment
 import com.simplemobiletools.gallery.fragments.ViewPagerFragment
 import com.simplemobiletools.gallery.helpers.*
+import com.simplemobiletools.gallery.models.Directory
 import com.simplemobiletools.gallery.models.Medium
 import kotlinx.android.synthetic.main.activity_medium.*
 import java.io.File
@@ -430,9 +434,18 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     }
 
     private fun reloadViewPager() {
-        GetMediaAsynctask(applicationContext, mDirectory, false, false, mShowAll) {
-            gotMedia(it)
-        }.execute()
+        if(!mShowAll) {
+            GetMediaAsynctask(applicationContext, mDirectory, false, false, false) {
+                gotMedia(it)
+            }.execute()
+        } else {
+            val token = object : TypeToken<List<Directory>>() {}.type
+            val dirs = Gson().fromJson<java.util.ArrayList<Directory>>(config.showAllDirectories, token) ?: java.util.ArrayList<Directory>(1)
+
+            GetMediaByDirsAsyncTask(applicationContext, mPath, false, false, true, dirs) {
+                gotMedia(it)
+            }.execute()
+        }
     }
 
     private fun gotMedia(media: ArrayList<Medium>) {

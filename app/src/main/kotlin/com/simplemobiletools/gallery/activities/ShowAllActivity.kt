@@ -24,17 +24,18 @@ import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.commons.views.MyTextView
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.adapters.MediaAdapter
-import com.simplemobiletools.gallery.asynctasks.GetMediaAsynctask
+import com.simplemobiletools.gallery.asynctasks.GetMediaByDirsAsyncTask
 import com.simplemobiletools.gallery.dialogs.ChangeSortingDialog
 import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.helpers.*
+import com.simplemobiletools.gallery.models.Directory
 import com.simplemobiletools.gallery.models.Medium
 import com.simplemobiletools.gallery.views.MyScalableRecyclerView
 import kotlinx.android.synthetic.main.activity_media.*
 import java.io.File
 import java.io.IOException
 
-class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
+class ShowAllActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     private val TAG = MediaActivity::class.java.simpleName
     private val SAVE_MEDIA_CNT = 40
     private val LAST_MEDIA_CHECK_PERIOD = 3000L
@@ -59,7 +60,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
-        logEvent("ActivityMedia")
+        logEvent("ActivityShowAll")
         intent.apply {
             mIsGetImageIntent = getBooleanExtra(GET_IMAGE_INTENT, false)
             mIsGetVideoIntent = getBooleanExtra(GET_VIDEO_INTENT, false)
@@ -70,9 +71,9 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         mPath = intent.getStringExtra(DIRECTORY)
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
-        mShowAll = config.showAll
-        if (mShowAll)
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        mShowAll = true
+        config.showAll = true
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onResume() {
@@ -100,8 +101,8 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        config.temporarilyShowHidden = false
         mMedia.clear()
+        config.showAll = false
     }
 
     private fun tryloadGallery() {
@@ -278,16 +279,20 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
             return
 
         mIsGettingMedia = true
-        val token = object : TypeToken<List<Medium>>() {}.type
-        val media = Gson().fromJson<ArrayList<Medium>>(config.loadFolderMedia(mPath), token) ?: ArrayList<Medium>(1)
+        media_refresh_layout.isRefreshing = true
+
+        val tokenMedia = object : TypeToken<List<Medium>>() {}.type
+        val media = Gson().fromJson<ArrayList<Medium>>(config.loadFolderMedia(mPath), tokenMedia) ?: ArrayList<Medium>(1)
         if (media.isNotEmpty() && !mLoadedInitialPhotos) {
             gotMedia(media)
-        } else {
-            media_refresh_layout.isRefreshing = true
         }
 
+        val token = object : TypeToken<List<Directory>>() {}.type
+        val dirs = Gson().fromJson<java.util.ArrayList<Directory>>(config.showAllDirectories, token) ?: java.util.ArrayList<Directory>(1)
+
         mLoadedInitialPhotos = true
-        GetMediaAsynctask(applicationContext, mPath, mIsGetVideoIntent, mIsGetImageIntent, mShowAll) {
+
+        GetMediaByDirsAsyncTask(applicationContext, mPath, mIsGetVideoIntent, mIsGetImageIntent, true, dirs) {
             gotMedia(it)
         }.execute()
     }
@@ -396,7 +401,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
             } else {
                 Intent(this, ViewPagerActivity::class.java).apply {
                     putExtra(MEDIUM, path)
-                    putExtra(SHOW_ALL, mShowAll)
+                    putExtra(SHOW_ALL, true)
                     startActivity(this)
                 }
             }

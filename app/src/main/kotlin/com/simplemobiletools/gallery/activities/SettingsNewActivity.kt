@@ -39,6 +39,7 @@ class SettingsNewActivity : SimpleActivity() {
         setupCustomAlbumsFolders()
         setupAppLock()
         setupShowHiddenMedia()
+        setupPassProtectedAlbums()
         setupAutoplayVideos()
         setupLoopVideos()
         setupAnimateGifs()
@@ -50,6 +51,29 @@ class SettingsNewActivity : SimpleActivity() {
         setupMasterPass()
         setupPrivacyAndSecurity()
         updateTextColors(main_content)
+    }
+
+    private fun setupPassProtectedAlbums() {
+        hide_pass_albums_image.setColorFilter(accentColor)
+        hide_pass_albums_image.setImageResource(R.drawable.settings_pass_pro_album)
+
+        hide_pass_albums.isChecked = config.passProtectedAlbumsHidden
+        hide_pass_albums_root.setOnClickListener {
+            hide_pass_albums.toggle()
+            config.passProtectedAlbumsHidden = hide_pass_albums.isChecked
+
+            if(hide_pass_albums.isChecked) {
+                hide_pass_albums_hint.text = "Password locked albums are hidden"
+            } else {
+                hide_pass_albums_hint.text = "Password locked albums are not hidden"
+            }
+        }
+
+        if(config.passProtectedAlbumsHidden) {
+            hide_pass_albums_hint.text = "Password locked albums are hidden"
+        } else {
+            hide_pass_albums_hint.text = "Password locked albums are not hidden"
+        }
     }
 
     private fun setupAppLock() {

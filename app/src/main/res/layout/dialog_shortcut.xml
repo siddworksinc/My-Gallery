@@ -9,47 +9,63 @@
         android:id="@+id/properties_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/activity_margin"
-        android:paddingRight="@dimen/activity_margin">
+        android:orientation="vertical">
 
         <!-- name -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/medium_margin"
-            android:paddingStart="@dimen/medium_margin"
+            android:paddingLeft="@dimen/bigger_margin"
+            android:paddingRight="@dimen/activity_margin"
+            android:paddingTop="@dimen/activity_margin"
             android:orientation="vertical">
 
             <com.simplemobiletools.commons.views.MyTextView
                 android:id="@+id/property_label_name"
                 android:layout_width="match_parent"
+                android:paddingLeft="@dimen/small_margin"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_margin"
                 android:textSize="@dimen/smaller_text_size"/>
 
-            <com.simplemobiletools.commons.views.MyEditText
-                android:id="@+id/property_value_name_value"
+            <LinearLayout
+                android:layout_below="@id/property_label_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/small_margin"
-                android:paddingRight="@dimen/small_margin"/>
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <com.simplemobiletools.commons.views.MyEditText
+                    android:id="@+id/property_value_name_value"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="@dimen/small_margin"/>
+
+                <ImageView
+                    android:background="?android:attr/selectableItemBackground"
+                    android:paddingLeft="4dp"
+                    android:id="@+id/name_reset"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <!-- path -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/medium_margin"
-            android:paddingStart="@dimen/medium_margin"
+            android:paddingTop="@dimen/activity_margin"
+            android:paddingBottom="@dimen/activity_margin"
+            android:paddingLeft="@dimen/bigger_margin"
+            android:paddingRight="@dimen/activity_margin"
             android:orientation="vertical">
 
             <com.simplemobiletools.commons.views.MyTextView
+                android:paddingLeft="@dimen/small_margin"
                 android:id="@+id/property_label_path"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_margin"
                 android:textSize="@dimen/smaller_text_size"/>
 
             <com.simplemobiletools.commons.views.MyTextView
@@ -67,16 +83,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
-            android:layout_marginTop="@dimen/activity_margin"
-            android:paddingLeft="@dimen/medium_margin"
-            android:paddingStart="@dimen/medium_margin"
+            android:paddingTop="@dimen/activity_margin"
+            android:paddingBottom="@dimen/activity_margin"
+            android:paddingLeft="@dimen/big_margin"
+            android:paddingRight="@dimen/activity_margin"
             android:orientation="horizontal">
 
             <com.simplemobiletools.commons.views.MySwitchCompat
                 android:id="@+id/hide_thumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_margin"
                 android:background="@null"
                 android:clickable="false"
                 android:text="Hide Thumbnail"/>
@@ -89,16 +105,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
-            android:layout_marginTop="@dimen/activity_margin"
-            android:paddingLeft="@dimen/medium_margin"
-            android:paddingStart="@dimen/medium_margin"
+            android:paddingTop="@dimen/activity_margin"
+            android:paddingBottom="@dimen/activity_margin"
+            android:paddingLeft="@dimen/big_margin"
+            android:paddingRight="@dimen/activity_margin"
             android:orientation="horizontal">
 
             <com.simplemobiletools.commons.views.MySwitchCompat
                 android:id="@+id/cover_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_margin"
                 android:background="@null"
                 android:clickable="false"
                 android:text="Custom Cover Image"/>
@@ -106,42 +122,43 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/passcode_protection_holder"
+            android:id="@+id/password_protection_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
-            android:layout_marginTop="@dimen/activity_margin"
-            android:paddingLeft="@dimen/medium_margin"
-            android:paddingStart="@dimen/medium_margin"
+            android:paddingTop="@dimen/activity_margin"
+            android:paddingBottom="@dimen/activity_margin"
+            android:paddingLeft="@dimen/big_margin"
+            android:paddingRight="@dimen/activity_margin"
             android:orientation="vertical">
 
             <com.simplemobiletools.commons.views.MySwitchCompat
                 android:id="@+id/password_protection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_margin"
                 android:background="@null"
                 android:clickable="false"
-                android:text="Passcode Protection"
-                android:paddingBottom="8dp"/>
+                android:text="Passcode Protection" />
 
             <com.simplemobiletools.commons.views.MyTextView
                 android:visibility="gone"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:id="@+id/password_warning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <com.simplemobiletools.commons.views.MyEditText
                 android:visibility="gone"
-                android:hint="Password"
+                android:inputType="textPassword"
+                android:hint="@string/password"
                 android:id="@+id/password_pass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <com.simplemobiletools.commons.views.MyEditText
                 android:visibility="gone"
-                android:hint="Confirm Password"
+                android:inputType="textPassword"
+                android:hint="@string/confirm_password"
                 android:id="@+id/passcode_pass_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

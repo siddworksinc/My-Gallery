@@ -161,6 +161,7 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
             super.onCreateActionMode(actionMode, menu)
             actMode = actionMode
             activity.menuInflater.inflate(R.menu.cab_shortcuts, menu)
+            activity.updateStatusBarColor(R.color.black)
             return true
         }
 
@@ -179,6 +180,7 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
             }
             selectedPositions.clear()
             actMode = null
+            activity.updateActionbarColor(config.primaryColor)
         }
 
         fun checkHideBtnVisibility(menu: Menu) {

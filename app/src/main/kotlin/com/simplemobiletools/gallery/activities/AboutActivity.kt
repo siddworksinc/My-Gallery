@@ -10,6 +10,7 @@ import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.helpers.*
+import kotlinx.android.synthetic.main.activity_about.*
 
 
 class AboutActivity : SimpleActivity() {
@@ -90,15 +91,11 @@ class AboutActivity : SimpleActivity() {
             openBetaFeedback(this@AboutActivity)
         }
 
-//        // Feedback Upcoming
-//        LinearLayout feedbackUpcomingRoot = (LinearLayout) findViewById(R.id.about_feedback_upcoming_root);
-//        feedbackUpcomingRoot.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                logEvent("ButtonAboutFeedbackUpcomingFeatures");
-//                sendGoogleFormsfeedback(AboutActivity.this);
-//            }
-//        });
+        // Feedback Upcoming
+        about_feedback_upcoming_root.setOnClickListener {
+            logEvent("ButtonAboutFeedbackUpcomingFeatures")
+            openUrl(this@AboutActivity, "https://goo.gl/forms/ShFeOGxDJY3aAkK93")
+        }
 
         // sendGoogleFormsfeedback connect Image
         val feedbackConnect = findViewById(R.id.about_feedback_connect_image) as ImageView

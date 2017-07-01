@@ -76,3 +76,21 @@ https://github.com/HeinrichReimer/material-intro
 https://github.com/rubengees/introduction
 https://github.com/apl-devs/AppIntro
 released as v1
+
+v2
+hard exclude all media from data folder if present in exclude folders
+hide password protected folders on startup
+fixed bug where if parent contans nomedia, it hides album
+Change all edit text for password to hide passwords(password type)
+change statusbar and actionbar color to black and revert on exiting from contextual mode
+better manage state in edit shortcut dialog when custom album cover is not chosen
+Edit Shortcut
+    Changing name works
+    make rows clickable background and reset image have clickable background
+About
+    whatsnew working
+    vote on upcoming features working
+Whatsnew will show in drawer after update
+view all mode
+
+v

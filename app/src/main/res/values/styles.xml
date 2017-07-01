@@ -10,7 +10,7 @@
     </style>
 
     <style name="AppTheme" parent="AppTheme.Base">
-        <item name="actionModeBackground">@color/colorAccent</item>
+        <item name="actionModeBackground">@color/intro_bg</item>
     </style>
 
     <style name="FullScreenTheme.Base" parent="AppTheme">
