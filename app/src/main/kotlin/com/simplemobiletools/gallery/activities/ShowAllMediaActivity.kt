@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
+import android.text.Html
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -35,7 +36,7 @@ import kotlinx.android.synthetic.main.activity_media.*
 import java.io.File
 import java.io.IOException
 
-class ShowAllActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
+class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     private val TAG = MediaActivity::class.java.simpleName
     private val SAVE_MEDIA_CNT = 40
     private val LAST_MEDIA_CHECK_PERIOD = 3000L
@@ -409,6 +410,7 @@ class ShowAllActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     }
 
     private fun gotMedia(media: ArrayList<Medium>) {
+        supportActionBar?.subtitle = Html.fromHtml("<small>${media.size} Photos & Videos</small>")
         mLastMediaModified = getLastMediaModified()
         mIsGettingMedia = false
         media_refresh_layout.isRefreshing = false

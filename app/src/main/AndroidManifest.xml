@@ -56,7 +56,7 @@
         <activity
             android:name=".activities.PasswordLockedActivity"/>
         <activity
-            android:name=".activities.ShowAllActivity"/>
+            android:name=".activities.ShowAllMediaActivity"/>
         <activity
             android:name=".activities.ViewPagerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

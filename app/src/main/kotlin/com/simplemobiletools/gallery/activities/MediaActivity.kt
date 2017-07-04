@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
+import android.text.Html
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -404,6 +405,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     }
 
     private fun gotMedia(media: ArrayList<Medium>) {
+        supportActionBar?.subtitle = Html.fromHtml("<small>${media.size} Photos & Videos</small>")
         mLastMediaModified = getLastMediaModified()
         mIsGettingMedia = false
         media_refresh_layout.isRefreshing = false

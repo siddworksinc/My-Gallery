@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="18dp"
-                    android:text="Customizable"
+                    android:text="@string/customizable"
                     android:textAlignment="center"
                     android:textSize="24sp" />
 
@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Blue? Red? Pink? Cozy? Compact? Make it yours :)"
+                    android:text="@string/customizable_desc"
                     android:textAlignment="center"
                     android:textSize="16sp" />
 

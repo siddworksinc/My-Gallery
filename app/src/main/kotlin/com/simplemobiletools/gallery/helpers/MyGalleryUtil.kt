@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.siddworks.android.mygallery.ShortcutsActivity
 import com.simplemobiletools.commons.extensions.baseConfig
-import com.simplemobiletools.commons.extensions.isFirstRunEver
 import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.models.Release
@@ -97,7 +96,7 @@ fun pxToDp(px: Int): Int {
 }
 
 fun checkWhatsNew(activity: ShortcutsActivity): ArrayList<Release>? {
-    if (activity.isFirstRunEver()) {
+    if (activity.baseConfig.appRunCount == 0) {
         activity.baseConfig.lastVersion = BuildConfig.VERSION_CODE
         return null
     }

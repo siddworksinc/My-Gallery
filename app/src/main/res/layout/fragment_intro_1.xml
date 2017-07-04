@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="18dp"
-                    android:text="Blazing Fast"
+                    android:text="@string/welcome_to_my_gallery"
                     android:textAlignment="center"
                     android:textSize="24sp" />
 
@@ -54,7 +54,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="You should not wait 10 seconds to open gallery, 5 more to load pics, another 10 to find album and browse and so on..."
+                    android:text="@string/my_gallery_desc"
+                    android:layout_marginBottom="12dp"
                     android:textAlignment="center"
                     android:textSize="16sp" />
 

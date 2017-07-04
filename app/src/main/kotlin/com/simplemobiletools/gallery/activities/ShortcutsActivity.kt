@@ -12,10 +12,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.Toolbar
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.gson.Gson
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
@@ -31,7 +33,7 @@ import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.MediaActivity
-import com.simplemobiletools.gallery.activities.ShowAllActivity
+import com.simplemobiletools.gallery.activities.ShowAllMediaActivity
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.adapters.ShortcutsAdapter
 import com.simplemobiletools.gallery.asynctasks.GetDirectoriesAsynctask
@@ -44,6 +46,7 @@ import com.simplemobiletools.gallery.views.MyScalableRecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import java.io.File
+import java.util.*
 
 
 class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListener {
@@ -118,7 +121,23 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
             handleZooming()
             checkIfColorChanged()
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION)
+            MaterialDialog.Builder(this@ShortcutsActivity)
+                    .title("Permission Required")
+                    .contentColor(R.color.black)
+                    .titleColor(R.color.black)
+                    .content("My Gallery is a Gallery app. To show Photos & Videos, " +
+                            "it needs access to your device's storage. " +
+                            "(${getString(R.string.no_storage_permissions)})")
+                    .positiveText("Grant")
+                    .onPositive { _, _ ->
+                        run {
+                            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION)
+                        }
+                    }
+                    .negativeText("Close")
+                    .onNegative { _, _ -> finish() }
+                    .positiveColor(ContextCompat.getColor(this@ShortcutsActivity, R.color.colorPrimary))
+                    .show()
         }
     }
 
@@ -144,6 +163,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     }
 
     private fun gotDirectories(dirs: ArrayList<Directory>) {
+        supportActionBar?.subtitle = Html.fromHtml("<small>${dirs.size} Albums</small>")
         mLastMediaModified = getLastMediaModified()
         directories_refresh_layout.isRefreshing = false
         mIsGettingDirs = false
@@ -320,7 +340,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     private fun showAllMedia() {
         val directories = Gson().toJson(mDirs)
         config.showAllDirectories = directories
-        Intent(this, ShowAllActivity::class.java).apply {
+        Intent(this, ShowAllMediaActivity::class.java).apply {
             putExtra(DIRECTORY, "/")
             startActivity(this)
         }
@@ -481,6 +501,15 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
             )
         }
         drawer = drawerBuilder.build()
+
+        if(baseConfig.appRunCount == 1) {
+            Handler().postDelayed({
+                drawer?.openDrawer()
+            }, 500)
+            Handler().postDelayed({
+                drawer?.closeDrawer()
+            }, 1500)
+        }
     }
 
     private fun launchAbout() {

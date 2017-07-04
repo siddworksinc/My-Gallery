@@ -93,4 +93,11 @@ About
 Whatsnew will show in drawer after update
 view all mode
 
-v
+v3
+add subtitle to all album, media activity
+have drawer open and close on second run
+ask for permission at first slide maybe?
+Added dialog to explain permission on shortcut activity
+updated drawer header image
+Bugfix: whatsnew is shown in first install
+

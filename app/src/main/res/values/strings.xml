@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="no_storage_permissions">It needs the permission to access your storage</string>
     <string name="app_name">My Gallery</string>
     <string name="app_launcher_name">My Gallery</string>
     <string name="edit">Edit</string>
@@ -128,6 +129,12 @@
     <string name="manage_master_password">Manage Master Password</string>
     <string name="go">Go</string>
     <string name="master_password_to_unlock_pp_settings"><![CDATA[Enter Master Password to unlock Privacy & Security settings]]></string>
+    <string name="welcome_to_my_gallery">Welcome to My Gallery</string>
+    <string name="my_gallery_desc">Fast, Feature Packed, Customizable and Easy to Use Gallery App</string>
+    <string name="privacy_and_security"><![CDATA[Privacy & Security]]></string>
+    <string name="privacy_security_desc">This features ensure you Show WHAT you want and HOW you want! (All of this are optional)</string>
+    <string name="customizable">Customizable</string>
+    <string name="customizable_desc">Blue? Red? Pink? Cozy? Compact? Tune it &amp; make it yours :)</string>
 
     <!--
         Haven't found some strings? There's more at

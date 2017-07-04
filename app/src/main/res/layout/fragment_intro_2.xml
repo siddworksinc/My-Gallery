@@ -43,18 +43,18 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="18dp"
-                    android:text="Privacy &amp; Security"
+                    android:text="@string/privacy_and_security"
                     android:textAlignment="center"
                     android:textSize="24sp" />
 
                 <TextView
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
                     android:textColor="@android:color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="These features ensures it shows only WHAT you want and HOW you want! All of these are optional of course"
+                    android:text="@string/privacy_security_desc"
                     android:textAlignment="center"
                     android:textSize="16sp" />
 

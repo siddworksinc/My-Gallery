@@ -17,6 +17,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.view.ViewPager
+import android.text.Html
 import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
@@ -521,6 +522,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         runOnUiThread {
             if (mPos < mMedia.size) {
                 title = mMedia[mPos].path.getFilenameFromPath()
+                supportActionBar?.subtitle = Html.fromHtml("<small>${mPos+1}/${mMedia.size}</small>")
             }
         }
     }

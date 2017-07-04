@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Complete Gallery App in One!"
+                    android:text="Complete Gallery App in One!\nP.S. More features coming soon :)\nP.P.S. Please vote for upcoming features ;)"
                     android:textAlignment="center"
                     android:textSize="16sp" />
 

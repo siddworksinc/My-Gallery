@@ -114,27 +114,46 @@
             android:layout_marginBottom="@dimen/material_drawer_account_header_dropdown_margin_bottom"
             android:layout_marginRight="@dimen/material_drawer_vertical_padding" />
 
-        <com.simplemobiletools.commons.views.MyTextView
-            android:id="@+id/app_title"
-            android:textColor="@android:color/white"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:drawablePadding="12dp"
-            android:text="@string/app_launcher_name"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/extra_big_text_size"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:paddingTop="16dp"
+            android:orientation="horizontal">
 
-        <com.simplemobiletools.commons.views.MyTextView
-            android:textColor="@android:color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="@dimen/smaller_text_size"
-            android:layout_below="@id/app_title"
-            android:id="@+id/app_version" />
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:paddingRight="8dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.simplemobiletools.commons.views.MyTextView
+                    android:id="@+id/app_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/app_launcher_name"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/extra_big_text_size"
+                    android:textStyle="bold" />
+
+                <com.simplemobiletools.commons.views.MyTextView
+                    android:id="@+id/app_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/smaller_text_size" />
+
+            </LinearLayout>
+        </LinearLayout>
+
 
     </RelativeLayout>
 </FrameLayout>
