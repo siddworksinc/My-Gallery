@@ -46,7 +46,8 @@ fun Context.launchSettings() {
 
 val Context.config: Config get() = Config.newInstance(this)
 
-fun Context.getFilesFrom(curPath: String, isPickImage: Boolean, isPickVideo: Boolean): ArrayList<Medium> {
+fun Context.getFilesFrom(curPath: String, isPickImage: Boolean, isPickVideo: Boolean,
+                         tempShowHidden: Boolean = false): ArrayList<Medium> {
     val projection = arrayOf(MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.DATE_TAKEN,
@@ -59,17 +60,18 @@ fun Context.getFilesFrom(curPath: String, isPickImage: Boolean, isPickVideo: Boo
 
     try {
         val cur = contentResolver.query(uri, projection, selection, selectionArgs, getSortingForFolder(curPath))
-        return parseCursor(this, cur, isPickImage, isPickVideo, curPath)
+        return parseCursor(this, cur, isPickImage, isPickVideo, curPath, tempShowHidden)
     } catch (e: Exception) {
         return ArrayList()
     }
 }
 
-private fun parseCursor(context: Context, cur: Cursor, isPickImage: Boolean, isPickVideo: Boolean, curPath: String): ArrayList<Medium> {
+private fun parseCursor(context: Context, cur: Cursor, isPickImage: Boolean, isPickVideo: Boolean, curPath: String,
+                        tempShowHidden: Boolean = false): ArrayList<Medium> {
     val curMedia = ArrayList<Medium>()
     val config = context.config
     val showMedia = config.showMedia
-    val showHidden = config.shouldShowHidden
+    val showHidden = config.shouldShowHidden || tempShowHidden
 
     cur.use { cur ->
         if (cur.moveToFirst()) {

@@ -136,6 +136,11 @@ fun getNewReleases(releases: ArrayList<Release>): String {
 
 fun getWhatsNewContent(versionCode: Int): String? {
     when (versionCode) {
+        3 -> return  "New: Album carousel while viewing photos lets you quickly navigate to other photos (@Abhishek)\n\n" +
+                " - New: View only videos quickly via drawer shortcut (@sagarraythatha, @Abhishek)\n\n" +
+                " - New: Added Album count and media count on Main screen & Album screen\n\n" +
+                " - BugFix: Dark statusbar while viewing media(Lollipop+). Pink was distracting (@Sneha) \n\n" +
+                " - Bug Fixes & Performance Improvements\n\n"
         2 -> return  "New: Hide password protected folders on startup\n\n" +
                 " - New: Show Everything as Album (Thanks @cuteriz22)\n\n" +
                 " - New: \"Whats New\" will show in drawer after update\n\n" +

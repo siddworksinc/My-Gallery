@@ -46,6 +46,7 @@ val SET_WALLPAPER_INTENT = "set_wallpaper_intent"
 val DIRECTORIES = "directories2"
 val IS_VIEW_INTENT = "is_view_intent"
 val SHOW_ALL_DIRECTORIES = "show_all_dirs"
+val TEMP_SHOW_VIDEOS = "temp_show_media"
 
 val REQUEST_EDIT_IMAGE = 1
 val REQUEST_SET_WALLPAPER = 2

@@ -85,7 +85,7 @@
     <string name="toggle_filename">Włącz widoczność nazwy pliku</string>
     <string name="show_media">Wybierz co pokazywać</string>
     <string name="images">Tylko Zdjęcia</string>
-    <string name="videos">Tylko Filmy</string>
+    <string name="videos_only">Tylko Filmy</string>
     <string name="gifs">Gifs only</string>
     <string name="images_videos_gifs">Images, videos, gifs</string>
     <string name="images_and_videos">Obrazy i wideo</string>

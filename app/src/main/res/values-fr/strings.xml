@@ -85,7 +85,7 @@
     <string name="toggle_filename">Permutter la visibilité des noms de fichier</string>
     <string name="show_media">Afficher les médias</string>
     <string name="images">Seulement les images</string>
-    <string name="videos">Vidéos uniquement</string>
+    <string name="videos_only">Vidéos uniquement</string>
     <string name="gifs">Gifs only</string>
     <string name="images_videos_gifs">Images, videos, gifs</string>
     <string name="images_and_videos">Images et vidéos</string>

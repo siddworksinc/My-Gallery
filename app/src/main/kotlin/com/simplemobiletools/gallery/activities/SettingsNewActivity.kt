@@ -329,7 +329,7 @@ class SettingsNewActivity : SimpleActivity() {
             val items = arrayListOf(
                     RadioItem(IMAGES_AND_VIDEOS, res.getString(R.string.images_and_videos)),
                     RadioItem(IMAGES, res.getString(R.string.images)),
-                    RadioItem(VIDEOS, res.getString(R.string.videos)))
+                    RadioItem(VIDEOS, res.getString(R.string.videos_only)))
 
             RadioGroupDialog(this@SettingsNewActivity, items, config.showMedia) {
                 config.showMedia = it as Int
@@ -341,6 +341,6 @@ class SettingsNewActivity : SimpleActivity() {
     private fun getShowMediaText() = getString(when (config.showMedia) {
         IMAGES_AND_VIDEOS -> R.string.images_and_videos
         IMAGES -> R.string.images
-        else -> R.string.videos
+        else -> R.string.videos_only
     })
 }

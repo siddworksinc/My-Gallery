@@ -85,7 +85,7 @@
     <string name="toggle_filename">Dosya adı görünürlüğünü değiştir</string>
     <string name="show_media">Medyayı göster</string>
     <string name="images">Yalnızca resimler</string>
-    <string name="videos">Yalnızca videolar</string>
+    <string name="videos_only">Yalnızca videolar</string>
     <string name="gifs">Gifs only</string>
     <string name="images_videos_gifs">Images, videos, gifs</string>
     <string name="images_and_videos">Resimler ve videolar</string>

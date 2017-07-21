@@ -85,7 +85,7 @@
     <string name="toggle_filename">Visa/dölj filnamnen</string>
     <string name="show_media">Visa media</string>
     <string name="images">Endast bilder</string>
-    <string name="videos">Endast videos</string>
+    <string name="videos_only">Endast videos</string>
     <string name="gifs">Gifs only</string>
     <string name="images_videos_gifs">Images, videos, gifs</string>
     <string name="images_and_videos">Bilder och videos</string>

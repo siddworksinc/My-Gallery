@@ -85,7 +85,7 @@
     <string name="toggle_filename">Cambiar la visibilidad del nombre de archivo</string>
     <string name="show_media">Mostrar multimedia</string>
     <string name="images">Solo imágenes</string>
-    <string name="videos">Solo vídeos</string>
+    <string name="videos_only">Solo vídeos</string>
     <string name="gifs">Gifs only</string>
     <string name="images_videos_gifs">Images, videos, gifs</string>
     <string name="images_and_videos">Imágenes y vídeos</string>

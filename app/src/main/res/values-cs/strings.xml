@@ -85,7 +85,7 @@
     <string name="toggle_filename">Přepnout viditelnost názvů souborů</string>
     <string name="show_media">Zobrazit média</string>
     <string name="images">Jen obrázky</string>
-    <string name="videos">Jen videa</string>
+    <string name="videos_only">Jen videa</string>
     <string name="gifs">Gifs only</string>
     <string name="images_videos_gifs">Images, videos, gifs</string>
     <string name="images_and_videos">Obrázky i videa</string>

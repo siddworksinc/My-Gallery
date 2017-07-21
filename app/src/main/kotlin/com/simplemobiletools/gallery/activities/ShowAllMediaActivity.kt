@@ -410,7 +410,7 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
     }
 
     private fun gotMedia(media: ArrayList<Medium>) {
-        supportActionBar?.subtitle = Html.fromHtml("<small>${media.size} Photos & Videos</small>")
+        supportActionBar?.subtitle = Html.fromHtml("<small>${media.size} Items</small>")
         mLastMediaModified = getLastMediaModified()
         mIsGettingMedia = false
         media_refresh_layout.isRefreshing = false

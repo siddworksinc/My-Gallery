@@ -85,7 +85,7 @@
     <string name="toggle_filename">显示文件名</string>
     <string name="show_media">显示多媒体文件</string>
     <string name="images">仅图片</string>
-    <string name="videos">仅视频</string>
+    <string name="videos_only">仅视频</string>
     <string name="gifs">仅 GIF </string>
     <string name="images_videos_gifs">图片，视频，GIF</string>
     <string name="images_and_videos">图片和视频</string>

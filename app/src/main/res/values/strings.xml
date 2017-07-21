@@ -86,7 +86,7 @@
     <string name="toggle_filename">Toggle filename visibility</string>
     <string name="show_media">Show media</string>
     <string name="images">Images only</string>
-    <string name="videos">Videos only</string>
+    <string name="videos_only">Videos only</string>
     <string name="gifs">Gifs only</string>
     <string name="images_videos_gifs">Images, videos, gifs</string>
     <string name="images_and_videos">Images and videos</string>
@@ -135,6 +135,7 @@
     <string name="privacy_security_desc">This features ensure you Show WHAT you want and HOW you want! (All of this are optional)</string>
     <string name="customizable">Customizable</string>
     <string name="customizable_desc">Blue? Red? Pink? Cozy? Compact? Tune it &amp; make it yours :)</string>
+    <string name="videos">Videos</string>
 
     <!--
         Haven't found some strings? There's more at

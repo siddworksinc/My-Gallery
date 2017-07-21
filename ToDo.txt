@@ -1,19 +1,25 @@
 This release
-    add way to access tutorial
+    in video activity, rv blocks controls
+    open image from media activity, now scroll fast left or right. after some images, it is blank
+    play gif is not working
+    add way to access tutorial and all changelogs
     tutorial
         features
             light weight apk size
-            no email, registration or anything requored just use it already.
+            no email, registration or anything required just use it already.
         Few last things
             most features can be accessed by settings, long press on items, menu and drawer
             Gestures are supported like you can slide and select things or pinch
-            like give rating, dont like, give feedback. Want to build it community driven app. can vote on upcoming features
+            like give rating, don't like, give feedback. Want to build it community driven app. can vote on upcoming features
 
 Next release
     Settings, About activity should be themed as per theme selected
-
+    Gallery in bottom of photo view mode: abhishek
 
 Future:
+animate increase decrease column count: abhishek
+add open source licences
+try to set as default in camera preview: abhishek
 slideshow
 Add edit shortcut in bottom sheet or top sheet
 Change color for actionmodetoolbar to current accent color

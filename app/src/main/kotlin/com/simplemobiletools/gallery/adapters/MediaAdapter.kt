@@ -36,6 +36,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
     val selectedPositions = HashSet<Int>()
     var foregroundColor = 0
     var displayFilenames = config.displayFileNames
+    var scrollVertically: Boolean = true
 
     fun toggleItemSelection(select: Boolean, pos: Int) {
         if (itemViews[pos] != null)
@@ -278,7 +279,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        itemViews.put(position, holder.bindView(activity, multiSelectorMode, multiSelector, media[position], listener, displayFilenames))
+        itemViews.put(position, holder.bindView(activity, multiSelectorMode, multiSelector, media[position], listener, displayFilenames, scrollVertically))
         toggleItemSelection(selectedPositions.contains(position), position)
         holder.itemView.tag = holder
     }
@@ -341,12 +342,12 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
 
     class ViewHolder(val view: View, val adapter: MyAdapterListener, val itemClick: (Medium) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
         fun bindView(activity: SimpleActivity, multiSelectorCallback: ModalMultiSelectorCallback, multiSelector: MultiSelector, medium: Medium,
-                     listener: MediaOperationsListener?, displayFilenames: Boolean): View {
+                     listener: MediaOperationsListener?, displayFilenames: Boolean, scrollVertically: Boolean): View {
             itemView.apply {
                 play_outline.visibility = if (medium.video) View.VISIBLE else View.GONE
                 photo_name.beVisibleIf(displayFilenames)
                 photo_name.text = medium.name
-                activity.loadImage(medium.path, medium_thumbnail)
+                activity.loadImage(medium.path, medium_thumbnail, scrollVertically)
 
                 setOnClickListener { viewClicked(multiSelector, medium) }
                 setOnLongClickListener {
@@ -395,4 +396,5 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
 
         fun itemLongClicked(position: Int)
     }
+
 }

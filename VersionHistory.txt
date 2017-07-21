@@ -96,8 +96,12 @@ view all mode
 v3
 add subtitle to all album, media activity
 have drawer open and close on second run
-ask for permission at first slide maybe?
+ask for permission at first slide
 Added dialog to explain permission on shortcut activity
-updated drawer header image
+updated drawer header layout
 Bugfix: whatsnew is shown in first install
 
+add video only switch
+dark status bar if dark mode is selected
+bug:opening hidden photos does not open it
+Added thumbnail navigation to photo view: Abhishek

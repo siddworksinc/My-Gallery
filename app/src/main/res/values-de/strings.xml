@@ -85,7 +85,7 @@
     <string name="toggle_filename">Beschriftungen ein/aus</string>
     <string name="show_media">Medien auswählen</string>
     <string name="images">Nur Bilder</string>
-    <string name="videos">Nur Videos</string>
+    <string name="videos_only">Nur Videos</string>
     <string name="gifs">Gifs only</string>
     <string name="images_videos_gifs">Images, videos, gifs</string>
     <string name="images_and_videos">Bilder und Videos</string>

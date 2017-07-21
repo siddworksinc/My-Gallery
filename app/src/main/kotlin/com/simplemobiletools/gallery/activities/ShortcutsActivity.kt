@@ -173,8 +173,9 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
             return
 
         mDirs = dirs
-
-        setupAdapter()
+        runOnUiThread {
+            setupAdapter()
+        }
         storeDirectories(mDirs)
     }
 
@@ -349,6 +350,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     private fun hideHidden() {
         config.temporarilyShowHidden = false
         getDirectories()
+        invalidateOptionsMenu()
     }
 
     private fun temporarilyShowHidden() {
@@ -361,6 +363,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
             config.temporarilyShowHidden = true
             getDirectories()
         }
+        invalidateOptionsMenu()
     }
 
     private fun increaseColumnCount() {
@@ -390,22 +393,23 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     }
 
     private fun setupDrawer() {
-        var whatsnew : PrimaryDrawerItem? = null
-        var whatsnewHeader : DividerDrawerItem? = null
-        val whatsNew = checkWhatsNew(this@ShortcutsActivity)
+        var whatsNew : PrimaryDrawerItem? = null
+        var whatsNewHeader : DividerDrawerItem? = null
+        val whatsNewContent = checkWhatsNew(this@ShortcutsActivity)
 
-        //if you want to update the items at a later time it is recommended to keep it in a variable
         val gallery = PrimaryDrawerItem().withIdentifier(1).withName(R.string.gallery)
                 .withIcon(R.drawable.ic_image_black_24dp).withIconTintingEnabled(true)
+        val videos = PrimaryDrawerItem().withIdentifier(8).withName(R.string.videos)
+                .withIcon(R.drawable.ic_theaters_white_24dp).withIconTintingEnabled(true)
         val settings = PrimaryDrawerItem().withIdentifier(2).withName(R.string.settings)
                 .withIcon(R.drawable.ic_settings_black_24dp).withIconTintingEnabled(true)
         val about = PrimaryDrawerItem().withIdentifier(3).withName(R.string.about)
                 .withIcon(R.drawable.ic_info_black_24dp).withIconTintingEnabled(true)
 
-        if(whatsNew != null) {
-            whatsnewHeader = DividerDrawerItem()
+        if(whatsNewContent != null) {
+            whatsNewHeader = DividerDrawerItem()
 
-            whatsnew = PrimaryDrawerItem().withIdentifier(7).withName(R.string.whats_new)
+            whatsNew = PrimaryDrawerItem().withIdentifier(7).withName(R.string.whats_new)
                     .withIcon(R.drawable.ic_whatshot_white_24dp).withIconTintingEnabled(true)
         }
         val amazingUser = SectionDrawerItem().withName("Be An Amazing User :)").withDivider(true)
@@ -416,6 +420,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
                 .withIcon(R.drawable.ic_send_white_24dp).withIconTintingEnabled(true)
         val rateUs = PrimaryDrawerItem().withIdentifier(6).withName(R.string.rate_us)
                 .withIcon(R.drawable.ic_thumb_up_white_24dp).withIconTintingEnabled(true)
+
         // Remaining
         // Donate/Contribute
         // tips & tutorials
@@ -427,6 +432,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         idToMap.put(5, "Send Feedback")
         idToMap.put(6, "Rate Us")
         idToMap.put(7, "Whats New")
+        idToMap.put(8, "Videos")
 
         val customPrimaryColor = baseConfig.customPrimaryColor
         val view = LayoutInflater.from(this).inflate(R.layout.drawer_header, null)
@@ -446,6 +452,8 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         }
 
         view.app_version.text = "v${BuildConfig.VERSION_NAME}"
+        var defaultSelection = 1L
+        if (config.showMedia == VIDEOS) {defaultSelection = 8L}
 
         val header = AccountHeaderBuilder()
                 .withActivity(this)
@@ -457,33 +465,56 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
                 .withToolbar(toolbar as Toolbar)
                 .withAccountHeader(header)
                 .withScrollToTopAfterClick(true)
+                .withSelectedItem(defaultSelection)
                 .withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener {
                     override fun onItemClick(view: View, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
                         logEvent("Drawer" + idToMap.getValue(drawerItem.identifier.toInt()))
                         when (drawerItem.identifier) {
-                            1L -> { }
-                            2L -> { launchSettings() }
-                            3L -> { launchAbout() }
-                            4L -> { shareApp(this@ShortcutsActivity) }
-                            5L -> { showContactDeveloper(this@ShortcutsActivity) }
-                            6L -> { openUrl(this@ShortcutsActivity, "https://play.google.com/store/apps/details?id=com.siddworks.mygallery") }
+                            1L -> {
+                                    config.showMedia = IMAGES_AND_VIDEOS
+                                    tryLoadGallery()
+                            }
+                            2L -> {
+                                    launchSettings()
+                                    resetSelection()
+                            }
+                            3L -> {
+                                    launchAbout()
+                                    resetSelection()
+                            }
+                            4L -> {
+                                    shareApp(this@ShortcutsActivity)
+                                    resetSelection()
+                            }
+                            5L -> {
+                                    showContactDeveloper(this@ShortcutsActivity)
+                                    resetSelection()
+                            }
+                            6L -> {
+                                    openUrl(this@ShortcutsActivity, "https://play.google.com/store/apps/details?id=com.siddworks.mygallery")
+                                    resetSelection()
+                            }
                             7L -> {
-                                if (whatsNew != null) {
-                                    showWhatsNewDialog(this@ShortcutsActivity, whatsNew)
-                                }
+                                    if (whatsNewContent != null) {
+                                        showWhatsNewDialog(this@ShortcutsActivity, whatsNewContent)
+                                    }
+                            }
+                            8L -> {
+                                    config.showMedia = VIDEOS
+                                    tryLoadGallery();
                             }
                         }
-                        resetSelection()
                         return false
                     }
                 })
-        if(whatsnew != null) {
+        if(whatsNew != null) {
             drawerBuilder.addDrawerItems(
                     gallery,
+                    videos,
                     settings,
                     about,
-                    whatsnewHeader,
-                    whatsnew,
+                    whatsNewHeader,
+                    whatsNew,
                     amazingUser,
                     share,
                     sendFeedback,
@@ -492,6 +523,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         } else {
             drawerBuilder.addDrawerItems(
                     gallery,
+                    videos,
                     settings,
                     about,
                     amazingUser,

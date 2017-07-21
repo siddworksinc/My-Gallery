@@ -22,6 +22,7 @@
         android:src="@drawable/img_play_outline_big"/>
 
     <RelativeLayout
+        android:layout_marginBottom="128dp"
         android:id="@+id/video_time_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

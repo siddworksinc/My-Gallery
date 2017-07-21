@@ -17,6 +17,9 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.view.ViewPager
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearSmoothScroller
+import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.util.DisplayMetrics
 import android.view.Menu
@@ -31,6 +34,7 @@ import com.simplemobiletools.commons.dialogs.RenameItemDialog
 import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.MediaActivity.Companion.mMedia
+import com.simplemobiletools.gallery.adapters.MediaAdapter
 import com.simplemobiletools.gallery.adapters.MyPagerAdapter
 import com.simplemobiletools.gallery.asynctasks.GetMediaAsynctask
 import com.simplemobiletools.gallery.asynctasks.GetMediaByDirsAsyncTask
@@ -46,7 +50,8 @@ import java.io.File
 import java.io.OutputStream
 import java.util.*
 
-class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, ViewPagerFragment.FragmentListener {
+class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, ViewPagerFragment.FragmentListener, MediaAdapter.MediaOperationsListener {
+
     lateinit var mOrientationEventListener: OrientationEventListener
     private var mPath = ""
     private var mDirectory = ""
@@ -57,11 +62,15 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     private var mRotationDegrees = 0f
     private var mLastHandledOrientation = 0
     private var mPrevHashcode = 0
+    private lateinit var pagerAdapter: MyPagerAdapter
+    var smoothScroller: RecyclerView.SmoothScroller? = null
+    private var isViewIntent: Boolean = false
 
     companion object {
         var screenWidth = 0
         var screenHeight = 0
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,9 +106,9 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             return
         }
 
-//        if (intent.extras?.containsKey(IS_VIEW_INTENT) == true) {
-//            config.temporarilyShowHidden = true
-//        }
+        if (intent.extras?.containsKey(IS_VIEW_INTENT) == true) {
+            isViewIntent = true
+        }
 
         showSystemUI()
 
@@ -114,8 +123,9 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         scanPath(mPath) {}
         setupOrientationEventListener()
 
-        if (config.darkBackground)
+        if (config.darkBackground) {
             view_pager.background = ColorDrawable(Color.BLACK)
+        }
     }
 
     override fun onDestroy() {
@@ -169,6 +179,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         } else if (config.screenRotation == ROTATE_BY_SYSTEM_SETTING) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
+        updateStatusBarColor(R.color.black)
     }
 
     override fun onPause() {
@@ -228,7 +239,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     }
 
     private fun updatePagerItems() {
-        val pagerAdapter = MyPagerAdapter(this, supportFragmentManager, mMedia)
+        pagerAdapter = MyPagerAdapter(this, supportFragmentManager, mMedia)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1 || !isDestroyed) {
             view_pager.apply {
                 adapter = pagerAdapter
@@ -436,7 +447,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
     private fun reloadViewPager() {
         if(!mShowAll) {
-            GetMediaAsynctask(applicationContext, mDirectory, false, false, false) {
+            GetMediaAsynctask(applicationContext, mDirectory, false, false, false, isViewIntent && true) {
                 gotMedia(it)
             }.execute()
         } else {
@@ -464,6 +475,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
         updateActionbarTitle()
         updatePagerItems()
+        setupRVAdapter()
         invalidateOptionsMenu()
         checkOrientation()
     }
@@ -503,16 +515,34 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     override fun fragmentClicked() {
         mIsFullScreen = !mIsFullScreen
         if (mIsFullScreen) {
-            hideSystemUI()
+            hideExtraUI()
         } else {
-            showSystemUI()
+            showExtraUI()
         }
+    }
+
+    private fun showExtraUI() {
+        showSystemUI()
+        showRV()
+    }
+
+    private fun hideExtraUI() {
+        hideSystemUI()
+        hideRV()
+    }
+
+    private fun showRV() {
+        media_grid.beVisible()
+    }
+
+    private fun hideRV() {
+        media_grid.beGone()
     }
 
     override fun systemUiVisibilityChanged(visibility: Int) {
         if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
             mIsFullScreen = false
-            showSystemUI()
+            showExtraUI()
         } else {
             mIsFullScreen = true
         }
@@ -550,11 +580,62 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         updateActionbarTitle()
         mRotationDegrees = 0f
         supportInvalidateOptionsMenu()
+        updateScrollPositionRV(position)
+    }
+
+    private fun updateScrollPositionRV(position: Int) {
+        if(!mIsFullScreen) {
+            if(smoothScroller == null) {
+                smoothScroller = object : LinearSmoothScroller(this@ViewPagerActivity) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return LinearSmoothScroller.SNAP_TO_START;
+                    }
+                }
+            }
+
+            smoothScroller?.targetPosition = position;
+            media_grid.layoutManager.startSmoothScroll(smoothScroller)
+        }
     }
 
     override fun onPageScrollStateChanged(state: Int) {
         if (state == ViewPager.SCROLL_STATE_IDLE) {
             checkOrientation()
         }
+    }
+
+    private fun setupRVAdapter() {
+        val currAdapter = media_grid.adapter
+        if (currAdapter == null) {
+            val mediaAdapter = MediaAdapter(this, mMedia, this) {
+                itemClicked(it.path)
+            }
+            mediaAdapter.scrollVertically = false;
+            mediaAdapter.notifyDataSetChanged()
+            media_grid.adapter = mediaAdapter
+
+            val layoutManager = media_grid.layoutManager as GridLayoutManager
+            layoutManager.orientation = GridLayoutManager.HORIZONTAL
+        } else {
+            (currAdapter as MediaAdapter).updateMedia(mMedia)
+        }
+    }
+
+    private fun itemClicked(path: String) {
+        mPath = path
+        mPos = getProperPosition()
+
+        updateActionbarTitle()
+        view_pager.currentItem = mPos
+    }
+
+    override fun refreshItems() {
+        reloadViewPager()
+    }
+
+    override fun deleteFiles(files: ArrayList<File>) {
+    }
+
+    override fun itemLongClicked(position: Int) {
     }
 }

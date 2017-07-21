@@ -135,7 +135,6 @@ fun Activity.openWith(file: File, forceChooser: Boolean = true) {
         setDataAndType(uri, file.getMimeType())
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         val chooser = Intent.createChooser(this, getString(R.string.open_with))
-
         if (resolveActivity(packageManager) != null) {
             startActivity(if (forceChooser) chooser else this)
         } else {
@@ -264,7 +263,8 @@ fun SimpleActivity.toggleFileVisibility(oldFile: File, hide: Boolean, callback: 
 
 fun Activity.getFileSignature(path: String) = StringSignature(File(path).lastModified().toString())
 
-fun Activity.loadImage(path: String, target: MySquareImageView) {
+fun Activity.loadImage(path: String, target: MySquareImageView, isVerticalScrolling: Boolean = true) {
+    target.isVerticalScrolling = isVerticalScrolling
     if (path.isImageFast() || path.isVideoFast()) {
         if (path.isPng()) {
             loadPng(path, target)

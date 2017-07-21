@@ -83,8 +83,9 @@ open class PhotoVideoActivity : SimpleActivity(), ViewPagerFragment.FragmentList
             supportFragmentManager.beginTransaction().replace(R.id.fragment_holder, mFragment).commit()
         }
 
-        if (config.darkBackground)
+        if (config.darkBackground) {
             fragment_holder.background = ColorDrawable(Color.BLACK)
+        }
 
         val proj = arrayOf(MediaStore.Images.Media.TITLE)
         var cursor: Cursor? = null
@@ -102,9 +103,15 @@ open class PhotoVideoActivity : SimpleActivity(), ViewPagerFragment.FragmentList
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        updateActionbarColor(config.primaryColor)
+    }
+
     override fun onResume() {
         super.onResume()
         supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable.actionbar_gradient_background))
+        updateStatusBarColor(R.color.black)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

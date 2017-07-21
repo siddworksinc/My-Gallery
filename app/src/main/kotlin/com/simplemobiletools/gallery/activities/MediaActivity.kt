@@ -57,6 +57,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         var mMedia = ArrayList<Medium>()
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
@@ -405,7 +406,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     }
 
     private fun gotMedia(media: ArrayList<Medium>) {
-        supportActionBar?.subtitle = Html.fromHtml("<small>${media.size} Photos & Videos</small>")
+        supportActionBar?.subtitle = Html.fromHtml("<small>${media.size} Items</small>")
         mLastMediaModified = getLastMediaModified()
         mIsGettingMedia = false
         media_refresh_layout.isRefreshing = false
@@ -419,7 +420,9 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
 
         mLastDrawnHashCode = media.hashCode()
         mMedia = media
-        setupAdapter()
+        runOnUiThread {
+            setupAdapter()
+        }
         storeFolder()
     }
 
