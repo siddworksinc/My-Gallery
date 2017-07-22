@@ -1,6 +1,7 @@
 This release
-    in video activity, rv blocks controls
-    open image from media activity, now scroll fast left or right. after some images, it is blank
+    add checkmark watermark when item is selected
+    remove swipe refresh from main and album activity
+    open image from media activity, now scroll fast left or right. after some images, it is blank and takes time to load
     play gif is not working
     add way to access tutorial and all changelogs
     tutorial
@@ -64,3 +65,12 @@ Debatable:
 AlbumPickerDialog:
     Multiselect albums
 
+
+
+remaining commits from simple-gallery
+horizontal scroll
+https://github.com/SimpleMobileTools/Simple-Gallery/commit/88de8a4d2a61aa9edb3ce6e04cc01c5c409e66c3
+round icon
+https://github.com/SimpleMobileTools/Simple-Gallery/commit/7bad8bc54f966227269d849b72458154d2c71414
+horizontal scroll to album picker
+https://github.com/SimpleMobileTools/Simple-Gallery/commit/f2b1ef2c3b041f49fc2c9b9f7463503730289b5f

@@ -28,7 +28,7 @@ import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.helpers.NOMEDIA
 import com.simplemobiletools.gallery.helpers.REQUEST_EDIT_IMAGE
-import com.simplemobiletools.gallery.helpers.REQUEST_SET_WALLPAPER
+import com.simplemobiletools.gallery.helpers.REQUEST_SET_AS
 import com.simplemobiletools.gallery.helpers.dpToPx
 import com.simplemobiletools.gallery.models.Directory
 import com.simplemobiletools.gallery.models.Medium
@@ -75,19 +75,19 @@ fun Activity.shareMedia(media: List<Medium>) {
     }
 }
 
-fun Activity.trySetAsWallpaper(file: File) {
+fun Activity.trySetAs(file: File) {
     try {
         var uri = Uri.fromFile(file)
-        if (!setAsWallpaper(uri, file)) {
+        if (!setAs(uri, file)) {
             uri = getFileContentUri(file)
-            setAsWallpaper(uri, file, false)
+            setAs(uri, file, false)
         }
     } catch (e: Exception) {
         toast(R.string.unknown_error_occurred)
     }
 }
 
-fun Activity.setAsWallpaper(uri: Uri, file: File, showToast: Boolean = true): Boolean {
+fun Activity.setAs(uri: Uri, file: File, showToast: Boolean = true): Boolean {
     var success = false
     Intent().apply {
         action = Intent.ACTION_ATTACH_DATA
@@ -96,11 +96,11 @@ fun Activity.setAsWallpaper(uri: Uri, file: File, showToast: Boolean = true): Bo
         val chooser = Intent.createChooser(this, getString(R.string.set_as_wallpaper_with))
 
         if (resolveActivity(packageManager) != null) {
-            startActivityForResult(chooser, REQUEST_SET_WALLPAPER)
+            startActivityForResult(chooser, REQUEST_SET_AS)
             success = true
         } else {
             if (showToast) {
-                toast(R.string.no_wallpaper_setter_found)
+                toast(R.string.no_capable_app_found)
             }
             success = false
         }
@@ -134,8 +134,8 @@ fun Activity.openWith(file: File, forceChooser: Boolean = true) {
         action = Intent.ACTION_VIEW
         setDataAndType(uri, file.getMimeType())
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        val chooser = Intent.createChooser(this, getString(R.string.open_with))
         if (resolveActivity(packageManager) != null) {
+            val chooser = Intent.createChooser(this, getString(R.string.open_with))
             startActivity(if (forceChooser) chooser else this)
         } else {
             toast(R.string.no_app_found)
@@ -143,15 +143,19 @@ fun Activity.openWith(file: File, forceChooser: Boolean = true) {
     }
 }
 
-fun Activity.openEditor(file: File) {
-    val uri = Uri.fromFile(file)
+fun Activity.openFileEditor(file: File) {
+    openEditor(Uri.fromFile(file))
+}
+
+fun Activity.openEditor(uri: Uri, forceChooser: Boolean = false) {
     Intent().apply {
         action = Intent.ACTION_EDIT
         setDataAndType(uri, "image/*")
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
         if (resolveActivity(packageManager) != null) {
-            startActivityForResult(this, REQUEST_EDIT_IMAGE)
+            val chooser = Intent.createChooser(this, getString(R.string.edit_image_with))
+            startActivityForResult(if (forceChooser) chooser else this, REQUEST_EDIT_IMAGE)
         } else {
             toast(R.string.no_editor_found)
         }
@@ -338,15 +342,15 @@ fun Activity.getCachedDirectories(): ArrayList<Directory> {
     return Gson().fromJson<ArrayList<Directory>>(config.directories, token) ?: ArrayList<Directory>(1)
 }
 
-fun Activity.loadImageForShortcut(shortcut: Directory, target: MySquareImageView) {
+fun Activity.loadImageForShortcut(shortcut: Directory, target: MySquareImageView, verticalScroll: Boolean) {
     if(shortcut.isThumbnailHidden) {
         loadImageFromResource(R.drawable.ic_folder_gallery3, target)
     } else {
         if(shortcut.coverImage != null) {
-            loadImage(shortcut.coverImage as String, target)
+            loadImage(shortcut.coverImage as String, target, verticalScroll)
         } else {
             if(shortcut.tmb != "") {
-                loadImage(shortcut.tmb, target)
+                loadImage(shortcut.tmb, target, verticalScroll)
             } else {
                 loadImageFromResource(R.drawable.ic_folder_gallery, target)
             }

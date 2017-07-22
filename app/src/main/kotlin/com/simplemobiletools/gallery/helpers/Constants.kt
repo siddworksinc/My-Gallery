@@ -19,6 +19,10 @@ val DIR_COLUMN_CNT = "dir_column_cnt"
 val DIR_LANDSCAPE_COLUMN_CNT = "dir_landscape_column_cnt"
 val MEDIA_COLUMN_CNT = "media_column_cnt"
 val MEDIA_LANDSCAPE_COLUMN_CNT = "media_landscape_column_cnt"
+val MEDIA_HORIZONTAL_COLUMN_CNT = "media_horizontal_column_cnt"
+val MEDIA_LANDSCAPE_HORIZONTAL_COLUMN_CNT = "media_landscape_horizontal_column_cnt"
+val DIR_HORIZONTAL_COLUMN_CNT = "dir_horizontal_column_cnt"
+val DIR_LANDSCAPE_HORIZONTAL_COLUMN_CNT = "dir_landscape_horizontal_column_cnt"
 val SHOW_ALL = "show_all"                           // display images and videos from all folders together
 val SHOW_MEDIA = "show_media"
 val SAVE_FOLDER_PREFIX = "folder2_"
@@ -34,6 +38,7 @@ val APP_LOCKED = "app_locked"
 val TUTORIAL_COMPLETED = "tutorial_completed"
 val PASS_PRO_ALBUMS_HIDDEN = "pass_pro_albums_hidden"
 val CUSTOM_NAMES = "custom_names"
+val SCROLL_HORIZONTALLY = "scroll_horizontally"
 
 val NOMEDIA = ".nomedia"
 
@@ -49,7 +54,7 @@ val SHOW_ALL_DIRECTORIES = "show_all_dirs"
 val TEMP_SHOW_VIDEOS = "temp_show_media"
 
 val REQUEST_EDIT_IMAGE = 1
-val REQUEST_SET_WALLPAPER = 2
+val REQUEST_SET_AS = 2
 
 // show media
 val IMAGES_AND_VIDEOS = 0

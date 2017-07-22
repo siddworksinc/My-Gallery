@@ -100,8 +100,17 @@ ask for permission at first slide
 Added dialog to explain permission on shortcut activity
 updated drawer header layout
 Bugfix: whatsnew is shown in first install
-
+v3 commit 2
 add video only switch
 dark status bar if dark mode is selected
 bug:opening hidden photos does not open it
 Added thumbnail navigation to photo view: Abhishek
+in video activity, rv blocks controls
+
+From simple-gallery github till -- Commits on Jun 19, 2017 -- 2e54fc02f39c70b20ce490e4f435b2621649abc1
+Store column count separately for portrait and landscape modes
+Improve zooming at double taping fullscreen images
+Allow opening a third party editor from our Editor screen
+Many crashfixes and smaller improvements
+Fixed a crash at starting video
+Added optional horizontal scrolling

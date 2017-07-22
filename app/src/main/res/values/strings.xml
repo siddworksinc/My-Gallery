@@ -20,10 +20,10 @@
     <string name="no_camera_app_found">No Camera app has been found</string>
     <string name="increase_column_count">Increase column count</string>
     <string name="reduce_column_count">Reduce column count</string>
-    <string name="temporarily_show_hidden">Temporarily show hidden</string>
     <string name="change_cover_image">Change cover image</string>
     <string name="select_photo">Select photo</string>
     <string name="use_default">Use default</string>
+    <string name="set_as">Set as</string>
 
     <!-- Hide / Exclude -->
     <string name="hide_folder_description">This function hides the folder by adding a \'.nomedia\' file into it. You can see them by toggling the \'Show hidden folders\' option in Settings. Continue?</string>
@@ -67,14 +67,14 @@
     <string name="flip">Flip</string>
     <string name="flip_horizontally">Flip horizontally</string>
     <string name="flip_vertically">Flip vertically</string>
-    <string name="out_of_memory_error">Out of memory error</string>
+    <string name="edit_with">Edit with</string>
 
     <!-- Set wallpaper -->
     <string name="simple_wallpaper">Simple Wallpaper</string>
     <string name="set_as_wallpaper">Set as Wallpaper</string>
     <string name="set_as_wallpaper_failed">Setting as Wallpaper failed</string>
     <string name="set_as_wallpaper_with">Set as wallpaper with:</string>
-    <string name="no_wallpaper_setter_found">No app capable of it has been found</string>
+    <string name="no_capable_app_found">No app capable of it has been found</string>
     <string name="setting_wallpaper">Setting wallpaper&#8230;</string>
     <string name="wallpaper_set_successfully">Wallpaper set successfully</string>
     <string name="portrait_aspect_ratio">Portrait aspect ratio</string>
@@ -136,6 +136,8 @@
     <string name="customizable">Customizable</string>
     <string name="customizable_desc">Blue? Red? Pink? Cozy? Compact? Tune it &amp; make it yours :)</string>
     <string name="videos">Videos</string>
+    <string name="crop_thumbnails_to_square_desc">Crop thumbnails to fit square grid while browsing media</string>
+    <string name="horizontal_and_vertical_scrolling">Switch Between Horizontal and Vertical Scrolling</string>
 
     <!--
         Haven't found some strings? There's more at

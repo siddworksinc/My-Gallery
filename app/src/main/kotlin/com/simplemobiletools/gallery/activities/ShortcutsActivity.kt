@@ -1,4 +1,4 @@
-package com.siddworks.android.mygallery
+package com.simplemobiletools.gallery.activities
 
 import android.Manifest
 import android.content.Intent
@@ -7,16 +7,14 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.Toolbar
 import android.text.Html
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.gson.Gson
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -26,15 +24,11 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.SectionDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
-import com.simplemobiletools.commons.extensions.baseConfig
-import com.simplemobiletools.commons.extensions.deleteFolders
-import com.simplemobiletools.commons.extensions.hasWriteStoragePermission
-import com.simplemobiletools.commons.extensions.toast
+import com.siddworks.android.mygallery.AboutActivity
+import com.simplemobiletools.commons.extensions.*
+import com.simplemobiletools.commons.views.MyScalableRecyclerView
 import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
-import com.simplemobiletools.gallery.activities.MediaActivity
-import com.simplemobiletools.gallery.activities.ShowAllMediaActivity
-import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.adapters.ShortcutsAdapter
 import com.simplemobiletools.gallery.asynctasks.GetDirectoriesAsynctask
 import com.simplemobiletools.gallery.dialogs.ChangeSortingDialog
@@ -42,12 +36,10 @@ import com.simplemobiletools.gallery.dialogs.PasswordDialog
 import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.helpers.*
 import com.simplemobiletools.gallery.models.Directory
-import com.simplemobiletools.gallery.views.MyScalableRecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_shortcuts.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import java.io.File
 import java.util.*
-
 
 class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListener {
 
@@ -60,6 +52,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     private var mLoadedInitialPhotos = false
     private var mStoredAnimateGifs = true
     private var mStoredCropThumbnails = true
+    private var mStoredScrollHorizontally = true
     private var mLastMediaModified = 0
     private var mLastMediaHandler = Handler()
 
@@ -83,17 +76,25 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         mDirs = ArrayList<Directory>()
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
+        mStoredScrollHorizontally = config.scrollHorizontally
     }
 
     override fun onResume() {
         super.onResume()
         if (mStoredAnimateGifs != config.animateGifs) {
-            mDirs.clear()
+            directories_grid.adapter.notifyDataSetChanged()
         }
 
         if (mStoredCropThumbnails != config.cropThumbnails) {
-            mDirs.clear()
+            directories_grid.adapter.notifyDataSetChanged()
         }
+
+        if (mStoredScrollHorizontally != config.scrollHorizontally) {
+            (directories_grid.adapter as ShortcutsAdapter).scrollVertically = !config.scrollHorizontally
+            directories_grid.adapter.notifyDataSetChanged()
+            setupScrollDirection()
+        }
+
         tryLoadGallery()
         invalidateOptionsMenu()
     }
@@ -106,7 +107,8 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         mIsGettingDirs = false
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
-        MyScalableRecyclerView.mListener = null
+        mStoredScrollHorizontally = config.scrollHorizontally
+        directories_grid.listener = null
         mLastMediaHandler.removeCallbacksAndMessages(null)
     }
 
@@ -118,7 +120,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     private fun tryLoadGallery() {
         if (hasWriteStoragePermission()) {
             getDirectories()
-            handleZooming()
+            setupLayoutManager()
             checkIfColorChanged()
         } else {
             MaterialDialog.Builder(this@ShortcutsActivity)
@@ -209,7 +211,8 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     private fun checkIfColorChanged() {
         if (directories_grid.adapter != null && getRecyclerAdapter().foregroundColor != config.primaryColor) {
             getRecyclerAdapter().updatePrimaryColor(config.primaryColor)
-            directories_fastscroller.updateHandleColor()
+            directories_vertical_fastscroller.updateHandleColor()
+            directories_horizontal_fastscroller.updateHandleColor()
             setupDrawer()
             updateBackgroundColor()
             updateActionbarColor()
@@ -218,10 +221,20 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
 
     private fun getRecyclerAdapter() = (directories_grid.adapter as ShortcutsAdapter)
 
-    private fun handleZooming() {
+    private fun setupLayoutManager() {
         val layoutManager = directories_grid.layoutManager as GridLayoutManager
+        if (config.scrollHorizontally) {
+            layoutManager.orientation = GridLayoutManager.HORIZONTAL
+            directories_refresh_layout.layoutParams = CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        } else {
+            layoutManager.orientation = GridLayoutManager.VERTICAL
+            directories_refresh_layout.layoutParams = CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+
+        directories_grid.isDragSelectionEnabled = true
+        directories_grid.isZoomingEnabled = true
         layoutManager.spanCount = config.dirColumnCnt
-        MyScalableRecyclerView.mListener = object : MyScalableRecyclerView.MyScalableRecyclerViewListener {
+        directories_grid.listener = object : MyScalableRecyclerView.MyScalableRecyclerViewListener {
             override fun zoomIn() {
                 if (layoutManager.spanCount > 1) {
                     reduceColumnCount()
@@ -269,22 +282,34 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     }
 
     private fun setupAdapter() {
-        // Reset Selections
-        if(directories_grid.adapter != null) {
+        var currAdapter = directories_grid.adapter
+        if (currAdapter != null) {
+            // Reset Selections
             val recyclerAdapter = getRecyclerAdapter()
             recyclerAdapter.actMode?.finish()
-        }
-        val adapter = ShortcutsAdapter(this, mDirs, this) {
-            itemClicked(it)
-        }
 
-        val currAdapter = directories_grid.adapter
-        if (currAdapter != null) {
             (currAdapter as ShortcutsAdapter).updateDirs(mDirs)
         } else {
-            directories_grid.adapter = adapter
+            currAdapter = ShortcutsAdapter(this, mDirs, this) {
+                itemClicked(it)
+            }
+            directories_grid.adapter = currAdapter
         }
-        directories_fastscroller.setViews(directories_grid, directories_refresh_layout)
+        setupScrollDirection()
+    }
+
+    private fun setupScrollDirection() {
+        directories_vertical_fastscroller.isHorizontal = false
+        directories_vertical_fastscroller.beGoneIf(config.scrollHorizontally)
+
+        directories_horizontal_fastscroller.isHorizontal = true
+        directories_horizontal_fastscroller.beVisibleIf(config.scrollHorizontally)
+
+        if (config.scrollHorizontally) {
+            directories_horizontal_fastscroller.setViews(directories_grid, directories_refresh_layout)
+        } else {
+            directories_vertical_fastscroller.setViews(directories_grid, directories_refresh_layout)
+        }
     }
 
     override fun refreshItems() {
@@ -369,11 +394,13 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     private fun increaseColumnCount() {
         config.dirColumnCnt = ++(directories_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
+        directories_grid.adapter.notifyDataSetChanged()
     }
 
     private fun reduceColumnCount() {
         config.dirColumnCnt = --(directories_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
+        directories_grid.adapter.notifyDataSetChanged()
     }
 
     private fun showSortingDialog() {
@@ -467,7 +494,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
                 .withScrollToTopAfterClick(true)
                 .withSelectedItem(defaultSelection)
                 .withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener {
-                    override fun onItemClick(view: View, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
+                    override fun onItemClick(view1: View, position: Int, drawerItem: IDrawerItem<*, *>): Boolean {
                         logEvent("Drawer" + idToMap.getValue(drawerItem.identifier.toInt()))
                         when (drawerItem.identifier) {
                             1L -> {
@@ -501,7 +528,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
                             }
                             8L -> {
                                     config.showMedia = VIDEOS
-                                    tryLoadGallery();
+                                    tryLoadGallery()
                             }
                         }
                         return false

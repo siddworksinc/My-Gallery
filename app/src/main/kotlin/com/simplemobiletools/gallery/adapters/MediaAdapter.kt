@@ -34,9 +34,9 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
     var actMode: ActionMode? = null
     var itemViews = SparseArray<View>()
     val selectedPositions = HashSet<Int>()
-    var foregroundColor = 0
+    var foregroundColor = config.primaryColor
     var displayFilenames = config.displayFileNames
-    var scrollVertically: Boolean = true
+    var scrollVertically = !config.scrollHorizontally
 
     fun toggleItemSelection(select: Boolean, pos: Int) {
         if (itemViews[pos] != null)
@@ -53,7 +53,6 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
         }
 
         updateTitle(selectedPositions.size)
-        actMode?.invalidate()
     }
 
     fun getProperView(itemView: View): View {
@@ -65,6 +64,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
 
     fun updateTitle(cnt: Int) {
         actMode?.title = "$cnt / ${media.size}"
+        actMode?.invalidate()
     }
 
     fun updatePrimaryColor(color: Int) {
@@ -90,10 +90,6 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
         }
 
         override fun getSelectedPositions(): HashSet<Int> = selectedPositions
-    }
-
-    init {
-        foregroundColor = config.primaryColor
     }
 
     val multiSelectorMode = object : ModalMultiSelectorCallback(multiSelector) {
@@ -177,7 +173,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
     }
 
     private fun editFile() {
-        activity.openEditor(getCurrentFile())
+        activity.openFileEditor(getCurrentFile())
         actMode?.finish()
     }
 
@@ -222,7 +218,6 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
             notifyItemChanged(i)
         }
         updateTitle(cnt)
-        actMode?.invalidate()
     }
 
     private fun askConfirmDelete() {
@@ -275,11 +270,11 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent?.context).inflate(R.layout.photo_video_item, parent, false)
-        return ViewHolder(view, adapterListener, itemClick)
+        return ViewHolder(view, adapterListener, activity, multiSelectorMode, multiSelector, listener, itemClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        itemViews.put(position, holder.bindView(activity, multiSelectorMode, multiSelector, media[position], listener, displayFilenames, scrollVertically))
+        itemViews.put(position, holder.bindView(media[position], displayFilenames, scrollVertically))
         toggleItemSelection(selectedPositions.contains(position), position)
         holder.itemView.tag = holder
     }
@@ -340,39 +335,41 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
         }
     }
 
-    class ViewHolder(val view: View, val adapter: MyAdapterListener, val itemClick: (Medium) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
-        fun bindView(activity: SimpleActivity, multiSelectorCallback: ModalMultiSelectorCallback, multiSelector: MultiSelector, medium: Medium,
-                     listener: MediaOperationsListener?, displayFilenames: Boolean, scrollVertically: Boolean): View {
+    class ViewHolder(val view: View, val adapterListener: MyAdapterListener, val activity: SimpleActivity,
+                     val multiSelectorCallback: ModalMultiSelectorCallback, val multiSelector: MultiSelector,
+                     val listener: MediaOperationsListener?, val itemClick: (Medium) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
+
+        fun bindView(medium: Medium, displayFilenames: Boolean, scrollVertically: Boolean): View {
             itemView.apply {
                 play_outline.visibility = if (medium.video) View.VISIBLE else View.GONE
                 photo_name.beVisibleIf(displayFilenames)
                 photo_name.text = medium.name
                 activity.loadImage(medium.path, medium_thumbnail, scrollVertically)
 
-                setOnClickListener { viewClicked(multiSelector, medium) }
-                setOnLongClickListener {
-                    if (listener != null) {
-                        if (!multiSelector.isSelectable) {
-                            activity.startSupportActionMode(multiSelectorCallback)
-                            adapter.toggleItemSelectionAdapter(true, layoutPosition)
-                        }
-
-                        listener.itemLongClicked(layoutPosition)
-                    }
-                    true
-                }
-
-                adapter.setupItemForeground(this)
+                setOnClickListener { viewClicked(medium) }
+                setOnLongClickListener { viewLongClicked(); true }
+                adapterListener.setupItemForeground(this)
             }
             return itemView
         }
 
-        fun viewClicked(multiSelector: MultiSelector, medium: Medium) {
+        fun viewClicked(medium: Medium) {
             if (multiSelector.isSelectable) {
-                val isSelected = adapter.getSelectedPositions().contains(layoutPosition)
-                adapter.toggleItemSelectionAdapter(!isSelected, layoutPosition)
+                val isSelected = adapterListener.getSelectedPositions().contains(layoutPosition)
+                adapterListener.toggleItemSelectionAdapter(!isSelected, layoutPosition)
             } else {
                 itemClick(medium)
+            }
+        }
+
+        fun viewLongClicked() {
+            if (listener != null) {
+                if (!multiSelector.isSelectable) {
+                    activity.startSupportActionMode(multiSelectorCallback)
+                    adapterListener.toggleItemSelectionAdapter(true, layoutPosition)
+                }
+
+                listener.itemLongClicked(layoutPosition)
             }
         }
 

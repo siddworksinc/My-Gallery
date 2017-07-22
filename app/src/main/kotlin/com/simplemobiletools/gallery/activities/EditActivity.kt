@@ -18,11 +18,11 @@ import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.dialogs.ResizeDialog
 import com.simplemobiletools.gallery.dialogs.SaveAsDialog
 import com.simplemobiletools.gallery.extensions.getRealPathFromURI
+import com.simplemobiletools.gallery.extensions.openEditor
 import com.simplemobiletools.gallery.helpers.logEvent
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.view_crop_image.*
 import java.io.*
-
 
 class EditActivity : SimpleActivity(), CropImageView.OnCropImageCompleteListener {
     val TAG = EditActivity::class.java.simpleName
@@ -34,6 +34,7 @@ class EditActivity : SimpleActivity(), CropImageView.OnCropImageCompleteListener
     var resizeWidth = 0
     var resizeHeight = 0
     var isCropIntent = false
+    var isEditingWithThirdParty = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +65,17 @@ class EditActivity : SimpleActivity(), CropImageView.OnCropImageCompleteListener
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        isEditingWithThirdParty = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isEditingWithThirdParty)
+        finish()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_editor, menu)
         menu.findItem(R.id.resize).isVisible = !isCropIntent
@@ -77,6 +89,7 @@ class EditActivity : SimpleActivity(), CropImageView.OnCropImageCompleteListener
             R.id.resize -> resizeImage()
             R.id.flip_horizontally -> flipImage(true)
             R.id.flip_vertically -> flipImage(false)
+            R.id.edit -> editWith()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
@@ -189,6 +202,11 @@ class EditActivity : SimpleActivity(), CropImageView.OnCropImageCompleteListener
             crop_image_view.flipImageHorizontally()
         else
             crop_image_view.flipImageVertically()
+    }
+
+    private fun editWith() {
+        openEditor(uri, true)
+        isEditingWithThirdParty = true
     }
 
     private fun scanFinalPath(path: String) {

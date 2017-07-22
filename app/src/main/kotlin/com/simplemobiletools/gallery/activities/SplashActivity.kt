@@ -3,7 +3,6 @@ package com.simplemobiletools.gallery.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.siddworks.android.mygallery.ShortcutsActivity
 import com.simplemobiletools.gallery.extensions.config
 
 class SplashActivity : SimpleActivity() {

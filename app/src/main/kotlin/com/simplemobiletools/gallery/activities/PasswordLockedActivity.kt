@@ -3,7 +3,6 @@ package com.simplemobiletools.gallery.activities
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
-import com.siddworks.android.mygallery.ShortcutsActivity
 import com.simplemobiletools.commons.extensions.baseConfig
 import com.simplemobiletools.commons.extensions.hideKeyboard
 import com.simplemobiletools.commons.extensions.toast

@@ -22,10 +22,7 @@ import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.util.DisplayMetrics
-import android.view.Menu
-import android.view.MenuItem
-import android.view.OrientationEventListener
-import android.view.View
+import android.view.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
@@ -115,9 +112,17 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         mDirectory = File(mPath).parent
         title = mPath.getFilenameFromPath()
 
-        if (mMedia.isNotEmpty()) {
-            gotMedia(mMedia)
-        }
+        view_pager.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view_pager.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed)
+                    return
+
+                if (mMedia.isNotEmpty()) {
+                        gotMedia(mMedia)
+                }
+            }
+        })
 
         reloadViewPager()
         scanPath(mPath) {}
@@ -193,7 +198,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             return true
 
         menu.apply {
-            findItem(R.id.menu_set_as_wallpaper).isVisible = getCurrentMedium()!!.isImage() == true
+            findItem(R.id.menu_set_as).isVisible = getCurrentMedium()!!.isImage() == true
             findItem(R.id.menu_edit).isVisible = getCurrentMedium()!!.isImage() == true
             findItem(R.id.menu_rotate).isVisible = getCurrentMedium()!!.isImage() == true
             findItem(R.id.menu_save_as).isVisible = mRotationDegrees != 0f
@@ -216,7 +221,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             return true
 
         when (item.itemId) {
-            R.id.menu_set_as_wallpaper -> trySetAsWallpaper(getCurrentFile())
+            R.id.menu_set_as -> trySetAs(getCurrentFile())
             R.id.menu_copy_to -> copyMoveTo(true)
             R.id.menu_move_to -> copyMoveTo(false)
             R.id.menu_open_with -> openWith(getCurrentFile())
@@ -225,7 +230,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             R.id.menu_share -> shareMedium(getCurrentMedium()!!)
             R.id.menu_delete -> askConfirmDelete()
             R.id.menu_rename -> renameFile()
-            R.id.menu_edit -> openEditor(getCurrentFile())
+            R.id.menu_edit -> openFileEditor(getCurrentFile())
             R.id.menu_properties -> showProperties()
             R.id.menu_save_as -> saveImageAs()
             R.id.show_on_map -> showOnMap()
@@ -395,7 +400,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
                 mPos = -1
                 reloadViewPager()
             }
-        } else if (requestCode == REQUEST_SET_WALLPAPER) {
+        } else if (requestCode == REQUEST_SET_AS) {
             if (resultCode == Activity.RESULT_OK) {
                 toast(R.string.wallpaper_set_successfully)
             }

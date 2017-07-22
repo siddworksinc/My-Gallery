@@ -10,16 +10,15 @@
         android:id="@+id/directories_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/activity_margin"
+        android:layout_marginTop="@dimen/activity_margin"
         app:layoutManager="android.support.v7.widget.GridLayoutManager"
-        app:spanCount="@integer/directory_columns"/>
+        app:spanCount="@integer/directory_columns_vertical_scroll"/>
 
     <com.simplemobiletools.commons.views.MyTextView
         android:visibility="gone"
         android:id="@+id/directory_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:padding="@dimen/big_margin"
         android:gravity="center"/>
 

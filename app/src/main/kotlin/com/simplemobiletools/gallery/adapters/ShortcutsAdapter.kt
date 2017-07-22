@@ -12,7 +12,6 @@ import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback
 import com.bignerdranch.android.multiselector.MultiSelector
 import com.bignerdranch.android.multiselector.SwappingHolder
 import com.bumptech.glide.Glide
-import com.siddworks.android.mygallery.ShortcutsActivity
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
 import com.simplemobiletools.commons.dialogs.PropertiesDialog
 import com.simplemobiletools.commons.extensions.isImageVideoGif
@@ -20,6 +19,7 @@ import com.simplemobiletools.commons.extensions.needsStupidWritePermissions
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.commons.views.MyTextView
 import com.simplemobiletools.gallery.R
+import com.simplemobiletools.gallery.activities.ShortcutsActivity
 import com.simplemobiletools.gallery.activities.SimpleActivity
 import com.simplemobiletools.gallery.dialogs.EditShortcutDialog
 import com.simplemobiletools.gallery.dialogs.MyPropertiesDialog
@@ -42,8 +42,9 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
     var actMode: ActionMode? = null
     var itemViews = SparseArray<View>()
     val selectedPositions = HashSet<Int>()
-    var foregroundColor = 0
+    var foregroundColor = config.primaryColor
     var pinnedFolders = config.pinnedFolders
+    var scrollVertically = !config.scrollHorizontally
 
     fun toggleItemSelection(select: Boolean, pos: Int) {
         if (itemViews[pos] != null)
@@ -60,7 +61,6 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
         }
 
         updateTitle(selectedPositions.size)
-        actMode?.invalidate()
     }
 
     fun getProperView(itemView: View): View {
@@ -72,6 +72,7 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
 
     fun updateTitle(cnt: Int) {
         actMode?.title = "$cnt / ${dirs.size}"
+        actMode?.invalidate()
     }
 
     fun updatePrimaryColor(color: Int) {
@@ -97,10 +98,6 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
         }
 
         override fun getSelectedPositions(): HashSet<Int> = selectedPositions
-    }
-
-    init {
-        foregroundColor = config.primaryColor
     }
 
     val multiSelectorMode = object : ModalMultiSelectorCallback(multiSelector) {
@@ -299,7 +296,6 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
             notifyItemChanged(i)
         }
         updateTitle(cnt)
-        actMode?.invalidate()
     }
 
     private fun askConfirmDelete() {
@@ -357,12 +353,12 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent?.context).inflate(R.layout.directory_item_centered, parent, false)
-        return ViewHolder(view, adapterListener, itemClick)
+        return ViewHolder(view, adapterListener, activity, multiSelectorMode, multiSelector, listener, itemClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val dir = dirs[position]
-        itemViews.put(position, holder.bindView(activity, multiSelectorMode, multiSelector, dir, pinnedFolders.contains(dir.path), listener))
+        itemViews.put(position, holder.bindView(dir, pinnedFolders.contains(dir.path), scrollVertically))
         toggleItemSelection(selectedPositions.contains(position), position)
         holder.itemView.tag = holder
     }
@@ -413,41 +409,44 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
         }
     }
 
-    class ViewHolder(val view: View, val adapter: MyAdapterListener,
-                     val itemClick: (Directory) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
+    class ViewHolder(val view: View, val adapterListener: MyAdapterListener,
+                     val activity: SimpleActivity, val multiSelectorCallback: ModalMultiSelectorCallback,
+                     val multiSelector: MultiSelector, val listener: DirOperationsListener?,
+                     val itemClick: (Directory) -> (Unit)) :
 
-        fun bindView(activity: SimpleActivity, multiSelectorCallback: ModalMultiSelectorCallback, multiSelector: MultiSelector,
-                     shortcut: Directory,
-                     isPinned: Boolean, listener: DirOperationsListener?): View {
+            SwappingHolder(view, MultiSelector()) {
+
+        fun bindView(shortcut: Directory, isPinned: Boolean, scrollVertically: Boolean): View {
             itemView.apply {
                 dir_name.text = shortcut.name + " (" + shortcut.mediaCnt + ")"
                 dir_pin.visibility = if (isPinned) View.VISIBLE else View.GONE
-                activity.loadImageForShortcut(shortcut, dir_thumbnail)
+                activity.loadImageForShortcut(shortcut, dir_thumbnail, scrollVertically)
 
-                setOnClickListener { viewClicked(multiSelector, shortcut) }
-                setOnLongClickListener {
-                    if (listener != null) {
-                        if (!multiSelector.isSelectable) {
-                            activity.startSupportActionMode(multiSelectorCallback)
-                            adapter.toggleItemSelectionAdapter(true, layoutPosition)
-                        }
+                setOnClickListener { viewClicked(shortcut) }
+                setOnLongClickListener { viewLongClicked(); true }
 
-                        listener.itemLongClicked(layoutPosition)
-                    }
-                    true
-                }
-
-                adapter.setupItemForeground(this)
+                adapterListener.setupItemForeground(this)
             }
             return itemView
         }
 
-        fun viewClicked(multiSelector: MultiSelector, directory: Directory) {
+        fun viewClicked(directory: Directory) {
             if (multiSelector.isSelectable) {
-                val isSelected = adapter.getSelectedPositions().contains(layoutPosition)
-                adapter.toggleItemSelectionAdapter(!isSelected, layoutPosition)
+                val isSelected = adapterListener.getSelectedPositions().contains(layoutPosition)
+                adapterListener.toggleItemSelectionAdapter(!isSelected, layoutPosition)
             } else {
                 itemClick(directory)
+            }
+        }
+
+        fun viewLongClicked() {
+            if (listener != null) {
+                if (!multiSelector.isSelectable) {
+                    activity.startSupportActionMode(multiSelectorCallback)
+                    adapterListener.toggleItemSelectionAdapter(true, layoutPosition)
+                }
+
+                listener.itemLongClicked(layoutPosition)
             }
         }
 

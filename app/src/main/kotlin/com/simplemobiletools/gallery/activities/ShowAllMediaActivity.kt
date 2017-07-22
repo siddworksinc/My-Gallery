@@ -15,6 +15,8 @@ import android.text.Html
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
@@ -22,6 +24,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
 import com.simplemobiletools.commons.extensions.*
+import com.simplemobiletools.commons.views.MyScalableRecyclerView
 import com.simplemobiletools.commons.views.MyTextView
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.adapters.MediaAdapter
@@ -31,7 +34,6 @@ import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.helpers.*
 import com.simplemobiletools.gallery.models.Directory
 import com.simplemobiletools.gallery.models.Medium
-import com.simplemobiletools.gallery.views.MyScalableRecyclerView
 import kotlinx.android.synthetic.main.activity_media.*
 import java.io.File
 import java.io.IOException
@@ -53,6 +55,7 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
     private var mLastDrawnHashCode = 0
     private var mLastMediaModified = 0
     private var mLastMediaHandler = Handler()
+    private var mStoredScrollHorizontally = true
 
     companion object {
         var mMedia = ArrayList<Medium>()
@@ -72,6 +75,7 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
         mPath = intent.getStringExtra(DIRECTORY)
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
+        mStoredScrollHorizontally = config.scrollHorizontally
         mShowAll = true
         config.showAll = true
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -80,12 +84,18 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
     override fun onResume() {
         super.onResume()
         if (mShowAll && mStoredAnimateGifs != config.animateGifs) {
-            mMedia.clear()
+            media_grid.adapter.notifyDataSetChanged()
         }
 
         if (mStoredCropThumbnails != config.cropThumbnails) {
-            mMedia.clear()
+            media_grid.adapter.notifyDataSetChanged()
         }
+        if (mStoredScrollHorizontally != config.scrollHorizontally) {
+            (media_grid.adapter as MediaAdapter).scrollVertically = !config.scrollHorizontally
+            media_grid.adapter.notifyDataSetChanged()
+            setupScrollDirection()
+        }
+
         tryloadGallery()
         invalidateOptionsMenu()
     }
@@ -96,8 +106,9 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
         media_refresh_layout.isRefreshing = false
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
-        MyScalableRecyclerView.mListener = null
+        media_grid.listener = null
         mLastMediaHandler.removeCallbacksAndMessages(null)
+        mStoredScrollHorizontally = config.scrollHorizontally
     }
 
     override fun onDestroy() {
@@ -111,7 +122,7 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
             val dirName = getHumanizedFilename(mPath)
             title = if (mShowAll) resources.getString(R.string.all_folders) else dirName
             getMedia()
-            handleZooming()
+            setupLayoutManager()
             checkIfColorChanged()
         } else {
             finish()
@@ -121,7 +132,8 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
     private fun checkIfColorChanged() {
         if (media_grid.adapter != null && getRecyclerAdapter().foregroundColor != config.primaryColor) {
             getRecyclerAdapter().updatePrimaryColor(config.primaryColor)
-            media_fastscroller.updateHandleColor()
+            media_horizontal_fastscroller.updateHandleColor()
+            media_vertical_fastscroller.updateHandleColor()
         }
     }
 
@@ -129,17 +141,29 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
         if (isDirEmpty())
             return
 
-        val adapter = MediaAdapter(this, mMedia, this) {
-            itemClicked(it.path)
-        }
-
         val currAdapter = media_grid.adapter
         if (currAdapter != null) {
             (currAdapter as MediaAdapter).updateMedia(mMedia)
         } else {
-            media_grid.adapter = adapter
+            media_grid.adapter = MediaAdapter(this, mMedia, this) {
+                itemClicked(it.path)
+            }
         }
-        media_fastscroller.setViews(media_grid, media_refresh_layout)
+        setupScrollDirection()
+    }
+
+    private fun setupScrollDirection() {
+        media_vertical_fastscroller.isHorizontal = false
+        media_vertical_fastscroller.beGoneIf(config.scrollHorizontally)
+
+        media_horizontal_fastscroller.isHorizontal = true
+        media_horizontal_fastscroller.beVisibleIf(config.scrollHorizontally)
+
+        if (config.scrollHorizontally) {
+            media_horizontal_fastscroller.setViews(media_grid, media_refresh_layout)
+        } else {
+            media_vertical_fastscroller.setViews(media_grid, media_refresh_layout)
+        }
     }
 
     private fun checkLastMediaChanged() {
@@ -314,10 +338,21 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
 
     private fun getRecyclerAdapter() = (media_grid.adapter as MediaAdapter)
 
-    private fun handleZooming() {
+    private fun setupLayoutManager() {
         val layoutManager = media_grid.layoutManager as GridLayoutManager
+        if (config.scrollHorizontally) {
+            layoutManager.orientation = GridLayoutManager.HORIZONTAL
+            media_refresh_layout.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        } else {
+            layoutManager.orientation = GridLayoutManager.VERTICAL
+            media_refresh_layout.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+
+        media_grid.isDragSelectionEnabled = true
+        media_grid.isZoomingEnabled = true
+
         layoutManager.spanCount = config.mediaColumnCnt
-        MyScalableRecyclerView.mListener = object : MyScalableRecyclerView.MyScalableRecyclerViewListener {
+        media_grid.listener = object : MyScalableRecyclerView.MyScalableRecyclerViewListener {
             override fun zoomIn() {
                 if (layoutManager.spanCount > 1) {
                     reduceColumnCount()
@@ -345,11 +380,13 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
     private fun increaseColumnCount() {
         config.mediaColumnCnt = ++(media_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
+        media_grid.adapter.notifyDataSetChanged()
     }
 
     private fun reduceColumnCount() {
         config.mediaColumnCnt = --(media_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
+        media_grid.adapter.notifyDataSetChanged()
     }
 
     private fun isSetWallpaperIntent() = intent.getBooleanExtra(SET_WALLPAPER_INTENT, false)

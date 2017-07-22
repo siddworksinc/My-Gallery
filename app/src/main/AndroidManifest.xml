@@ -165,7 +165,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.siddworks.android.mygallery.ShortcutsActivity"
+            android:name=".activities.ShortcutsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

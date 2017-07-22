@@ -46,6 +46,7 @@ class SettingsNewActivity : SimpleActivity() {
         setupMaxBrightness()
         setupCropThumbnails()
         setupDarkBackground()
+        setupScrollHorizontally()
         setupScreenRotation()
         setupShowMedia()
         setupMasterPass()
@@ -311,6 +312,17 @@ class SettingsNewActivity : SimpleActivity() {
                 config.screenRotation = it as Int
                 screen_rotation_value.text = getScreenRotationText()
             }
+        }
+    }
+
+    private fun setupScrollHorizontally() {
+        scroll_horizontally_image.setColorFilter(accentColor)
+        scroll_horizontally_image.setImageResource(R.drawable.settings_scroll_horizontally)
+
+        scroll_horizontally.isChecked = config.scrollHorizontally
+            scroll_horizontally_root.setOnClickListener {
+            scroll_horizontally.toggle()
+            config.scrollHorizontally = scroll_horizontally.isChecked
         }
     }
 
