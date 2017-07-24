@@ -101,6 +101,11 @@ open class PhotoVideoActivity : SimpleActivity(), ViewPagerFragment.FragmentList
         } finally {
             cursor?.close()
         }
+
+        window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
+            val isFullscreen = visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
+            mFragment.fullscreenToggled(isFullscreen)
+        }
     }
 
     override fun onDestroy() {
@@ -164,15 +169,6 @@ open class PhotoVideoActivity : SimpleActivity(), ViewPagerFragment.FragmentList
             hideSystemUI()
         } else {
             showSystemUI()
-        }
-    }
-
-    override fun systemUiVisibilityChanged(visibility: Int) {
-        if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-            mIsFullScreen = false
-            showSystemUI()
-        } else {
-            mIsFullScreen = true
         }
     }
 }

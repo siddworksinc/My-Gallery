@@ -19,10 +19,9 @@
     <string name="no_camera_app_found">Keine Kamera-App gefunden</string>
     <string name="increase_column_count">Kacheln verkleinern</string>
     <string name="reduce_column_count">Kacheln vergrößern</string>
-    <string name="temporarily_show_hidden">Verstecktes temporär zeigen</string>
-    <string name="change_cover_image">Change cover image</string>
-    <string name="select_photo">Bild auswählen</string>
-    <string name="use_default">Standard verwenden</string>
+    <string name="change_cover_image">Cover-Bild ändern</string>
+    <string name="select_photo">Auswählen</string>
+    <string name="use_default">Standard</string>
     <string name="set_as">Festlegen als</string>
 
     <!-- Hide / Exclude -->
@@ -57,7 +56,7 @@
     <string name="path">Pfad</string>
     <string name="invalid_image_path">Ungültiger Dateipfad</string>
     <string name="image_editing_failed">Bildbearbeitung fehlgeschlagen</string>
-    <string name="edit_image_with">Bild bearbeiten mit:</string>
+    <string name="edit_image_with">Bild bearbeiten mit</string>
     <string name="no_editor_found">Keine Bildeditor-App gefunden</string>
     <string name="unknown_file_location">Unbekannter Dateiort</string>
     <string name="error_saving_file">Konnte Quelldatei nicht überschreiben</string>
@@ -67,13 +66,13 @@
     <string name="flip">Spiegeln</string>
     <string name="flip_horizontally">Horizontal spiegeln</string>
     <string name="flip_vertically">Vertikal spiegeln</string>
-    <string name="out_of_memory_error">Fehler: Zuwenig Speicher</string>
+    <string name="edit_with">Bearbeiten mit</string>
 
     <!-- Set wallpaper -->
     <string name="simple_wallpaper">Schlichter Hintergrund</string>
     <string name="set_as_wallpaper">Als Hintergrund festlegen</string>
     <string name="set_as_wallpaper_failed">Hintergrundbild festlegen fehlgeschlagen</string>
-    <string name="set_as_wallpaper_with">Als Hintergrund festlegen mit:</string>
+    <string name="set_as_wallpaper_with">Als Hintergrund festlegen mit</string>
     <string name="no_capable_app_found">Keine Hintergrundbild-App gefunden</string>
     <string name="setting_wallpaper">Hintergrund festlegen&#8230;</string>
     <string name="wallpaper_set_successfully">Hintergrundbild erfolgreich festgelegt</string>
@@ -86,7 +85,7 @@
     <string name="toggle_filename">Beschriftungen ein/aus</string>
     <string name="show_media">Medien auswählen</string>
     <string name="images">Nur Bilder</string>
-    <string name="videos_only">Nur Videos</string>
+    <string name="videos">Nur Videos</string>
     <string name="gifs">Nur GIFs</string>
     <string name="images_videos_gifs">Bilder, Videos und GIFs</string>
     <string name="images_and_videos">Bilder und Videos</string>
@@ -100,6 +99,8 @@
     <string name="screen_rotation_aspect_ratio">Seitenverhältnis</string>
     <string name="dark_background_at_fullscreen">Schwarzer Hintergrund im Vollbild</string>
     <string name="scroll_thumbnails_horizontally">Kacheln horizontal scrollen</string>
+    <string name="hide_system_ui_at_fullscreen">Systemleisten ausblenden im Vollbild</string>
+    <string name="replace_share_with_rotate">Teilen/Drehen im Vollbild-Menü vertauschen</string>
 
     <!-- Strings displayed only on Google Playstore. Optional, but good to have -->
     <!-- Short description has to have less than 80 chars -->

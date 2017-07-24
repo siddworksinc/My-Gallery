@@ -7,15 +7,20 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -33,7 +38,6 @@ import com.simplemobiletools.gallery.helpers.MEDIUM
 import com.simplemobiletools.gallery.models.Medium
 import it.sephiroth.android.library.exif2.ExifInterface
 import kotlinx.android.synthetic.main.pager_photo_item.view.*
-import uk.co.senab.photoview.PhotoViewAttacher
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -43,7 +47,6 @@ class PhotoFragment : ViewPagerFragment() {
     lateinit var view: ViewGroup
     private var isFragmentVisible = false
     private var wasInit = false
-    private var RATIO_THRESHOLD = 0.1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         view = inflater.inflate(R.layout.pager_photo_item, container, false) as ViewGroup
@@ -89,21 +92,15 @@ class PhotoFragment : ViewPagerFragment() {
         view.photo_view.apply {
             maximumScale = 8f
             mediumScale = 3f
-            setOnPhotoTapListener(object : PhotoViewAttacher.OnPhotoTapListener {
-                override fun onPhotoTap(view: View?, x: Float, y: Float) {
-                    photoClicked()
-                }
-
-                override fun onOutsidePhotoTap() {
-                    photoClicked()
-                }
-            })
+            setOnOutsidePhotoTapListener {
+                photoClicked()
+            }
+            setOnPhotoTapListener { view, x, y ->
+                photoClicked()
+            }
         }
         loadImage()
 
-        activity.window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
-            listener?.systemUiVisibilityChanged(visibility)
-        }
         wasInit = true
 
         return view
@@ -147,12 +144,15 @@ class PhotoFragment : ViewPagerFragment() {
 
     private fun loadImage() {
         if (medium.isGif()) {
+            val options = RequestOptions()
+                .priority(if (isFragmentVisible) Priority.IMMEDIATE else Priority.LOW)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+
             Glide.with(this)
-                    .load(medium.path)
                     .asGif()
-                    .crossFade()
-                    .priority(if (isFragmentVisible) Priority.IMMEDIATE else Priority.LOW)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .load(medium.path)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .apply(options)
                     .into(view.photo_view)
         } else {
             loadBitmap()
@@ -164,33 +164,38 @@ class PhotoFragment : ViewPagerFragment() {
             val targetWidth = if (ViewPagerActivity.screenWidth == 0) Target.SIZE_ORIGINAL else ViewPagerActivity.screenWidth
             val targetHeight = if (ViewPagerActivity.screenHeight == 0) Target.SIZE_ORIGINAL else ViewPagerActivity.screenHeight
 
-            Glide.with(this)
-                    .load(medium.path)
-                    .asBitmap()
-                    .signature(activity.getFileSignature(medium.path))
-                    .format(if (medium.isPng()) DecodeFormat.PREFER_ARGB_8888 else DecodeFormat.PREFER_RGB_565)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .override(targetWidth, targetHeight)
-                    .listener(object : RequestListener<String, Bitmap> {
-                        override fun onException(e: Exception?, model: String?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
+            val options = RequestOptions()
+                .signature(medium.path.getFileSignature())
+                .format(DecodeFormat.PREFER_ARGB_8888)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .override(targetWidth, targetHeight)
 
-                        override fun onResourceReady(resource: Bitmap, model: String?, target: Target<Bitmap>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
-                            if (isFragmentVisible)
-                                addZoomableView()
-                            return false
+            Glide.with(this)
+                .asBitmap()
+                .load(medium.path)
+                .apply(options)
+                .listener(object : RequestListener<Bitmap> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {                                if (isFragmentVisible)
+                        addZoomableView()
+                        return false
                         }
                     }).into(view.photo_view)
-        } else {
-            Glide.with(this)
-                    .load(medium.path)
-                    .asBitmap()
-                    .transform(GlideRotateTransformation(context, degrees))
-                    .thumbnail(0.2f)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(view.photo_view)
-        }
+            } else {
+            val options = RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .transform(GlideRotateTransformation(context, degrees))
+
+                Glide.with(this)
+                        .asBitmap()
+                        .load(medium.path)
+                        .thumbnail(0.2f)
+                        .apply(options)
+                        .into(view.photo_view)
+            }
     }
 
     private fun addZoomableView() {
@@ -249,14 +254,21 @@ class PhotoFragment : ViewPagerFragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Glide.clear(view.photo_view)
+    fun refreshBitmap() {
+        view.subsampling_view.beGone()
+        loadBitmap()
     }
 
     fun rotateImageViewBy(degrees: Float) {
         view.subsampling_view.beGone()
         loadBitmap(degrees)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && !activity.isDestroyed) {
+            Glide.with(context).clear(view.photo_view)
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -266,5 +278,9 @@ class PhotoFragment : ViewPagerFragment() {
 
     private fun photoClicked() {
         listener?.fragmentClicked()
+    }
+
+    override fun fullscreenToggled(isFullscreen: Boolean) {
+
     }
 }

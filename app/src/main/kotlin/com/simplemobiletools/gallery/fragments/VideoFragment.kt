@@ -61,12 +61,7 @@ class VideoFragment : ViewPagerFragment(), SurfaceHolder.Callback, SeekBar.OnSee
 
         mIsFullscreen = activity.window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN == View.SYSTEM_UI_FLAG_FULLSCREEN
 
-        activity.window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
-            val fullscreen = visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
-            mIsFullscreen = fullscreen
-            checkFullscreen()
-            listener?.systemUiVisibilityChanged(visibility)
-        }
+        checkFullscreen()
 
         return mView
     }
@@ -112,8 +107,6 @@ class VideoFragment : ViewPagerFragment(), SurfaceHolder.Callback, SeekBar.OnSee
     }
 
     private fun toggleFullscreen() {
-        mIsFullscreen = !mIsFullscreen
-        checkFullscreen()
         listener?.fragmentClicked()
     }
 
@@ -365,9 +358,14 @@ class VideoFragment : ViewPagerFragment(), SurfaceHolder.Callback, SeekBar.OnSee
         if (!mIsPlaying) {
             togglePlayPause()
         } else {
-            mMediaPlayer!!.start()
+            mMediaPlayer?.start()
         }
 
         mIsDragged = false
+    }
+
+    override fun fullscreenToggled(isFullscreen: Boolean) {
+        mIsFullscreen = isFullscreen
+        checkFullscreen()
     }
 }

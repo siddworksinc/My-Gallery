@@ -19,7 +19,6 @@
     <string name="no_camera_app_found">Brak aplikacji powiązanej z aparatem</string>
     <string name="increase_column_count">Zwiększ liczbę kolumn</string>
     <string name="reduce_column_count">Zmniejsz liczbę kolumn</string>
-    <string name="temporarily_show_hidden">Temporarily show hidden</string>
     <string name="change_cover_image">Change cover image</string>
     <string name="select_photo">Select photo</string>
     <string name="use_default">Use default</string>
@@ -67,7 +66,7 @@
     <string name="flip">Flip</string>
     <string name="flip_horizontally">Flip poziomo</string>
     <string name="flip_vertically">Flip pionowo</string>
-    <string name="out_of_memory_error">Błąd pamięci</string>
+    <string name="edit_with">Edit with</string>
 
     <!-- Set wallpaper -->
     <string name="simple_wallpaper">Tapeta</string>
@@ -86,7 +85,7 @@
     <string name="toggle_filename">Włącz widoczność nazwy pliku</string>
     <string name="show_media">Wybierz co pokazywać</string>
     <string name="images">Tylko Zdjęcia</string>
-    <string name="videos_only">Tylko Filmy</string>
+    <string name="videos">Tylko Filmy</string>
     <string name="gifs">GIFs only</string>
     <string name="images_videos_gifs">Images, videos, GIFs</string>
     <string name="images_and_videos">Obrazy i wideo</string>
@@ -100,6 +99,8 @@
     <string name="screen_rotation_aspect_ratio">Aspect ratio</string>
     <string name="dark_background_at_fullscreen">Dark background at fullscreen media</string>
     <string name="scroll_thumbnails_horizontally">Scroll thumbnails horizontally</string>
+    <string name="hide_system_ui_at_fullscreen">Automatically hide system UI at fullscreen media</string>
+    <string name="replace_share_with_rotate">Replace Share with Rotate at fullscreen menu</string>
 
     <!-- Strings displayed only on Google Playstore. Optional, but good to have -->
     <!-- Short description has to have less than 80 chars -->

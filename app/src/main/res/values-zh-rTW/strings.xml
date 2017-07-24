@@ -19,7 +19,6 @@
     <string name="no_camera_app_found">No Camera app has been found</string>
     <string name="increase_column_count">Increase column count</string>
     <string name="reduce_column_count">Reduce column count</string>
-    <string name="temporarily_show_hidden">Temporarily show hidden</string>
     <string name="change_cover_image">Change cover image</string>
     <string name="select_photo">Select photo</string>
     <string name="use_default">Use default</string>
@@ -67,7 +66,7 @@
     <string name="flip">Flip</string>
     <string name="flip_horizontally">Flip horizontally</string>
     <string name="flip_vertically">Flip vertically</string>
-    <string name="out_of_memory_error">Out of memory error</string>
+    <string name="edit_with">Edit with</string>
 
     <!-- Set wallpaper -->
     <string name="simple_wallpaper">簡易桌布</string>
@@ -86,7 +85,7 @@
     <string name="toggle_filename">顯示檔案名稱</string>
     <string name="show_media">秀出多媒體檔案</string>
     <string name="images">僅圖片</string>
-    <string name="videos_only">僅影片</string>
+    <string name="videos">僅影片</string>
     <string name="gifs">GIFs only</string>
     <string name="images_videos_gifs">Images, videos, GIFs</string>
     <string name="images_and_videos">圖片和影片</string>
@@ -100,6 +99,8 @@
     <string name="screen_rotation_aspect_ratio">Aspect ratio</string>
     <string name="dark_background_at_fullscreen">Dark background at fullscreen media</string>
     <string name="scroll_thumbnails_horizontally">Scroll thumbnails horizontally</string>
+    <string name="hide_system_ui_at_fullscreen">Automatically hide system UI at fullscreen media</string>
+    <string name="replace_share_with_rotate">Replace Share with Rotate at fullscreen menu</string>
 
     <!-- Strings displayed only on Google Playstore. Optional, but good to have -->
     <!-- Short description has to have less than 80 chars -->

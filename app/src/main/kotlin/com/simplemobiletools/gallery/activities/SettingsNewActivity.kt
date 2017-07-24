@@ -49,6 +49,7 @@ class SettingsNewActivity : SimpleActivity() {
         setupScrollHorizontally()
         setupScreenRotation()
         setupShowMedia()
+        setupHideSystemUI()
         setupMasterPass()
         setupPrivacyAndSecurity()
         updateTextColors(main_content)
@@ -125,6 +126,17 @@ class SettingsNewActivity : SimpleActivity() {
                     password_warning.text = "Incorrect Password"
                 }
             }
+        }
+    }
+
+    private fun setupHideSystemUI() {
+        hide_ui_image.setColorFilter(accentColor)
+        hide_ui_image.setImageResource(R.drawable.settings_fullscreen)
+
+        hide_ui.isChecked = config.hideSystemUI
+        hide_ui_root.setOnClickListener {
+            hide_ui.toggle()
+            config.hideSystemUI = hide_ui.isChecked
         }
     }
 

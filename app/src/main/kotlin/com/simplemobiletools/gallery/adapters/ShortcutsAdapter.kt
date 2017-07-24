@@ -451,7 +451,8 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
         }
 
         fun stopLoad() {
-            Glide.clear(view.dir_thumbnail)
+            if (!activity.isDestroyed)
+                Glide.with(activity).clear(view.dir_thumbnail)
         }
     }
 

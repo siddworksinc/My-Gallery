@@ -1,9 +1,4 @@
 This release
-    add checkmark watermark when item is selected
-    remove swipe refresh from main and album activity
-    open image from media activity, now scroll fast left or right. after some images, it is blank and takes time to load
-    play gif is not working
-    add way to access tutorial and all changelogs
     tutorial
         features
             light weight apk size
@@ -14,6 +9,15 @@ This release
             like give rating, don't like, give feedback. Want to build it community driven app. can vote on upcoming features
 
 Next release
+    play gif is not working
+    set as wallpaper by opening from intent is broken
+    Copy move does not refresh subtitle count
+    After move select all and select album, it goes to main screen where count is wrong.. Need to refresh also after copy move is completed
+    Add recent photos like quick pick
+    Select inverse like solid explorer
+    add way to access tutorial and all changelogs
+    remove swipe refresh from main and album activity
+    add checkmark watermark when item is selected
     Settings, About activity should be themed as per theme selected
     Gallery in bottom of photo view mode: abhishek
 
@@ -28,6 +32,7 @@ Change color for actionmodetoolbar to current accent color
 .statuses shows only 7 entries while it has 10 pics
 set as cover image for this album on media selection menu
 Setting > Use alternate media provider like leafpic gallery
+open image from media activity, now scroll fast left or right. after some images, it is blank and takes time to load
 
 custom album arrangement
 
@@ -74,3 +79,18 @@ round icon
 https://github.com/SimpleMobileTools/Simple-Gallery/commit/7bad8bc54f966227269d849b72458154d2c71414
 horizontal scroll to album picker
 https://github.com/SimpleMobileTools/Simple-Gallery/commit/f2b1ef2c3b041f49fc2c9b9f7463503730289b5f
+show sd card icon if album on sd card
+https://github.com/SimpleMobileTools/Simple-Gallery/commit/3ec99cd43b4a0fd13a53c38b0e3417c7920c1282
+replace_share_with_rotate
+https://github.com/SimpleMobileTools/Simple-Gallery/commit/9ea9c772945687decc35b68ecc3086fd49dff686
+
+Pull request:
+PickDirectoryDialog
+store dirs in cache after fetch
+subtitles for activities
+
+
+
+Performance impacting things
+horizontal scroll
+check status bar for if selected > black in on resume

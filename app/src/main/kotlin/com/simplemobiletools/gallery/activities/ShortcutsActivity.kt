@@ -7,6 +7,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -82,21 +83,28 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     override fun onResume() {
         super.onResume()
         if (mStoredAnimateGifs != config.animateGifs) {
-            directories_grid.adapter.notifyDataSetChanged()
+            directories_grid.adapter?.notifyDataSetChanged()
         }
 
         if (mStoredCropThumbnails != config.cropThumbnails) {
-            directories_grid.adapter.notifyDataSetChanged()
+            directories_grid.adapter?.notifyDataSetChanged()
         }
 
         if (mStoredScrollHorizontally != config.scrollHorizontally) {
-            (directories_grid.adapter as ShortcutsAdapter).scrollVertically = !config.scrollHorizontally
-            directories_grid.adapter.notifyDataSetChanged()
+            directories_grid.adapter?.let {
+                (it as ShortcutsAdapter).scrollVertically = !config.scrollHorizontally
+                it.notifyDataSetChanged()
+            }
             setupScrollDirection()
         }
 
         tryLoadGallery()
         invalidateOptionsMenu()
+        val shortcutsAdapter = directories_grid.adapter as ShortcutsAdapter?
+        val selected = shortcutsAdapter?.actMode
+        if(selected != null) {
+            updateStatusBarColor(R.color.black)
+        }
     }
 
     override fun onPause() {
@@ -225,10 +233,14 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         val layoutManager = directories_grid.layoutManager as GridLayoutManager
         if (config.scrollHorizontally) {
             layoutManager.orientation = GridLayoutManager.HORIZONTAL
-            directories_refresh_layout.layoutParams = CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            val layoutParams = CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            layoutParams.behavior = AppBarLayout.ScrollingViewBehavior()
+            directories_refresh_layout.layoutParams = layoutParams
         } else {
             layoutManager.orientation = GridLayoutManager.VERTICAL
-            directories_refresh_layout.layoutParams = CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val layoutParams = CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams.behavior = AppBarLayout.ScrollingViewBehavior()
+            directories_refresh_layout.layoutParams = layoutParams
         }
 
         directories_grid.isDragSelectionEnabled = true
@@ -284,16 +296,11 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     private fun setupAdapter() {
         var currAdapter = directories_grid.adapter
         if (currAdapter != null) {
-            // Reset Selections
-            val recyclerAdapter = getRecyclerAdapter()
-            recyclerAdapter.actMode?.finish()
-
             (currAdapter as ShortcutsAdapter).updateDirs(mDirs)
         } else {
-            currAdapter = ShortcutsAdapter(this, mDirs, this) {
+            directories_grid.adapter = ShortcutsAdapter(this, mDirs, this) {
                 itemClicked(it)
             }
-            directories_grid.adapter = currAdapter
         }
         setupScrollDirection()
     }
@@ -394,13 +401,13 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     private fun increaseColumnCount() {
         config.dirColumnCnt = ++(directories_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
-        directories_grid.adapter.notifyDataSetChanged()
+        directories_grid.adapter?.notifyDataSetChanged()
     }
 
     private fun reduceColumnCount() {
         config.dirColumnCnt = --(directories_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
-        directories_grid.adapter.notifyDataSetChanged()
+        directories_grid.adapter?.notifyDataSetChanged()
     }
 
     private fun showSortingDialog() {

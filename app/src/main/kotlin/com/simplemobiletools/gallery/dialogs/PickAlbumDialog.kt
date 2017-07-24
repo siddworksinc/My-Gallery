@@ -5,7 +5,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
-import com.simplemobiletools.commons.dialogs.FilePickerDialog
+import com.google.gson.Gson
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.gallery.R
@@ -24,10 +24,10 @@ class PickAlbumDialog(val activity: SimpleActivity, val sourcePath: String?,
     var dialog: AlertDialog
     var directoriesGrid: RecyclerView
     var shownDirectories: ArrayList<Directory> = ArrayList()
+    val view = LayoutInflater.from(activity).inflate(R.layout.dialog_directory_picker, null)
 
     init {
         if(filterDirs == null) {filterDirs = ArrayList<String>()}
-        val view = LayoutInflater.from(activity).inflate(R.layout.dialog_directory_picker, null)
         directoriesGrid = view.directories_grid
         view.directory_message.visibility = View.VISIBLE
         view.directory_message.text = "Loading Albums..."
@@ -53,12 +53,12 @@ class PickAlbumDialog(val activity: SimpleActivity, val sourcePath: String?,
     fun showOtherFolder() {
         val showHidden = activity.config.shouldShowHidden
         FilePickerDialog(activity, Environment.getExternalStorageDirectory().getPath(), false, showHidden, true) {
-            var file = File(it)
-            var path : String = "";
+            val file = File(it)
+            var path : String = ""
             val allMedia = activity.getFilesFrom(file.path, false , false)
             if(!allMedia.isEmpty()) {
                 val first = allMedia.first()
-                path = first.path;
+                path = first.path
             }
             val dir = Directory(it, path, file.name, 1, file.lastModified(), 0, 0)
             callback.invoke(dir)
@@ -79,7 +79,7 @@ class PickAlbumDialog(val activity: SimpleActivity, val sourcePath: String?,
         }
 
         shownDirectories = filteredAllDirs
-        var adapter = DirectoryAdapter(activity, filteredAllDirs, null) {
+        directoriesGrid.adapter = DirectoryAdapter(activity, filteredAllDirs, null, true) {
             if (sourcePath != null && it.path.trimEnd('/') == sourcePath) {
                 activity.toast(R.string.source_and_destination_same)
                 return@DirectoryAdapter
@@ -88,6 +88,10 @@ class PickAlbumDialog(val activity: SimpleActivity, val sourcePath: String?,
                 dialog.dismiss()
             }
         }
-        directoriesGrid.adapter = adapter
+
+        if(!isFromCache) {
+            val dirsJson = Gson().toJson(directories)
+            activity.config.directories = dirsJson
+        }
     }
 }

@@ -19,7 +19,6 @@
     <string name="no_camera_app_found">Hiçbir Kamera uygulaması bulunamadı</string>
     <string name="increase_column_count">Sütun sayısını artır</string>
     <string name="reduce_column_count">Sütun sayısını azalt</string>
-    <string name="temporarily_show_hidden">Geçici olarak gizli göster</string>
     <string name="change_cover_image">Change cover image</string>
     <string name="select_photo">Select photo</string>
     <string name="use_default">Use default</string>
@@ -67,7 +66,7 @@
     <string name="flip">Çevir</string>
     <string name="flip_horizontally">Yatay</string>
     <string name="flip_vertically">Dikey</string>
-    <string name="out_of_memory_error">Yetersiz bellek hatası</string>
+    <string name="edit_with">Edit with</string>
 
     <!-- Set wallpaper -->
     <string name="simple_wallpaper">Basit Duvar Kağıdı</string>
@@ -86,7 +85,7 @@
     <string name="toggle_filename">Dosya adı görünürlüğünü değiştir</string>
     <string name="show_media">Medyayı göster</string>
     <string name="images">Yalnızca resimler</string>
-    <string name="videos_only">Yalnızca videolar</string>
+    <string name="videos">Yalnızca videolar</string>
     <string name="gifs">GIFs only</string>
     <string name="images_videos_gifs">Images, videos, GIFs</string>
     <string name="images_and_videos">Resimler ve videolar</string>
@@ -100,6 +99,8 @@
     <string name="screen_rotation_aspect_ratio">En-boy oranı</string>
     <string name="dark_background_at_fullscreen">Dark background at fullscreen media</string>
     <string name="scroll_thumbnails_horizontally">Scroll thumbnails horizontally</string>
+    <string name="hide_system_ui_at_fullscreen">Automatically hide system UI at fullscreen media</string>
+    <string name="replace_share_with_rotate">Replace Share with Rotate at fullscreen menu</string>
 
     <!-- Strings displayed only on Google Playstore. Optional, but good to have -->
     <!-- Short description has to have less than 80 chars -->

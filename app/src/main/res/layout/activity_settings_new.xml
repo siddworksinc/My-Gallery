@@ -1114,6 +1114,73 @@
                         android:layout_height="1dp"
                         android:background="@color/bg_grey"/>
 
+                    <!-- hide_ui_root -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/hide_ui_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/mal_baseline_half"
+                        android:paddingBottom="@dimen/mal_baseline_half"
+                        android:orientation="horizontal"
+                        android:background="?android:attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/hide_ui_image"
+                            android:layout_width="@dimen/mal_action_item_image_width"
+                            android:layout_height="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="@dimen/mal_baseline_half"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline_half"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:adjustViewBounds="false"
+                            android:cropToPadding="false"
+                            android:scaleType="centerInside"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="@dimen/mal_action_action_item_image_height"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/mal_baseline"
+                            android:layout_marginLeft="@dimen/mal_baseline"
+                            android:layout_marginRight="@dimen/mal_baseline"
+                            android:layout_marginStart="@dimen/mal_baseline"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/hide_system_ui_at_fullscreen"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                android:text="@string/horizontal_and_vertical_scrolling"/>
+
+                        </LinearLayout>
+
+                        <com.simplemobiletools.commons.views.MySwitchCompat
+                            android:id="@+id/hide_ui"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:clickable="false"
+                            android:paddingEnd="@dimen/medium_margin"
+                            android:paddingStart="@dimen/medium_margin" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_grey"/>
+
                     <!-- screen_rotation_root -->
                     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                         android:id="@+id/screen_rotation_root"

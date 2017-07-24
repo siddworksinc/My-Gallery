@@ -19,7 +19,6 @@
     <string name="no_camera_app_found">Nenašla sa žiadna aplikácia pre fotoaparát</string>
     <string name="increase_column_count">Zvýšiť počet stĺpcov</string>
     <string name="reduce_column_count">Znížiť počet stĺpcov</string>
-    <string name="temporarily_show_hidden">Dočasne zobraziť skryté</string>
     <string name="change_cover_image">Zmeniť obal albumu</string>
     <string name="select_photo">Zvoliť foto</string>
     <string name="use_default">Použiť predvolený</string>
@@ -67,14 +66,14 @@
     <string name="flip">Preklopiť</string>
     <string name="flip_horizontally">Preklopiť vodorovne</string>
     <string name="flip_vertically">Preklopiť zvisle</string>
-    <string name="out_of_memory_error">Došlo k chybe s nedostatkom pamäte</string>
+    <string name="edit_with">Upraviť s</string>
 
     <!-- Set wallpaper -->
     <string name="simple_wallpaper">Jednoduchá tapeta</string>
     <string name="set_as_wallpaper">Nastaviť ako tapetu</string>
     <string name="set_as_wallpaper_failed">Nastavovanie ako tapeta zlyhalo</string>
     <string name="set_as_wallpaper_with">Nastaviť ako tapetu s:</string>
-    <string name="no_capable_app_found">Nenašla sa žiadna vhodná aplikácia No app capable of it has been found</string>
+    <string name="no_capable_app_found">Nenašla sa žiadna vhodná aplikácia</string>
     <string name="setting_wallpaper">Nastavuje sa tapeta&#8230;</string>
     <string name="wallpaper_set_successfully">Tapeta bola úspešne zmenená</string>
     <string name="portrait_aspect_ratio">Orientácia nastojato</string>
@@ -86,7 +85,7 @@
     <string name="toggle_filename">Prepnúť viditeľnosť názvov súborov</string>
     <string name="show_media">Zobraziť médiá</string>
     <string name="images">Iba obrázky</string>
-    <string name="videos_only">Iba videá</string>
+    <string name="videos">Iba videá</string>
     <string name="gifs">Iba GIFká</string>
     <string name="images_videos_gifs">Obrázky, videá, GIFká</string>
     <string name="images_and_videos">Obrázky aj videá</string>
@@ -100,6 +99,8 @@
     <string name="screen_rotation_aspect_ratio">Pomeru strán</string>
     <string name="dark_background_at_fullscreen">Tmavé pozadie pri médiách na celú obrazovku</string>
     <string name="scroll_thumbnails_horizontally">Prehliadať miniatúry vodorovne</string>
+    <string name="hide_system_ui_at_fullscreen">Automaticky skrývať systémové lišty pri celoobrazovkových médiách</string>
+    <string name="replace_share_with_rotate">Nahradiť Zdieľanie s Otočením v celoobrazovkovom menu</string>
 
     <!-- Strings displayed only on Google Playstore. Optional, but good to have -->
     <!-- Short description has to have less than 80 chars -->

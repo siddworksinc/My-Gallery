@@ -8,14 +8,16 @@ import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
 
 class App : Application() {
+    val USE_LEAK_CANARY = false
     override fun onCreate() {
         super.onCreate()
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return
-        }
-        LeakCanary.install(this)
         Fabric.with(this, Crashlytics())
         Fabric.with(this, Answers())
         logEvent("VersionCode"+BuildConfig.VERSION_CODE)
+        if (USE_LEAK_CANARY) {
+            if (!LeakCanary.isInAnalyzerProcess(this)) {
+                LeakCanary.install(this)
+            }
+        }
     }
 }

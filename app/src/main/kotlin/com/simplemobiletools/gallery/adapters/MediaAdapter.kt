@@ -25,7 +25,8 @@ import java.util.*
 
 
 
-class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>, val listener: MediaOperationsListener?, val itemClick: (Medium) -> Unit) :
+class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>, val listener: MediaOperationsListener?,
+                   val isPickIntent: Boolean, val itemClick: (Medium) -> Unit) :
         RecyclerView.Adapter<MediaAdapter.ViewHolder>() {
 
     val multiSelector = MultiSelector()
@@ -270,7 +271,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent?.context).inflate(R.layout.photo_video_item, parent, false)
-        return ViewHolder(view, adapterListener, activity, multiSelectorMode, multiSelector, listener, itemClick)
+        return ViewHolder(view, adapterListener, activity, multiSelectorMode, multiSelector, listener, isPickIntent, itemClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -337,7 +338,8 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
 
     class ViewHolder(val view: View, val adapterListener: MyAdapterListener, val activity: SimpleActivity,
                      val multiSelectorCallback: ModalMultiSelectorCallback, val multiSelector: MultiSelector,
-                     val listener: MediaOperationsListener?, val itemClick: (Medium) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
+                     val listener: MediaOperationsListener?,
+                     val isPickIntent: Boolean, val itemClick: (Medium) -> (Unit)) : SwappingHolder(view, MultiSelector()) {
 
         fun bindView(medium: Medium, displayFilenames: Boolean, scrollVertically: Boolean): View {
             itemView.apply {
@@ -347,7 +349,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
                 activity.loadImage(medium.path, medium_thumbnail, scrollVertically)
 
                 setOnClickListener { viewClicked(medium) }
-                setOnLongClickListener { viewLongClicked(); true }
+                setOnLongClickListener { if (isPickIntent) viewClicked(medium) else viewLongClicked(); true }
                 adapterListener.setupItemForeground(this)
             }
             return itemView
@@ -374,7 +376,8 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
         }
 
         fun stopLoad() {
-            Glide.clear(view.medium_thumbnail)
+            if (!activity.isDestroyed)
+                Glide.with(activity).clear(view.medium_thumbnail)
         }
     }
 

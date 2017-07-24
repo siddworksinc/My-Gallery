@@ -18,8 +18,9 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
@@ -60,7 +61,6 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         var mMedia = ArrayList<Medium>()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
@@ -84,21 +84,28 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     override fun onResume() {
         super.onResume()
         if (mShowAll && mStoredAnimateGifs != config.animateGifs) {
-            media_grid.adapter.notifyDataSetChanged()
+            media_grid.adapter?.notifyDataSetChanged()
         }
 
         if (mStoredCropThumbnails != config.cropThumbnails) {
-            media_grid.adapter.notifyDataSetChanged()
+            media_grid.adapter?.notifyDataSetChanged()
         }
 
         if (mStoredScrollHorizontally != config.scrollHorizontally) {
-            (media_grid.adapter as MediaAdapter).scrollVertically = !config.scrollHorizontally
-            media_grid.adapter.notifyDataSetChanged()
+            media_grid.adapter?.let {
+                (it as MediaAdapter).scrollVertically = !config.scrollHorizontally
+                it.notifyDataSetChanged()
+            }
             setupScrollDirection()
         }
 
         tryloadGallery()
         invalidateOptionsMenu()
+        val adapter = media_grid.adapter as MediaAdapter?
+        val selected = adapter?.actMode
+        if(selected != null) {
+            updateStatusBarColor(R.color.black)
+        }
     }
 
     override fun onPause() {
@@ -114,7 +121,6 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        config.temporarilyShowHidden = false
         mMedia.clear()
     }
 
@@ -146,7 +152,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         if (currAdapter != null) {
             (currAdapter as MediaAdapter).updateMedia(mMedia)
         } else {
-            media_grid.adapter = MediaAdapter(this, mMedia, this) {
+            media_grid.adapter = MediaAdapter(this, mMedia, this, mIsGetAnyIntent) {
                 itemClicked(it.path)
             }
         }
@@ -376,13 +382,13 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     private fun increaseColumnCount() {
         config.mediaColumnCnt = ++(media_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
-        media_grid.adapter.notifyDataSetChanged()
+        media_grid.adapter?.notifyDataSetChanged()
     }
 
     private fun reduceColumnCount() {
         config.mediaColumnCnt = --(media_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
-        media_grid.adapter.notifyDataSetChanged()
+        media_grid.adapter?.notifyDataSetChanged()
     }
 
     private fun isSetWallpaperIntent() = intent.getBooleanExtra(SET_WALLPAPER_INTENT, false)
@@ -404,15 +410,17 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
             val wantedWidth = wallpaperDesiredMinimumWidth
             val wantedHeight = wallpaperDesiredMinimumHeight
             val ratio = wantedWidth.toFloat() / wantedHeight
-            Glide.with(this)
-                    .load(File(path))
-                    .asBitmap()
+            val options = RequestOptions()
                     .override((wantedWidth * ratio).toInt(), wantedHeight)
                     .fitCenter()
+            Glide.with(this)
+                .asBitmap()
+                .load(File(path))
+                .apply(options)
                     .into(object : SimpleTarget<Bitmap>() {
-                        override fun onResourceReady(bitmap: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
+                        override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
                             try {
-                                WallpaperManager.getInstance(applicationContext).setBitmap(bitmap)
+                                WallpaperManager.getInstance(applicationContext).setBitmap(resource)
                                 setResult(Activity.RESULT_OK)
                             } catch (e: IOException) {
                                 Log.e(TAG, "item click $e")

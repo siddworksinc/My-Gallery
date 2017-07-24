@@ -68,7 +68,6 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         var screenHeight = 0
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_medium)
@@ -107,7 +106,16 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             isViewIntent = true
         }
 
-        showSystemUI()
+        if (!config.hideSystemUI)
+            showExtraUI()
+
+        window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
+            mIsFullScreen = visibility and View.SYSTEM_UI_FLAG_FULLSCREEN != 0
+            view_pager.adapter?.let {
+                (it as MyPagerAdapter).toggleFullscreen(mIsFullScreen)
+                checkSystemUI()
+            }
+        }
 
         mDirectory = File(mPath).parent
         title = mPath.getFilenameFromPath()
@@ -119,7 +127,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
                     return
 
                 if (mMedia.isNotEmpty()) {
-                        gotMedia(mMedia)
+                    gotMedia(mMedia)
                 }
             }
         })
@@ -194,23 +202,15 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_viewpager, menu)
-        if (getCurrentMedium() == null)
-            return true
+        val currentMedium = getCurrentMedium() ?: return true
 
         menu.apply {
-            findItem(R.id.menu_set_as).isVisible = getCurrentMedium()!!.isImage() == true
-            findItem(R.id.menu_edit).isVisible = getCurrentMedium()!!.isImage() == true
-            findItem(R.id.menu_rotate).isVisible = getCurrentMedium()!!.isImage() == true
+            findItem(R.id.menu_set_as).isVisible = currentMedium.isImage()
+            findItem(R.id.menu_edit).isVisible = currentMedium.isImage()
+            findItem(R.id.menu_rotate).isVisible = currentMedium.isImage()
             findItem(R.id.menu_save_as).isVisible = mRotationDegrees != 0f
-            findItem(R.id.menu_hide).isVisible = !getCurrentMedium()!!.name.startsWith('.')
-            findItem(R.id.menu_unhide).isVisible = getCurrentMedium()!!.name.startsWith('.')
-
-            findItem(R.id.menu_rotate).subMenu.apply {
-                clearHeader()
-                findItem(R.id.rotate_right).icon = resources.getColoredDrawable(R.drawable.ic_rotate_right, R.color.actionbar_menu_icon)
-                findItem(R.id.rotate_left).icon = resources.getColoredDrawable(R.drawable.ic_rotate_left, R.color.actionbar_menu_icon)
-                findItem(R.id.rotate_one_eighty).icon = resources.getColoredDrawable(R.drawable.ic_rotate_one_eighty, R.color.actionbar_menu_icon)
-            }
+            findItem(R.id.menu_hide).isVisible = !currentMedium.name.startsWith('.')
+            findItem(R.id.menu_unhide).isVisible = currentMedium.name.startsWith('.')
         }
 
         return true
@@ -232,11 +232,9 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             R.id.menu_rename -> renameFile()
             R.id.menu_edit -> openFileEditor(getCurrentFile())
             R.id.menu_properties -> showProperties()
-            R.id.menu_save_as -> saveImageAs()
             R.id.show_on_map -> showOnMap()
-            R.id.rotate_right -> rotateImage(90f)
-            R.id.rotate_left -> rotateImage(-90f)
-            R.id.rotate_one_eighty -> rotateImage(180f)
+            R.id.menu_rotate -> rotateImage()
+            R.id.menu_save_as -> saveImageAs()
             R.id.settings -> launchSettings()
             else -> return super.onOptionsItemSelected(item)
         }
@@ -244,13 +242,13 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     }
 
     private fun updatePagerItems() {
-        pagerAdapter = MyPagerAdapter(this, supportFragmentManager, mMedia)
+        pagerAdapter = MyPagerAdapter(this, supportFragmentManager, mMedia.toMutableList())
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1 || !isDestroyed) {
             view_pager.apply {
                 adapter = pagerAdapter
+                adapter!!.notifyDataSetChanged()
                 currentItem = mPos
                 addOnPageChangeListener(this@ViewPagerActivity)
-                adapter!!.notifyDataSetChanged()
             }
         }
     }
@@ -276,6 +274,42 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             }
             invalidateOptionsMenu()
         }
+    }
+
+    private fun rotateImage() {
+        val currentMedium = getCurrentMedium() ?: return
+        if (currentMedium.isJpg() && !isPathOnSD(currentMedium.path)) {
+            rotateByExif()
+        } else {
+            rotateByDegrees()
+        }
+    }
+
+    private fun rotateByExif() {
+        val exif = ExifInterface(getCurrentPath())
+        val rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        val newRotation = getNewRotation(rotation)
+        exif.setAttribute(ExifInterface.TAG_ORIENTATION, newRotation)
+        exif.saveAttributes()
+        File(getCurrentPath()).setLastModified(System.currentTimeMillis())
+        (getCurrentFragment() as? PhotoFragment)?.refreshBitmap()
+    }
+
+    private fun getNewRotation(rotation: Int): String {
+        return when (rotation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> ExifInterface.ORIENTATION_ROTATE_180
+            ExifInterface.ORIENTATION_ROTATE_180 -> ExifInterface.ORIENTATION_ROTATE_270
+            ExifInterface.ORIENTATION_ROTATE_270 -> ExifInterface.ORIENTATION_NORMAL
+            else -> ExifInterface.ORIENTATION_ROTATE_90
+        }.toString()
+    }
+
+    private fun rotateByDegrees() {
+        mRotationDegrees = (mRotationDegrees + 90) % 360
+        getCurrentFragment()?.let {
+            (it as? PhotoFragment)?.rotateImageViewBy(mRotationDegrees)
+        }
+        supportInvalidateOptionsMenu()
     }
 
     private fun saveImageAs() {
@@ -318,19 +352,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         out.close()
     }
 
-    private fun rotateImage(degrees: Float) {
-        mRotationDegrees = (mRotationDegrees + degrees) % 360
-        getCurrentFragment()?.rotateImageViewBy(mRotationDegrees)
-        supportInvalidateOptionsMenu()
-    }
-
-    private fun getCurrentFragment(): PhotoFragment? {
-        val fragment = (view_pager.adapter as MyPagerAdapter).getCurrentFragment(view_pager.currentItem)
-        return if (fragment is PhotoFragment)
-            fragment
-        else
-            null
-    }
+    private fun getCurrentFragment() = (view_pager.adapter as MyPagerAdapter).getCurrentFragment(view_pager.currentItem)
 
     private fun showProperties() {
         if (getCurrentMedium() != null)
@@ -478,9 +500,9 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             mPos = Math.min(mPos, mMedia.size - 1)
         }
 
-        updateActionbarTitle()
         updatePagerItems()
         setupRVAdapter()
+        updateActionbarTitle()
         invalidateOptionsMenu()
         checkOrientation()
     }
@@ -519,6 +541,10 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
     override fun fragmentClicked() {
         mIsFullScreen = !mIsFullScreen
+        checkSystemUI()
+    }
+
+    private fun checkSystemUI() {
         if (mIsFullScreen) {
             hideExtraUI()
         } else {
@@ -544,20 +570,12 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         media_grid.beGone()
     }
 
-    override fun systemUiVisibilityChanged(visibility: Int) {
-        if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
-            mIsFullScreen = false
-            showExtraUI()
-        } else {
-            mIsFullScreen = true
-        }
-    }
-
     private fun updateActionbarTitle() {
         runOnUiThread {
             if (mPos < mMedia.size) {
                 title = mMedia[mPos].path.getFilenameFromPath()
                 supportActionBar?.subtitle = Html.fromHtml("<small>${mPos+1}/${mMedia.size}</small>")
+                updateScrollPositionRV(mPos)
             }
         }
     }
@@ -585,7 +603,6 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         updateActionbarTitle()
         mRotationDegrees = 0f
         supportInvalidateOptionsMenu()
-        updateScrollPositionRV(position)
     }
 
     private fun updateScrollPositionRV(position: Int) {
@@ -593,12 +610,12 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             if(smoothScroller == null) {
                 smoothScroller = object : LinearSmoothScroller(this@ViewPagerActivity) {
                     override fun getVerticalSnapPreference(): Int {
-                        return LinearSmoothScroller.SNAP_TO_START;
+                        return LinearSmoothScroller.SNAP_TO_START
                     }
                 }
             }
 
-            smoothScroller?.targetPosition = position;
+            smoothScroller?.targetPosition = position
             media_grid.layoutManager.startSmoothScroll(smoothScroller)
         }
     }
@@ -612,15 +629,16 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     private fun setupRVAdapter() {
         val currAdapter = media_grid.adapter
         if (currAdapter == null) {
-            val mediaAdapter = MediaAdapter(this, mMedia, this) {
+            val mediaAdapter = MediaAdapter(this, mMedia, this, true) {
                 itemClicked(it.path)
             }
-            mediaAdapter.scrollVertically = false;
+            mediaAdapter.scrollVertically = false
             mediaAdapter.notifyDataSetChanged()
             media_grid.adapter = mediaAdapter
 
             val layoutManager = media_grid.layoutManager as GridLayoutManager
             layoutManager.orientation = GridLayoutManager.HORIZONTAL
+            media_grid.layoutManager.scrollToPosition(mPos)
         } else {
             (currAdapter as MediaAdapter).updateMedia(mMedia)
         }

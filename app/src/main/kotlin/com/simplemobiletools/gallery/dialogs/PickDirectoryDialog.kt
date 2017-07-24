@@ -3,6 +3,7 @@ package com.simplemobiletools.gallery.dialogs
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import com.google.gson.Gson
 import com.simplemobiletools.commons.dialogs.FilePickerDialog
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.commons.extensions.toast
@@ -19,9 +20,9 @@ class PickDirectoryDialog(val activity: SimpleActivity, val sourcePath: String, 
     var dialog: AlertDialog
     var directoriesGrid: RecyclerView
     var shownDirectories: ArrayList<Directory> = ArrayList()
+    val view = LayoutInflater.from(activity).inflate(R.layout.dialog_directory_picker, null)
 
     init {
-        val view = LayoutInflater.from(activity).inflate(R.layout.dialog_directory_picker, null)
         directoriesGrid = view.directories_grid
 
         dialog = AlertDialog.Builder(activity)
@@ -33,11 +34,11 @@ class PickDirectoryDialog(val activity: SimpleActivity, val sourcePath: String, 
 
             val dirs = activity.getCachedDirectories()
             if (dirs.isNotEmpty()) {
-                gotDirectories(dirs)
+                gotDirectories(dirs, true)
             }
 
             GetDirectoriesAsynctask(activity, false, false) {
-                gotDirectories(it)
+                gotDirectories(it, false)
             }.execute()
         }
     }
@@ -49,12 +50,12 @@ class PickDirectoryDialog(val activity: SimpleActivity, val sourcePath: String, 
         }
     }
 
-    private fun gotDirectories(directories: ArrayList<Directory>) {
+    private fun gotDirectories(directories: ArrayList<Directory>, isFromCache: Boolean) {
         if (directories.hashCode() == shownDirectories.hashCode())
             return
 
         shownDirectories = directories
-        val adapter = DirectoryAdapter(activity, directories, null) {
+        directoriesGrid.adapter = DirectoryAdapter(activity, directories, null, true) {
             if (it.path.trimEnd('/') == sourcePath) {
                 activity.toast(R.string.source_and_destination_same)
                 return@DirectoryAdapter
@@ -63,6 +64,10 @@ class PickDirectoryDialog(val activity: SimpleActivity, val sourcePath: String, 
                 dialog.dismiss()
             }
         }
-        directoriesGrid.adapter = adapter
+
+        if(!isFromCache) {
+            val dirsJson = Gson().toJson(directories)
+            activity.config.directories = dirsJson
+        }
     }
 }

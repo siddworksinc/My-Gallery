@@ -19,7 +19,6 @@
     <string name="no_camera_app_found">Aucune application d\appareil photo n\'a été trouvée</string>
     <string name="increase_column_count">Augmenter le nombre de colonnes</string>
     <string name="reduce_column_count">Réduire le nombre de colonnes</string>
-    <string name="temporarily_show_hidden">Afficher temporairement les fichiers masqués</string>
     <string name="change_cover_image">Change cover image</string>
     <string name="select_photo">Select photo</string>
     <string name="use_default">Use default</string>
@@ -67,7 +66,7 @@
     <string name="flip">Retourner</string>
     <string name="flip_horizontally">Retourner horizontalement</string>
     <string name="flip_vertically">Retourner verticallement</string>
-    <string name="out_of_memory_error">Erreur excès de mémoire</string>
+    <string name="edit_with">Edit with</string>
 
     <!-- Set wallpaper -->
     <string name="simple_wallpaper">Simple fond d\'écran</string>
@@ -86,7 +85,7 @@
     <string name="toggle_filename">Permutter la visibilité des noms de fichier</string>
     <string name="show_media">Afficher les médias</string>
     <string name="images">Seulement les images</string>
-    <string name="videos_only">Vidéos uniquement</string>
+    <string name="videos">Vidéos uniquement</string>
     <string name="gifs">GIFs only</string>
     <string name="images_videos_gifs">Images, videos, GIFs</string>
     <string name="images_and_videos">Images et vidéos</string>
@@ -100,6 +99,8 @@
     <string name="screen_rotation_aspect_ratio">Ratio d\'aspect</string>
     <string name="dark_background_at_fullscreen">Dark background at fullscreen media</string>
     <string name="scroll_thumbnails_horizontally">Scroll thumbnails horizontally</string>
+    <string name="hide_system_ui_at_fullscreen">Automatically hide system UI at fullscreen media</string>
+    <string name="replace_share_with_rotate">Replace Share with Rotate at fullscreen menu</string>
 
     <!-- Strings displayed only on Google Playstore. Optional, but good to have -->
     <!-- Short description has to have less than 80 chars -->

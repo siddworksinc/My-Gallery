@@ -10,15 +10,16 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import com.google.gson.Gson
 import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.models.Release
 import com.simplemobiletools.commons.views.MyScalableRecyclerView
-import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.adapters.DirectoryAdapter
 import com.simplemobiletools.gallery.asynctasks.GetDirectoriesAsynctask
@@ -27,7 +28,6 @@ import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.helpers.*
 import com.simplemobiletools.gallery.models.Directory
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_media.*
 import java.io.*
 import java.util.*
 
@@ -47,9 +47,10 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
     private var mIsSetWallpaperIntent = false
     private var mIsThirdPartyIntent = false
     private var mIsGettingDirs = false
+    private var mLoadedInitialPhotos = false
     private var mStoredAnimateGifs = true
     private var mStoredCropThumbnails = true
-    private var mLoadedInitialPhotos = false
+    private var mStoredScrollHorizontally = true
     private var mLastMediaModified = 0
     private var mLastMediaHandler = Handler()
 
@@ -73,8 +74,8 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
         mDirs = ArrayList<Directory>()
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
-        storeStoragePaths()
-        checkWhatsNewDialog()
+        mStoredScrollHorizontally = config.scrollHorizontally
+        init()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -85,7 +86,8 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
             menu.findItem(R.id.increase_column_count).isVisible = config.dirColumnCnt < 10
             menu.findItem(R.id.reduce_column_count).isVisible = config.dirColumnCnt > 1
         }
-        menu.findItem(R.id.temporarily_show_hidden).isVisible = !config.showHiddenMedia
+        menu.findItem(R.id.temporarily_show_hidden).isVisible = !config.shouldShowHidden
+        menu.findItem(R.id.stop_showing_hidden).isVisible = config.temporarilyShowHidden
         return true
     }
 
@@ -94,7 +96,8 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
             R.id.sort -> showSortingDialog()
             R.id.open_camera -> launchCamera()
             R.id.show_all -> showAllMedia()
-            R.id.temporarily_show_hidden -> temporarilyShowHidden()
+            R.id.temporarily_show_hidden -> toggleTemporarilyShowHidden(true)
+            R.id.stop_showing_hidden -> toggleTemporarilyShowHidden(false)
             R.id.increase_column_count -> increaseColumnCount()
             R.id.reduce_column_count -> reduceColumnCount()
             R.id.settings -> launchSettings()
@@ -107,12 +110,21 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
     override fun onResume() {
         super.onResume()
         if (mStoredAnimateGifs != config.animateGifs) {
-            mDirs.clear()
+            directories_grid.adapter?.notifyDataSetChanged()
         }
 
         if (mStoredCropThumbnails != config.cropThumbnails) {
-            mDirs.clear()
+            directories_grid.adapter?.notifyDataSetChanged()
         }
+
+        if (mStoredScrollHorizontally != config.scrollHorizontally) {
+            directories_grid.adapter?.let {
+                (it as DirectoryAdapter).scrollVertically = !config.scrollHorizontally
+                it.notifyDataSetChanged()
+            }
+            setupScrollDirection()
+        }
+
         tryloadGallery()
         invalidateOptionsMenu()
     }
@@ -125,6 +137,7 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
         mIsGettingDirs = false
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
+        mStoredScrollHorizontally = config.scrollHorizontally
         directories_grid.listener = null
         mLastMediaHandler.removeCallbacksAndMessages(null)
     }
@@ -140,7 +153,7 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
                 showAllMedia()
             else
                 getDirectories()
-            handleZooming()
+            setupLayoutManager()
             checkIfColorChanged()
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION)
@@ -195,15 +208,17 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
         }
     }
 
-    private fun temporarilyShowHidden() {
-        config.temporarilyShowHidden = true
+    private fun toggleTemporarilyShowHidden(show: Boolean) {
+        config.temporarilyShowHidden = show
         getDirectories()
+        invalidateOptionsMenu()
     }
 
     private fun checkIfColorChanged() {
         if (directories_grid.adapter != null && getRecyclerAdapter().foregroundColor != config.primaryColor) {
             getRecyclerAdapter().updatePrimaryColor(config.primaryColor)
-            directories_fastscroller.updateHandleColor()
+            directories_vertical_fastscroller.updateHandleColor()
+            directories_horizontal_fastscroller.updateHandleColor()
         }
     }
 
@@ -219,8 +234,22 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
 
     private fun getRecyclerAdapter() = (directories_grid.adapter as DirectoryAdapter)
 
-    private fun handleZooming() {
+    private fun setupLayoutManager() {
         val layoutManager = directories_grid.layoutManager as GridLayoutManager
+        if (config.scrollHorizontally) {
+            layoutManager.orientation = GridLayoutManager.HORIZONTAL
+            val layoutParams = CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            layoutParams.behavior = AppBarLayout.ScrollingViewBehavior()
+            directories_refresh_layout.layoutParams = layoutParams
+        } else {
+            layoutManager.orientation = GridLayoutManager.VERTICAL
+            val layoutParams = CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams.behavior = AppBarLayout.ScrollingViewBehavior()
+            directories_refresh_layout.layoutParams = layoutParams
+        }
+
+        directories_grid.isDragSelectionEnabled = true
+        directories_grid.isZoomingEnabled = true
         layoutManager.spanCount = config.dirColumnCnt
         directories_grid.listener = object : MyScalableRecyclerView.MyScalableRecyclerViewListener {
             override fun zoomIn() {
@@ -250,11 +279,13 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
     private fun increaseColumnCount() {
         config.dirColumnCnt = ++(directories_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
+        directories_grid.adapter?.notifyDataSetChanged()
     }
 
     private fun reduceColumnCount() {
         config.dirColumnCnt = --(directories_grid.layoutManager as GridLayoutManager).spanCount
         invalidateOptionsMenu()
+        directories_grid.adapter?.notifyDataSetChanged()
     }
 
     private fun isPickImageIntent(intent: Intent) = isPickIntent(intent) && (hasImageContentData(intent) || isImageType(intent))
@@ -353,7 +384,9 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
 
         mDirs = dirs
 
-        setupAdapter()
+        runOnUiThread {
+            setupAdapter()
+        }
         storeDirectories()
     }
 
@@ -365,17 +398,33 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
     }
 
     private fun setupAdapter() {
-        val adapter = DirectoryAdapter(this, mDirs, this) {
-            itemClicked(it.path)
-        }
-
         val currAdapter = directories_grid.adapter
         if (currAdapter != null) {
+            // Reset Selections
+            val recyclerAdapter = getRecyclerAdapter()
+            recyclerAdapter.actMode?.finish()
+
             (currAdapter as DirectoryAdapter).updateDirs(mDirs)
         } else {
-            directories_grid.adapter = adapter
+            directories_grid.adapter = DirectoryAdapter(this, mDirs, this, isPickIntent(intent) || isGetAnyContentIntent(intent)) {
+                itemClicked(it.path)
+            }
         }
-        directories_fastscroller.setViews(directories_grid, directories_refresh_layout)
+        setupScrollDirection()
+    }
+
+    private fun setupScrollDirection() {
+        directories_vertical_fastscroller.isHorizontal = false
+        directories_vertical_fastscroller.beGoneIf(config.scrollHorizontally)
+
+        directories_horizontal_fastscroller.isHorizontal = true
+        directories_horizontal_fastscroller.beVisibleIf(config.scrollHorizontally)
+
+        if (config.scrollHorizontally) {
+            directories_horizontal_fastscroller.setViews(directories_grid, directories_refresh_layout)
+        } else {
+            directories_vertical_fastscroller.setViews(directories_grid, directories_refresh_layout)
+        }
     }
 
     private fun checkLastMediaChanged() {
@@ -404,37 +453,5 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
 
     override fun itemLongClicked(position: Int) {
         directories_grid.setDragSelectActive(position)
-    }
-
-    private fun checkWhatsNewDialog() {
-        arrayListOf<Release>().apply {
-            add(Release(46, R.string.release_46))
-            add(Release(47, R.string.release_47))
-            add(Release(49, R.string.release_49))
-            add(Release(50, R.string.release_50))
-            add(Release(51, R.string.release_51))
-            add(Release(52, R.string.release_52))
-            add(Release(54, R.string.release_54))
-            add(Release(58, R.string.release_58))
-            add(Release(62, R.string.release_62))
-            add(Release(65, R.string.release_65))
-            add(Release(66, R.string.release_66))
-            add(Release(69, R.string.release_69))
-            add(Release(70, R.string.release_70))
-            add(Release(72, R.string.release_72))
-            add(Release(74, R.string.release_74))
-            add(Release(76, R.string.release_76))
-            add(Release(77, R.string.release_77))
-            add(Release(83, R.string.release_83))
-            add(Release(84, R.string.release_84))
-            add(Release(88, R.string.release_88))
-            add(Release(89, R.string.release_89))
-            add(Release(93, R.string.release_93))
-            add(Release(94, R.string.release_94))
-            add(Release(97, R.string.release_97))
-            add(Release(98, R.string.release_98))
-            add(Release(108, R.string.release_108))
-            checkWhatsNew(this, BuildConfig.VERSION_CODE)
-        }
     }
 }

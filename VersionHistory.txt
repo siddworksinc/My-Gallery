@@ -107,6 +107,7 @@ bug:opening hidden photos does not open it
 Added thumbnail navigation to photo view: Abhishek
 in video activity, rv blocks controls
 
+v4
 From simple-gallery github till -- Commits on Jun 19, 2017 -- 2e54fc02f39c70b20ce490e4f435b2621649abc1
 Store column count separately for portrait and landscape modes
 Improve zooming at double taping fullscreen images
@@ -114,3 +115,19 @@ Allow opening a third party editor from our Editor screen
 Many crashfixes and smaller improvements
 Fixed a crash at starting video
 Added optional horizontal scrolling
+--- Commit to github ---
+Fixed setting layout params in main activity caused rv under actionbar
+Added option for automatically hide extra UI at entering fullscreen mode
+Improved the way of rotating jpg images on the internal storage by modifying the exif tags + added autosave
+Updated Glide (library used for loading images) to 4.0.0
+Made playing gifs smooth
+---- updated commits till Jul 20, 2017 6602fae4259d2ce1c6fc448f52f5a7584e07296e -----------------
+selected things remain selected on switching app and coming back
+Select photo and copy.. Create new folder(album).. Now copy another photo.. That album is not visible from cache.. Cache should refresh
+Temp show hidden, goto hidden album, go back, goto hidden album and go back, it deactivates hidden mode
+decrease size of thumbnail strip
+Think on move then browse and select new folder copies to new folder.. Maybe refresh dirs and allow to go inside new folder so that we can create new more folder
+update strings from simple gallery
+multiselect albums, goto another app, come back, statusbar is pink. it should be black if in selected mode
+open image from media activity, now scroll fast left or right. after some images, it is blank and takes time to load
+

@@ -68,6 +68,7 @@
     <string name="flip_horizontally">Flip horizontally</string>
     <string name="flip_vertically">Flip vertically</string>
     <string name="edit_with">Edit with</string>
+    <string name="hide_system_ui_at_fullscreen">Hide other UI at fullscreen media</string>
 
     <!-- Set wallpaper -->
     <string name="simple_wallpaper">Simple Wallpaper</string>
@@ -139,6 +140,7 @@
     <string name="crop_thumbnails_to_square_desc">Crop thumbnails to fit square grid while browsing media</string>
     <string name="horizontal_and_vertical_scrolling">Switch Between Horizontal and Vertical Scrolling</string>
 
+    <string name="replace_share_with_rotate">Replace Share with Rotate at fullscreen menu</string>
     <!--
         Haven't found some strings? There's more at
         https://github.com/SimpleMobileTools/Simple-Commons/tree/master/commons/src/main/res

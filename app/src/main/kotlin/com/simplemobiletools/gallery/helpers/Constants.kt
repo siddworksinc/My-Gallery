@@ -39,6 +39,7 @@ val TUTORIAL_COMPLETED = "tutorial_completed"
 val PASS_PRO_ALBUMS_HIDDEN = "pass_pro_albums_hidden"
 val CUSTOM_NAMES = "custom_names"
 val SCROLL_HORIZONTALLY = "scroll_horizontally"
+val HIDE_SYSTEM_UI = "hide_system_ui"
 
 val NOMEDIA = ".nomedia"
 

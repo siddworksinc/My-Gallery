@@ -9,10 +9,10 @@ import android.net.Uri
 import android.support.annotation.UiThread
 import android.support.v4.content.ContextCompat
 import com.afollestad.materialdialogs.MaterialDialog
-import com.simplemobiletools.gallery.activities.ShortcutsActivity
 import com.simplemobiletools.commons.extensions.baseConfig
 import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
+import com.simplemobiletools.gallery.activities.ShortcutsActivity
 import com.simplemobiletools.gallery.models.Release
 
 
@@ -136,6 +136,11 @@ fun getNewReleases(releases: ArrayList<Release>): String {
 
 fun getWhatsNewContent(versionCode: Int): String? {
     when (versionCode) {
+        4 -> return  "New: Added option for Horizontal Scrolling\n\n" +
+                " - New: Added option for automatically hide extra UI at entering fullscreen mode\n\n" +
+                " - New: Allow opening a third party editor from Edit screen\n\n" +
+                " - Improve: Double tap to zoom\n\n" +
+                " - Lots of Bug Fixes, Lots of Behaviour Improvements & Lots of Performance Improvements\n\n"
         3 -> return  "New: Album carousel while viewing photos lets you quickly navigate to other photos (@Abhishek)\n\n" +
                 " - New: View only videos quickly via drawer shortcut (@sagarraythatha, @Abhishek)\n\n" +
                 " - New: Added Album count and media count on Main screen & Album screen\n\n" +
