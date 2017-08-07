@@ -68,7 +68,7 @@
     <string name="flip_horizontally">Flip horizontally</string>
     <string name="flip_vertically">Flip vertically</string>
     <string name="edit_with">Edit with</string>
-    <string name="hide_system_ui_at_fullscreen">Hide other UI at fullscreen media</string>
+    <string name="hide_system_ui_at_fullscreen">Hide extra UI at fullscreen</string>
 
     <!-- Set wallpaper -->
     <string name="simple_wallpaper">Simple Wallpaper</string>
@@ -141,6 +141,13 @@
     <string name="horizontal_and_vertical_scrolling">Switch Between Horizontal and Vertical Scrolling</string>
 
     <string name="replace_share_with_rotate">Replace Share with Rotate at fullscreen menu</string>
+    <string name="hide_system_ui_at_fullscreen_desc"><![CDATA[Hide title & media strip while viewing photos/videos]]></string>
+    <string name="custom_sorting">Custom Sorting</string>
+    <string name="sort_albums_placeholder">Albums added here will always appear on top and in order you set. Other albums will follow sorting defined in sort dialog.\n\nAdd albums using add icon above and use drag &amp; drop to change order</string>
+    <string name="order_albums">Order Albums</string>
+    <string name="select_inverse">Select Inverse</string>
+    <string name="passcode_protection">Passcode Protection</string>
+
     <!--
         Haven't found some strings? There's more at
         https://github.com/SimpleMobileTools/Simple-Commons/tree/master/commons/src/main/res

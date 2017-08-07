@@ -1,4 +1,8 @@
 This release
+    settings and about screen to be shown user accent color in recents screen
+    if color changed in onresume, again set recents color for all activities
+    transparent titlebars
+    Add recent photos like quick pic
     tutorial
         features
             light weight apk size
@@ -9,22 +13,21 @@ This release
             like give rating, don't like, give feedback. Want to build it community driven app. can vote on upcoming features
 
 Next release
+    keybaord does not dismiss in filepickerdialog
     play gif is not working
     set as wallpaper by opening from intent is broken
     Copy move does not refresh subtitle count
     After move select all and select album, it goes to main screen where count is wrong.. Need to refresh also after copy move is completed
-    Add recent photos like quick pick
-    Select inverse like solid explorer
     add way to access tutorial and all changelogs
-    remove swipe refresh from main and album activity
     add checkmark watermark when item is selected
     Settings, About activity should be themed as per theme selected
-    Gallery in bottom of photo view mode: abhishek
 
 Future:
+move non important things to async code
 animate increase decrease column count: abhishek
 add open source licences
 try to set as default in camera preview: abhishek
+
 slideshow
 Add edit shortcut in bottom sheet or top sheet
 Change color for actionmodetoolbar to current accent color
@@ -83,12 +86,14 @@ show sd card icon if album on sd card
 https://github.com/SimpleMobileTools/Simple-Gallery/commit/3ec99cd43b4a0fd13a53c38b0e3417c7920c1282
 replace_share_with_rotate
 https://github.com/SimpleMobileTools/Simple-Gallery/commit/9ea9c772945687decc35b68ecc3086fd49dff686
+disable lint on production builds
+https://github.com/SimpleMobileTools/Simple-Gallery/commit/7f8cb4b8010ac846fb1208fa34d1d1af432bca26
 
 Pull request:
 PickDirectoryDialog
 store dirs in cache after fetch
 subtitles for activities
-
+individual column count per album
 
 
 Performance impacting things

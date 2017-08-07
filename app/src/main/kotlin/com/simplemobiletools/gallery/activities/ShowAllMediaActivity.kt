@@ -1,15 +1,14 @@
 package com.simplemobiletools.gallery.activities
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.WallpaperManager
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.text.Html
 import android.util.Log
@@ -23,10 +22,8 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.simplemobiletools.commons.dialogs.ConfirmationDialog
 import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.commons.views.MyScalableRecyclerView
-import com.simplemobiletools.commons.views.MyTextView
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.adapters.MediaAdapter
 import com.simplemobiletools.gallery.asynctasks.GetMediaByDirsAsyncTask
@@ -44,7 +41,7 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
     private val SAVE_MEDIA_CNT = 40
     private val LAST_MEDIA_CHECK_PERIOD = 3000L
 
-    private var mPath = ""
+    private var mPath = "All"
     private var mIsGetImageIntent = false
     private var mIsGetVideoIntent = false
     private var mIsGetAnyIntent = false
@@ -72,7 +69,6 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
             mIsGetAnyIntent = getBooleanExtra(GET_ANY_INTENT, false)
         }
 
-        media_refresh_layout.setOnRefreshListener({ getMedia() })
         mPath = intent.getStringExtra(DIRECTORY)
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
@@ -80,6 +76,12 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
         mShowAll = true
         config.showAll = true
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // can be init later
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val tDesc = ActivityManager.TaskDescription(null, null, config.primaryColor)
+            setTaskDescription(tDesc)
+        }
     }
 
     override fun onResume() {
@@ -199,16 +201,15 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_media, menu)
 
-        val isFolderHidden = File(mPath).containsNoMedia()
         menu.apply {
-            findItem(R.id.hide_folder).isVisible = !isFolderHidden && !mShowAll
-            findItem(R.id.unhide_folder).isVisible = isFolderHidden && !mShowAll
+            findItem(R.id.hide_folder).isVisible = false
+            findItem(R.id.unhide_folder).isVisible = false
             findItem(R.id.exclude_folder).isVisible = !mShowAll
 
             findItem(R.id.temporarily_show_hidden).isVisible = !config.showHiddenMedia
 
-            findItem(R.id.increase_column_count).isVisible = config.mediaColumnCnt < 10
-            findItem(R.id.reduce_column_count).isVisible = config.mediaColumnCnt > 1
+            findItem(R.id.increase_column_count).isVisible = config.getColumnCount("All") < 10
+            findItem(R.id.reduce_column_count).isVisible = config.getColumnCount("All") > 1
         }
 
         return true
@@ -218,9 +219,6 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
         when (item.itemId) {
             R.id.sort -> showSortingDialog()
             R.id.toggle_filename -> toggleFilenameVisibility()
-            R.id.hide_folder -> tryHideFolder()
-            R.id.unhide_folder -> unhideFolder()
-            R.id.exclude_folder -> tryExcludeFolder()
             R.id.temporarily_show_hidden -> temporarilyShowHidden()
             R.id.increase_column_count -> increaseColumnCount()
             R.id.reduce_column_count -> reduceColumnCount()
@@ -247,54 +245,6 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
         }
     }
 
-    private fun tryHideFolder() {
-        if (config.wasHideFolderTooltipShown) {
-            hideFolder()
-        } else {
-            ConfirmationDialog(this, getString(R.string.hide_folder_description)) {
-                config.wasHideFolderTooltipShown = true
-                hideFolder()
-            }
-        }
-    }
-
-    private fun hideFolder() {
-        addNoMedia(mPath) {
-            runOnUiThread {
-                if (!config.shouldShowHidden)
-                    finish()
-                else
-                    invalidateOptionsMenu()
-            }
-        }
-    }
-
-    private fun unhideFolder() {
-        removeNoMedia(mPath) {
-            runOnUiThread {
-                invalidateOptionsMenu()
-            }
-        }
-    }
-
-    private fun tryExcludeFolder() {
-        val excludeText = getString(R.string.exclude_folder_description) + "\n\n" + arrayListOf(mPath).reduce { acc, s -> acc + "\n" + s }
-        val view  = MyTextView(this)
-        view.setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(16))
-        view.text = excludeText
-        AlertDialog.Builder(this)
-                .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                    run {
-                        config.addExcludedFolders(setOf(mPath))
-                        finish()
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .create().apply {
-            setupDialogStuff(view, this, R.string.additional_info)
-        }
-    }
-
     private fun deleteDirectoryIfEmpty() {
         val file = File(mPath)
         if (!file.isDownloadsFolder() && file.isDirectory && file.listFiles()?.isEmpty() == true) {
@@ -308,6 +258,7 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
 
         mIsGettingMedia = true
         media_refresh_layout.isRefreshing = true
+        media_refresh_layout.isEnabled = true
 
         val tokenMedia = object : TypeToken<List<Medium>>() {}.type
         val media = Gson().fromJson<ArrayList<Medium>>(config.loadFolderMedia(mPath), tokenMedia) ?: ArrayList<Medium>(1)
@@ -354,7 +305,7 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
         media_grid.isDragSelectionEnabled = true
         media_grid.isZoomingEnabled = true
 
-        layoutManager.spanCount = config.mediaColumnCnt
+        layoutManager.spanCount = config.getColumnCount(mPath)
         media_grid.listener = object : MyScalableRecyclerView.MyScalableRecyclerViewListener {
             override fun zoomIn() {
                 if (layoutManager.spanCount > 1) {
@@ -381,13 +332,13 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
     }
 
     private fun increaseColumnCount() {
-        config.mediaColumnCnt = ++(media_grid.layoutManager as GridLayoutManager).spanCount
+        config.setColumnCount(mPath, ++(media_grid.layoutManager as GridLayoutManager).spanCount)
         invalidateOptionsMenu()
         media_grid.adapter.notifyDataSetChanged()
     }
 
     private fun reduceColumnCount() {
-        config.mediaColumnCnt = --(media_grid.layoutManager as GridLayoutManager).spanCount
+        config.setColumnCount(mPath, --(media_grid.layoutManager as GridLayoutManager).spanCount)
         invalidateOptionsMenu()
         media_grid.adapter.notifyDataSetChanged()
     }
@@ -458,6 +409,8 @@ class ShowAllMediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListe
         mLastMediaModified = getLastMediaModified()
         mIsGettingMedia = false
         media_refresh_layout.isRefreshing = false
+        media_refresh_layout.isEnabled = false
+
 
         checkLastMediaChanged()
         if (mLastDrawnHashCode == 0)

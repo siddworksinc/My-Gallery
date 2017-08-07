@@ -1,6 +1,7 @@
 package com.simplemobiletools.gallery.adapters
 
 import android.os.Build
+import android.support.v4.content.ContextCompat
 import android.support.v7.view.ActionMode
 import android.support.v7.widget.RecyclerView
 import android.util.SparseArray
@@ -105,6 +106,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
                 R.id.cab_copy_to -> copyMoveTo(true)
                 R.id.cab_move_to -> copyMoveTo(false)
                 R.id.cab_select_all -> selectAll()
+                R.id.cab_select_inverse -> selectInverse()
                 R.id.cab_delete -> askConfirmDelete()
                 else -> return false
             }
@@ -115,7 +117,7 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
             super.onCreateActionMode(actionMode, menu)
             actMode = actionMode
             activity.menuInflater.inflate(R.menu.cab_media, menu)
-            activity.updateStatusBarColor(R.color.black)
+            activity.updateStatusBarColor(ContextCompat.getColor(activity, R.color.black))
             return true
         }
 
@@ -221,6 +223,21 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
         updateTitle(cnt)
     }
 
+    private fun selectInverse() {
+        val cnt = media.size
+        for (i in 0..cnt - 1) {
+            if(selectedPositions.contains(i)) {
+                selectedPositions.remove(i)
+                multiSelector.setSelected(i, 0, false)
+            } else  {
+                selectedPositions.add(i)
+                multiSelector.setSelected(i, 0, true)
+            }
+            notifyItemChanged(i)
+        }
+        updateTitle(selectedPositions.size)
+    }
+
     private fun askConfirmDelete() {
         ConfirmationDialog(activity) {
             deleteFiles()
@@ -236,6 +253,11 @@ class MediaAdapter(val activity: SimpleActivity, var media: MutableList<Medium>,
 
         val files = ArrayList<File>(selectedPositions.size)
         val removeMedia = ArrayList<Medium>(selectedPositions.size)
+
+        if (media.size <= selectedPositions.first()) {
+            actMode?.finish()
+            return
+        }
 
         activity.handleSAFDialog(File(media[selectedPositions.first()].path)) {
             selectedPositions.sortedDescending().forEach {

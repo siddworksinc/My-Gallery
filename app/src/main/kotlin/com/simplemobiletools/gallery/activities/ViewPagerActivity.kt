@@ -1,6 +1,7 @@
 package com.simplemobiletools.gallery.activities
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -138,6 +139,12 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
         if (config.darkBackground) {
             view_pager.background = ColorDrawable(Color.BLACK)
+        }
+
+        // can be init later
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val tDesc = ActivityManager.TaskDescription(null, null, config.primaryColor)
+            setTaskDescription(tDesc)
         }
     }
 

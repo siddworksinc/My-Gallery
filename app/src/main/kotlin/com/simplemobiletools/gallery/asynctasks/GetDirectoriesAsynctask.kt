@@ -2,7 +2,6 @@ package com.simplemobiletools.gallery.asynctasks
 
 import android.content.Context
 import android.os.AsyncTask
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.extensions.getFilenameFromPath
@@ -32,16 +31,16 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         if (!context.hasWriteStoragePermission())
             return ArrayList()
 
-        val st = System.nanoTime()
+//        val st = System.nanoTime()
 
         val media = context.getFilesFrom("", isPickImage, isPickVideo)
         val allDirs = groupDirectories(media)
         val filteredDirs = processDirs(allDirs)
         Directory.sorting = config.directorySorting
         filteredDirs.sort()
-        val end = System.nanoTime()
-        Log.d("Adapter", ((end-st)/1000000).toString());
-        return movePinnedToFront(filteredDirs)
+//        val end = System.nanoTime()
+//        Log.d("Adapter", ((end-st)/1000000).toString());
+        return moveOrderedAlbumsToFront(filteredDirs)
     }
 
     private fun processDirs(dirsAll: Map<String, Directory>): ArrayList<Directory> {
@@ -62,7 +61,7 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         dirsExcluded.forEach {
             if(thumbnailHiddenFolders.contains(it.path)) { it.isThumbnailHidden = true }
             if(passDirs.contains(it.path)) { it.passcode = pass.get(it.path) }
-            if(customNameDirs.contains(it.path)) { it.name = customNames.get(it.path)!! }
+            if(customNameDirs.contains(it.path)) { it.name = customNames[it.path]!! }
         }
 
         if(!temporarilyShowHidden && !showHiddenMedia && config.passProtectedAlbumsHidden) {
@@ -146,14 +145,21 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         }
     }
 
-    private fun movePinnedToFront(dirs: ArrayList<Directory>): ArrayList<Directory> {
+    private fun moveOrderedAlbumsToFront(dirs: ArrayList<Directory>): ArrayList<Directory> {
         val foundFolders = ArrayList<Directory>()
-        val pinnedFolders = config.pinnedFolders
-
-        dirs.forEach { if (pinnedFolders.contains(it.path)) foundFolders.add(it) }
+        val orderedAlbums = config.parseOrderedAlbums()
+        orderedAlbums.forEach{
+            val foundDir = ifExists(it, dirs)
+            if(foundDir != null) foundFolders.add(foundDir)
+        }
         dirs.removeAll(foundFolders)
         dirs.addAll(0, foundFolders)
         return dirs
+    }
+
+    private fun ifExists(orderedAlbumPath: String, dirs: ArrayList<Directory>): Directory? {
+        dirs.filter { orderedAlbumPath == it.path }.forEach { return it }
+        return null
     }
 
     override fun onPostExecute(dirs: ArrayList<Directory>) {

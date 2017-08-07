@@ -12,15 +12,18 @@
         android:title="@string/share"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/cab_properties"
-        android:icon="@drawable/ic_info"
-        android:title="@string/properties"
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/cab_rename"
         android:icon="@drawable/ic_rename"
         android:title="@string/rename"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/cab_copy_to"
+        android:title="@string/copy_to"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/cab_move_to"
+        android:title="@string/move_to"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/cab_hide"
         android:icon="@drawable/ic_hide"
@@ -42,11 +45,13 @@
         android:title="@string/select_all"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/cab_copy_to"
-        android:title="@string/copy_to"
-        app:showAsAction="never"/>
+        android:id="@+id/cab_select_inverse"
+        android:icon="@drawable/ic_flip_white_24dp"
+        android:title="@string/select_inverse"
+        app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/cab_move_to"
-        android:title="@string/move_to"
-        app:showAsAction="never"/>
+        android:id="@+id/cab_properties"
+        android:icon="@drawable/ic_info"
+        android:title="@string/properties"
+        app:showAsAction="ifRoom"/>
 </menu>

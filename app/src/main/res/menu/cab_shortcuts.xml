@@ -7,16 +7,6 @@
         android:title="@string/edit"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/cab_pin"
-        android:icon="@drawable/ic_pin"
-        android:title="@string/pin_folder"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/cab_unpin"
-        android:icon="@drawable/ic_unpin"
-        android:title="@string/unpin_folder"
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/cab_exclude"
         android:title="@string/exclude"
         app:showAsAction="never"/>
@@ -52,5 +42,10 @@
         android:id="@+id/cab_select_all"
         android:icon="@drawable/ic_select_all"
         android:title="@string/select_all"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/cab_select_inverse"
+        android:icon="@drawable/ic_flip_white_24dp"
+        android:title="@string/select_inverse"
         app:showAsAction="ifRoom"/>
 </menu>

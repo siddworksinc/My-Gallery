@@ -1,6 +1,7 @@
 package com.simplemobiletools.gallery.activities
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.WallpaperManager
 import android.content.DialogInterface
 import android.content.Intent
@@ -9,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.text.Html
@@ -71,7 +73,6 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
             mIsGetAnyIntent = getBooleanExtra(GET_ANY_INTENT, false)
         }
 
-        media_refresh_layout.setOnRefreshListener({ getMedia() })
         mPath = intent.getStringExtra(DIRECTORY)
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
@@ -79,6 +80,11 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         mShowAll = config.showAll
         if (mShowAll)
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        // can be init later
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val tDesc = ActivityManager.TaskDescription(null, null, config.primaryColor)
+            setTaskDescription(tDesc)
+        }
     }
 
     override fun onResume() {
@@ -104,7 +110,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         val adapter = media_grid.adapter as MediaAdapter?
         val selected = adapter?.actMode
         if(selected != null) {
-            updateStatusBarColor(R.color.black)
+            updateStatusBarColor(ContextCompat.getColor(this, R.color.black))
         }
     }
 
@@ -211,8 +217,8 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
 
             findItem(R.id.temporarily_show_hidden).isVisible = !config.showHiddenMedia
 
-            findItem(R.id.increase_column_count).isVisible = config.mediaColumnCnt < 10
-            findItem(R.id.reduce_column_count).isVisible = config.mediaColumnCnt > 1
+            findItem(R.id.increase_column_count).isVisible = config.getColumnCount(mPath) < 10
+            findItem(R.id.reduce_column_count).isVisible = config.getColumnCount(mPath) > 1
         }
 
         return true
@@ -317,6 +323,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
             gotMedia(media)
         } else {
             media_refresh_layout.isRefreshing = true
+            media_refresh_layout.isEnabled = true
         }
 
         mLoadedInitialPhotos = true
@@ -353,7 +360,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
 
         media_grid.isDragSelectionEnabled = true
         media_grid.isZoomingEnabled = true
-        layoutManager.spanCount = config.mediaColumnCnt
+        layoutManager.spanCount = config.getColumnCount(mPath)
         media_grid.listener = object : MyScalableRecyclerView.MyScalableRecyclerViewListener {
             override fun zoomIn() {
                 if (layoutManager.spanCount > 1) {
@@ -380,13 +387,13 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
     }
 
     private fun increaseColumnCount() {
-        config.mediaColumnCnt = ++(media_grid.layoutManager as GridLayoutManager).spanCount
+        config.setColumnCount(mPath, ++(media_grid.layoutManager as GridLayoutManager).spanCount)
         invalidateOptionsMenu()
         media_grid.adapter?.notifyDataSetChanged()
     }
 
     private fun reduceColumnCount() {
-        config.mediaColumnCnt = --(media_grid.layoutManager as GridLayoutManager).spanCount
+        config.setColumnCount(mPath, --(media_grid.layoutManager as GridLayoutManager).spanCount)
         invalidateOptionsMenu()
         media_grid.adapter?.notifyDataSetChanged()
     }
@@ -455,6 +462,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         mLastMediaModified = getLastMediaModified()
         mIsGettingMedia = false
         media_refresh_layout.isRefreshing = false
+        media_refresh_layout.isEnabled = false
 
         checkLastMediaChanged()
         if (mLastDrawnHashCode == 0)

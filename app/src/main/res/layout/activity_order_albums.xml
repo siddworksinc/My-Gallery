@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sort_albums_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/order_albums_rv"
+            android:layout_width="match_parent"
+            android:layout_height="1000dp"
+            android:scrollbars="none"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+
+        <com.simplemobiletools.commons.views.MyTextView
+            android:id="@+id/order_albums_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingLeft="@dimen/big_margin"
+            android:paddingRight="@dimen/big_margin"
+            android:paddingTop="@dimen/activity_margin"
+            android:text="@string/sort_albums_placeholder"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

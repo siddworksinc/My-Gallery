@@ -98,7 +98,7 @@ add subtitle to all album, media activity
 have drawer open and close on second run
 ask for permission at first slide
 Added dialog to explain permission on shortcut activity
-updated drawer header layout
+updated drawer header layouts
 Bugfix: whatsnew is shown in first install
 v3 commit 2
 add video only switch
@@ -106,6 +106,7 @@ dark status bar if dark mode is selected
 bug:opening hidden photos does not open it
 Added thumbnail navigation to photo view: Abhishek
 in video activity, rv blocks controls
+
 
 v4
 From simple-gallery github till -- Commits on Jun 19, 2017 -- 2e54fc02f39c70b20ce490e4f435b2621649abc1
@@ -130,4 +131,18 @@ Think on move then browse and select new folder copies to new folder.. Maybe ref
 update strings from simple gallery
 multiselect albums, goto another app, come back, statusbar is pink. it should be black if in selected mode
 open image from media activity, now scroll fast left or right. after some images, it is blank and takes time to load
+Albums ordering
+removed pinned/unpinned folders
+fixed: reset selection always goto albums. It now goes to videos if that is active.
 
+
+v5
+individual column count per album
+changed edittext to password type in passwordlockedactivity
+Fixed master password setup box showing up extra padding
+updated titlebar color to accent color in recents screen for all major activities
+remove swipe refresh from main and album activity
+Select inverse like solid explorer
+add some array size checks at deleting from media/directory view 53948f8d904ff498f9f3a214c1f13f0f5b7f2ef9
+make fragment in photoVideoActivity nullable f269c70e5656e9730448f9dcb40cfba85388181a
+fixed statusbar appearing grey in mediaactivity

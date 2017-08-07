@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:clickable="false"
-                android:text="Passcode Protection" />
+                android:text="@string/passcode_protection" />
 
             <com.simplemobiletools.commons.views.MyTextView
                 android:visibility="gone"

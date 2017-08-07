@@ -56,6 +56,10 @@
         <activity
             android:name=".activities.PasswordLockedActivity"/>
         <activity
+            android:name=".activities.OrderAlbumsActivity"
+            android:label="@string/order_albums"
+            android:parentActivityName=".activities.ShortcutsActivity"/>
+        <activity
             android:name=".activities.ShowAllMediaActivity"/>
         <activity
             android:name=".activities.ViewPagerActivity"

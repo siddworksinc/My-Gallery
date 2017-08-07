@@ -7,6 +7,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import com.simplemobiletools.commons.extensions.setupDialogStuff
 import com.simplemobiletools.commons.extensions.updateTextColors
 import com.simplemobiletools.gallery.R
@@ -30,9 +32,9 @@ class MasterPassDialog() {
         mResources = activity.resources
         val view = mInflater.inflate(R.layout.dialog_shortcut, null)
 
-        view.property_label_name.visibility = View.GONE
+        (view.property_label_name.parent as RelativeLayout).visibility = View.GONE
         view.property_value_name_value.visibility = View.GONE
-        view.property_label_path.visibility = View.GONE
+        (view.property_label_path.parent as LinearLayout).visibility = View.GONE
         view.property_value_path_value.visibility = View.GONE
 
         view.hide_thumbnail_holder.visibility = View.GONE

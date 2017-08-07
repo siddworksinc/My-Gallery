@@ -10,6 +10,7 @@ import com.simplemobiletools.commons.helpers.SORT_DESCENDING
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.models.AlbumCover
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Config(context: Context) : BaseConfig(context) {
     companion object {
@@ -54,25 +55,9 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getBoolean(TEMPORARILY_SHOW_HIDDEN, false)
         set(temporarilyShowHidden) = prefs.edit().putBoolean(TEMPORARILY_SHOW_HIDDEN, temporarilyShowHidden).apply()
 
-    var pinnedFolders: Set<String>
-        get() = prefs.getStringSet(PINNED_FOLDERS, HashSet<String>())
-        set(pinnedFolders) = prefs.edit().putStringSet(PINNED_FOLDERS, pinnedFolders).apply()
-
     var showAll: Boolean
         get() = prefs.getBoolean(SHOW_ALL, false)
         set(showAll) = prefs.edit().putBoolean(SHOW_ALL, showAll).apply()
-
-    fun addPinnedFolders(paths: Set<String>) {
-        val currPinnedFolders = HashSet<String>(pinnedFolders)
-        currPinnedFolders.addAll(paths)
-        pinnedFolders = currPinnedFolders
-    }
-
-    fun removePinnedFolders(paths: Set<String>) {
-        val currPinnedFolders = HashSet<String>(pinnedFolders)
-        currPinnedFolders.removeAll(paths)
-        pinnedFolders = currPinnedFolders
-    }
 
     fun addExcludedFolder(path: String) {
         addExcludedFolders(HashSet<String>(Arrays.asList(path)))
@@ -264,5 +249,41 @@ class Config(context: Context) : BaseConfig(context) {
     var hideSystemUI: Boolean
         get() = prefs.getBoolean(HIDE_SYSTEM_UI, false)
         set(hideSystemUI) = prefs.edit().putBoolean(HIDE_SYSTEM_UI, hideSystemUI).apply()
+
+    var orderedAlbums: String?
+        get() = prefs.getString(ORDERED_ALBUMS, null)
+        set(sortedFolders) = prefs.edit().remove(ORDERED_ALBUMS).putString(ORDERED_ALBUMS, sortedFolders).apply()
+
+    fun removeOrderedAlbum(path: String) {
+        val currSortedFolders = parseOrderedAlbums()
+        currSortedFolders.remove(path)
+        orderedAlbums = Gson().toJson(currSortedFolders)
+    }
+
+    fun parseOrderedAlbums(): ArrayList<String> {
+        val listType = object : TypeToken<ArrayList<String>>() {}.type
+        return Gson().fromJson<ArrayList<String>>(orderedAlbums, listType) ?: ArrayList(1)
+    }
+
+    var mediaColumnCounts: String?
+        get() = prefs.getString(getMediaColumnsField(), null)
+        set(mediaColumnCount) = prefs.edit().remove(getMediaColumnsField()).putString(getMediaColumnsField(), mediaColumnCount).apply()
+
+    fun getColumnCount(mPath: String): Int {
+        val listType = object : TypeToken<HashMap<String, Int>>() {}.type
+        val hashMap = Gson().fromJson<HashMap<String, Int>>(mediaColumnCounts, listType) ?: HashMap<String, Int>(1)
+        if(hashMap.containsKey(mPath)) {
+            return hashMap[mPath]!!
+        } else {
+            return getDefaultMediaColumnCount()
+        }
+    }
+
+    fun setColumnCount(mPath: String, count: Int) {
+        val listType = object : TypeToken<HashMap<String, Int>>() {}.type
+        val hashMap = Gson().fromJson<HashMap<String, Int>>(mediaColumnCounts, listType) ?: HashMap<String, Int>(1)
+        hashMap.put(mPath, count)
+        mediaColumnCounts = Gson().toJson(hashMap)
+    }
 }
 

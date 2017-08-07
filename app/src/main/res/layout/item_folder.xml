@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_item_holder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <com.simplemobiletools.commons.views.MyTextView
+        android:id="@+id/list_item_number"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:text="1"
+        android:gravity="center"
+        android:textSize="28sp"
+        android:padding="@dimen/medium_margin"/>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/small_margin">
+
+        <com.simplemobiletools.commons.views.MyTextView
+            android:id="@+id/list_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textSize="@dimen/bigger_text_size"
+            android:text="Directory"/>
+
+        <com.simplemobiletools.commons.views.MyTextView
+            android:id="@+id/list_item_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/list_item_name"
+            android:text="1 KB"
+            android:textSize="@dimen/smaller_text_size"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:background="?android:attr/selectableItemBackground"
+        android:id="@+id/list_item_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:src="@drawable/order_albums_delete"/>
+</LinearLayout>

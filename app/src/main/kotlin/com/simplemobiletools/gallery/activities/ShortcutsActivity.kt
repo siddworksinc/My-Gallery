@@ -1,8 +1,10 @@
 package com.simplemobiletools.gallery.activities
 
 import android.Manifest
+import android.app.ActivityManager.TaskDescription
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -32,7 +34,7 @@ import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
 import com.simplemobiletools.gallery.adapters.ShortcutsAdapter
 import com.simplemobiletools.gallery.asynctasks.GetDirectoriesAsynctask
-import com.simplemobiletools.gallery.dialogs.ChangeSortingDialog
+import com.simplemobiletools.gallery.dialogs.AlbumSortingDialog
 import com.simplemobiletools.gallery.dialogs.PasswordDialog
 import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.helpers.*
@@ -73,11 +75,17 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         setupDrawer()
         init()
 
-        directories_refresh_layout.setOnRefreshListener({ getDirectories() })
         mDirs = ArrayList<Directory>()
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
         mStoredScrollHorizontally = config.scrollHorizontally
+
+        // can be init later
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val bm = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+            val tDesc = TaskDescription(null, null, config.primaryColor)
+            setTaskDescription(tDesc)
+        }
     }
 
     override fun onResume() {
@@ -163,6 +171,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
 
         if (!mLoadedInitialPhotos) {
             directories_refresh_layout.isRefreshing = true
+            directories_refresh_layout.isEnabled = true
         }
 
         mLoadedInitialPhotos = true
@@ -176,6 +185,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         supportActionBar?.subtitle = Html.fromHtml("<small>${dirs.size} Albums</small>")
         mLastMediaModified = getLastMediaModified()
         directories_refresh_layout.isRefreshing = false
+        directories_refresh_layout.isEnabled = false
         mIsGettingDirs = false
 
         checkLastMediaChanged()
@@ -411,7 +421,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     }
 
     private fun showSortingDialog() {
-        ChangeSortingDialog(this, true, false) {
+        AlbumSortingDialog(this, true, false) {
             getDirectories()
         }
     }
@@ -532,6 +542,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
                                     if (whatsNewContent != null) {
                                         showWhatsNewDialog(this@ShortcutsActivity, whatsNewContent)
                                     }
+                                    resetSelection()
                             }
                             8L -> {
                                     config.showMedia = VIDEOS
@@ -583,6 +594,10 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     }
 
     private fun resetSelection() {
-        drawer?.setSelection(1L, false)
+        if(config.showMedia == IMAGES_AND_VIDEOS) {
+            drawer?.setSelection(1L, false)
+        } else {
+            drawer?.setSelection(8L, false)
+        }
     }
 }

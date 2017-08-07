@@ -136,10 +136,19 @@ fun getNewReleases(releases: ArrayList<Release>): String {
 
 fun getWhatsNewContent(versionCode: Int): String? {
     when (versionCode) {
-        4 -> return  "New: Added option for Horizontal Scrolling\n\n" +
+        5 -> return  "New: Remember column counts per album. You can have dense view in one and cozy in another!\n\n" +
+                " - New: Select Inverse option while selecting things\n\n" +
+                " - Improve: Android Recents screen now shows user selected app color instead of default pink (@strngrINknowns)\n\n" +
+                " - Improve: Default color changed to green instead of pink (@kashkakku)\n\n" +
+                " - Remove: Swipe to refresh on all screens. It was gobbling up swipe down gestures while scrolling or drag selecting\n\n" +
+                " - Fixed: Password input field shows entered text as password on \"Enter password to continue\" screen (@sagarraythatha)\n\n" +
+                " - Fixed: Master password setup dialog had extra space (@strngrINknowns)\n\n"
+        4 -> return  "New: Albums Ordering. You can now set order of albums(any or all) and they will always appear in order you have set\n\n" +
+                " - New: Added option for Horizontal Scrolling\n\n" +
                 " - New: Added option for automatically hide extra UI at entering fullscreen mode\n\n" +
                 " - New: Allow opening a third party editor from Edit screen\n\n" +
                 " - Improve: Double tap to zoom\n\n" +
+                " - Remove: Pin albums in favour of album ordering\n\n" +
                 " - Lots of Bug Fixes, Lots of Behaviour Improvements & Lots of Performance Improvements\n\n"
         3 -> return  "New: Album carousel while viewing photos lets you quickly navigate to other photos (@Abhishek)\n\n" +
                 " - New: View only videos quickly via drawer shortcut (@sagarraythatha, @Abhishek)\n\n" +
