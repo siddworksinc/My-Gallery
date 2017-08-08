@@ -38,6 +38,8 @@ android {
 
     lintOptions {
         disable 'MissingTranslation'
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 
@@ -58,7 +60,7 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.9.2@aar') {
         transitive = true
     }
-    compile 'com.simplemobiletools:commons:2.23.8'
+    compile 'com.simplemobiletools:commons:2.25.3'
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
     compile 'com.theartofdev.edmodo:android-image-cropper:2.4.0'
     compile 'com.bignerdranch.android:recyclerview-multiselect:0.2'

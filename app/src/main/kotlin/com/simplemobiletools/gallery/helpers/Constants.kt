@@ -41,6 +41,15 @@ val SCROLL_HORIZONTALLY = "scroll_horizontally"
 val HIDE_SYSTEM_UI = "hide_system_ui"
 val ORDERED_ALBUMS = "ordered_albums"
 
+// slideshow
+val SLIDESHOW_INTERVAL = "slideshow_interval"
+val SLIDESHOW_INCLUDE_PHOTOS = "slideshow_include_photos"
+val SLIDESHOW_INCLUDE_VIDEOS = "slideshow_include_videos"
+val SLIDESHOW_RANDOM_ORDER = "slideshow_random_order"
+val SLIDESHOW_USE_FADE = "slideshow_use_fade"
+val SLIDESHOW_MOVE_BACKWARDS = "slideshow_move_backwards"
+val SLIDESHOW_DEFAULT_INTERVAL = 5
+
 val NOMEDIA = ".nomedia"
 
 val DIRECTORY = "directory"

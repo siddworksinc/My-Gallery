@@ -8,5 +8,6 @@ abstract class ViewPagerFragment : Fragment() {
 
     interface FragmentListener {
         fun fragmentClicked()
+        fun videoEnded(): Boolean
     }
 }

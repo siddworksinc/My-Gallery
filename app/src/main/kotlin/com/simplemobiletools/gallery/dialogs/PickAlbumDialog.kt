@@ -61,7 +61,7 @@ class PickAlbumDialog(val activity: SimpleActivity, val sourcePath: String?,
                 path = first.path
             }
             val dir = Directory(it, path, file.name, 1, file.lastModified(), 0, 0)
-            callback.invoke(dir)
+            callback(dir)
         }
     }
 
@@ -84,7 +84,7 @@ class PickAlbumDialog(val activity: SimpleActivity, val sourcePath: String?,
                 activity.toast(R.string.source_and_destination_same)
                 return@DirectoryAdapter
             } else {
-                callback.invoke(it)
+                callback(it)
                 dialog.dismiss()
             }
         }

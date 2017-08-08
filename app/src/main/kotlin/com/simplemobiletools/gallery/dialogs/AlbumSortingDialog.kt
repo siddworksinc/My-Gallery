@@ -95,6 +95,6 @@ class AlbumSortingDialog(val activity: SimpleActivity, val isDirectorySorting: B
                 config.fileSorting = sorting
             }
         }
-        callback.invoke()
+        callback()
     }
 }

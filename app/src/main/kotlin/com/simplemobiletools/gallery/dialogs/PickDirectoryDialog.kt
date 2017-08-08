@@ -46,7 +46,7 @@ class PickDirectoryDialog(val activity: SimpleActivity, val sourcePath: String, 
     fun showOtherFolder() {
         val showHidden = activity.config.shouldShowHidden
         FilePickerDialog(activity, sourcePath, false, showHidden, true) {
-            callback.invoke(it)
+            callback(it)
         }
     }
 
@@ -60,7 +60,7 @@ class PickDirectoryDialog(val activity: SimpleActivity, val sourcePath: String, 
                 activity.toast(R.string.source_and_destination_same)
                 return@DirectoryAdapter
             } else {
-                callback.invoke(it.path)
+                callback(it.path)
                 dialog.dismiss()
             }
         }

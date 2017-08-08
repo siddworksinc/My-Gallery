@@ -16,6 +16,7 @@ import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.GridLayoutManager
@@ -37,8 +38,10 @@ import com.simplemobiletools.gallery.adapters.MyPagerAdapter
 import com.simplemobiletools.gallery.asynctasks.GetMediaAsynctask
 import com.simplemobiletools.gallery.asynctasks.GetMediaByDirsAsyncTask
 import com.simplemobiletools.gallery.dialogs.SaveAsDialog
+import com.simplemobiletools.gallery.dialogs.SlideshowDialog
 import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.fragments.PhotoFragment
+import com.simplemobiletools.gallery.fragments.VideoFragment
 import com.simplemobiletools.gallery.fragments.ViewPagerFragment
 import com.simplemobiletools.gallery.helpers.*
 import com.simplemobiletools.gallery.models.Directory
@@ -57,12 +60,19 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     private var mIsFullScreen = false
     private var mPos = -1
     private var mShowAll = false
+    private var mIsSlideshowActive = false
     private var mRotationDegrees = 0f
     private var mLastHandledOrientation = 0
     private var mPrevHashcode = 0
     private lateinit var pagerAdapter: MyPagerAdapter
     var smoothScroller: RecyclerView.SmoothScroller? = null
     private var isViewIntent: Boolean = false
+
+    private var mSlideshowHandler = Handler()
+    private var mSlideshowInterval = SLIDESHOW_DEFAULT_INTERVAL
+    private var mSlideshowMoveBackwards = false
+    private var mSlideshowMedia = mutableListOf<Medium>()
+    private var mAreSlideShowMediaVisible = false
 
     companion object {
         var screenWidth = 0
@@ -205,6 +215,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     override fun onPause() {
         super.onPause()
         mOrientationEventListener.disable()
+        stopSlideshow()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -229,6 +240,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
         when (item.itemId) {
             R.id.menu_set_as -> trySetAs(getCurrentFile())
+            R.id.slideshow -> initSlideshow()
             R.id.menu_copy_to -> copyMoveTo(true)
             R.id.menu_move_to -> copyMoveTo(false)
             R.id.menu_open_with -> openWith(getCurrentFile())
@@ -248,8 +260,67 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         return true
     }
 
-    private fun updatePagerItems() {
-        pagerAdapter = MyPagerAdapter(this, supportFragmentManager, mMedia.toMutableList())
+    private fun initSlideshow() {
+        SlideshowDialog(this) {
+            startSlideshow()
+        }
+    }
+
+    private fun startSlideshow() {
+        if (getMediaForSlideshow()) {
+            view_pager.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    view_pager.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed)
+                        return
+
+                    hideSystemUI()
+                    mSlideshowInterval = config.slideshowInterval
+                    mSlideshowMoveBackwards = config.slideshowMoveBackwards
+                    mIsSlideshowActive = true
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    scheduleSwipe()
+                }
+            })
+        }
+    }
+
+    private fun stopSlideshow() {
+        if (mIsSlideshowActive) {
+            showSystemUI()
+            mIsSlideshowActive = false
+            mSlideshowHandler.removeCallbacksAndMessages(null)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            updateScrollPositionRV(mPos)
+        }
+    }
+
+    private fun scheduleSwipe() {
+        mSlideshowHandler.removeCallbacksAndMessages(null)
+        if (mIsSlideshowActive) {
+            if (getCurrentMedium()!!.isImage() || getCurrentMedium()!!.isGif()) {
+                mSlideshowHandler.postDelayed({
+                    if (mIsSlideshowActive && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && !isDestroyed) {
+                        swipeToNextMedium()
+                    }
+                }, mSlideshowInterval * 1000L)
+            } else {
+                (getCurrentFragment() as? VideoFragment)!!.playVideo()
+            }
+        }
+    }
+
+    private fun swipeToNextMedium() {
+        val before = view_pager.currentItem
+        view_pager.currentItem = if (mSlideshowMoveBackwards) --view_pager.currentItem else ++view_pager.currentItem
+        if (before == view_pager.currentItem) {
+            stopSlideshow()
+            toast(R.string.slideshow_ended)
+        }
+    }
+
+    private fun updatePagerItems(media: MutableList<Medium>) {
+        val pagerAdapter = MyPagerAdapter(this, supportFragmentManager, media)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1 || !isDestroyed) {
             view_pager.apply {
                 adapter = pagerAdapter
@@ -257,6 +328,34 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
                 currentItem = mPos
                 addOnPageChangeListener(this@ViewPagerActivity)
             }
+        }
+    }
+
+    private fun getMediaForSlideshow(): Boolean {
+        mSlideshowMedia = mMedia.toMutableList()
+        if (!config.slideshowIncludePhotos) {
+            mSlideshowMedia = mSlideshowMedia.filter { !it.isImage() && !it.isGif() } as MutableList
+        }
+
+        if (!config.slideshowIncludeVideos) {
+            mSlideshowMedia = mSlideshowMedia.filter { it.isImage() || it.isGif() } as MutableList
+        }
+
+        if (config.slideshowRandomOrder) {
+            Collections.shuffle(mSlideshowMedia)
+            mPos = 0
+        } else {
+            mPath = getCurrentPath()
+            mPos = getPositionInList(mSlideshowMedia)
+        }
+
+        return if (mSlideshowMedia.isEmpty()) {
+            toast(R.string.no_media_for_slideshow)
+            false
+        } else {
+            updatePagerItems(mSlideshowMedia)
+            mAreSlideShowMediaVisible = true
+            true
         }
     }
 
@@ -277,7 +376,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             getCurrentMedium()!!.apply {
                 name = newFileName
                 path = it.absolutePath
-                mMedia[mPos] = this
+                getCurrentMedia()[mPos] = this
             }
             invalidateOptionsMenu()
         }
@@ -439,7 +538,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
     private fun askConfirmDelete() {
         ConfirmationDialog(this) {
-            deleteFileBg(File(mMedia[mPos].path)) {
+            deleteFileBg(File(getCurrentMedia()[mPos].path)) {
                 reloadViewPager()
             }
         }
@@ -456,7 +555,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
     private fun renameFile() {
         RenameItemDialog(this, getCurrentPath()) {
-            mMedia[mPos].path = it
+            getCurrentMedia()[mPos].path = it
             updateActionbarTitle()
         }
     }
@@ -502,22 +601,22 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         mPrevHashcode = media.hashCode()
         mMedia = media
         if (mPos == -1) {
-            mPos = getProperPosition()
+            mPos = getPositionInList(media)
         } else {
             mPos = Math.min(mPos, mMedia.size - 1)
         }
 
-        updatePagerItems()
+        updatePagerItems(mMedia.toMutableList())
         setupRVAdapter()
         updateActionbarTitle()
         invalidateOptionsMenu()
         checkOrientation()
     }
 
-    private fun getProperPosition(): Int {
+    private fun getPositionInList(items: MutableList<Medium>): Int {
         mPos = 0
         var i = 0
-        for (medium in mMedia) {
+        for (medium in items) {
             if (medium.path == mPath) {
                 return i
             }
@@ -551,10 +650,17 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         checkSystemUI()
     }
 
+    override fun videoEnded(): Boolean {
+        if (mIsSlideshowActive)
+            swipeToNextMedium()
+        return mIsSlideshowActive
+    }
+
     private fun checkSystemUI() {
         if (mIsFullScreen) {
             hideExtraUI()
         } else {
+            stopSlideshow()
             showExtraUI()
         }
     }
@@ -579,8 +685,8 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
     private fun updateActionbarTitle() {
         runOnUiThread {
-            if (mPos < mMedia.size) {
-                title = mMedia[mPos].path.getFilenameFromPath()
+            if (mPos < getCurrentMedia().size) {
+                title = getCurrentMedia()[mPos].path.getFilenameFromPath()
                 supportActionBar?.subtitle = Html.fromHtml("<small>${mPos+1}/${mMedia.size}</small>")
                 updateScrollPositionRV(mPos)
             }
@@ -588,11 +694,13 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
     }
 
     private fun getCurrentMedium(): Medium? {
-        return if (mMedia.isEmpty() || mPos == -1)
+        return if (getCurrentMedia().isEmpty() || mPos == -1)
             null
         else
-            mMedia[Math.min(mPos, mMedia.size - 1)]
+            getCurrentMedia()[Math.min(mPos, getCurrentMedia().size - 1)]
     }
+
+    private fun getCurrentMedia() = if (mAreSlideShowMediaVisible) mSlideshowMedia else mMedia
 
     private fun getCurrentPath() = getCurrentMedium()!!.path
 
@@ -610,6 +718,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
         updateActionbarTitle()
         mRotationDegrees = 0f
         supportInvalidateOptionsMenu()
+        scheduleSwipe()
     }
 
     private fun updateScrollPositionRV(position: Int) {
@@ -653,7 +762,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
 
     private fun itemClicked(path: String) {
         mPath = path
-        mPos = getProperPosition()
+        mPos = getPositionInList(mMedia)
 
         updateActionbarTitle()
         view_pager.currentItem = mPos
