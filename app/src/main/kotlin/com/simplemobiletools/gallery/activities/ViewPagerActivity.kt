@@ -291,7 +291,7 @@ class ViewPagerActivity : SimpleActivity(), ViewPager.OnPageChangeListener, View
             mIsSlideshowActive = false
             mSlideshowHandler.removeCallbacksAndMessages(null)
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            updateScrollPositionRV(mPos)
+            updateScrollPositionRV(mPos)to
         }
     }
 

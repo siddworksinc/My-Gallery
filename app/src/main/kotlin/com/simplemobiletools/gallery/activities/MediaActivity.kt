@@ -1,7 +1,6 @@
 package com.simplemobiletools.gallery.activities
 
 import android.app.Activity
-import android.app.ActivityManager
 import android.app.WallpaperManager
 import android.content.DialogInterface
 import android.content.Intent
@@ -80,11 +79,9 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         mShowAll = config.showAll
         if (mShowAll)
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
         // can be init later
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val tDesc = ActivityManager.TaskDescription(null, null, config.primaryColor)
-            setTaskDescription(tDesc)
-        }
+        updateRecentsColor()
     }
 
     override fun onResume() {
@@ -112,6 +109,7 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
         if(selected != null) {
             updateStatusBarColor(ContextCompat.getColor(this, R.color.black))
         }
+        checkIfColorChanged()
     }
 
     override fun onPause() {
@@ -136,7 +134,6 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
             title = if (mShowAll) resources.getString(R.string.all_folders) else dirName
             getMedia()
             setupLayoutManager()
-            checkIfColorChanged()
         } else {
             finish()
         }
@@ -147,6 +144,8 @@ class MediaActivity : SimpleActivity(), MediaAdapter.MediaOperationsListener {
             getRecyclerAdapter().updatePrimaryColor(config.primaryColor)
             media_horizontal_fastscroller.updateHandleColor()
             media_vertical_fastscroller.updateHandleColor()
+
+            updateRecentsColor()
         }
     }
 

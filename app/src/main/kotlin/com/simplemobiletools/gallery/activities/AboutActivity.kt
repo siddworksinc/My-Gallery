@@ -118,5 +118,7 @@ class AboutActivity : SimpleActivity() {
             logEvent("ButtonAboutCreditsSimpleGallery")
             openUrl(this@AboutActivity, "https://simplemobiletools.github.io/")
         }
+
+        updateRecentsColor()
     }
 }

@@ -1,10 +1,8 @@
 package com.simplemobiletools.gallery.activities
 
 import android.Manifest
-import android.app.ActivityManager.TaskDescription
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -73,19 +71,13 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         setupDrawer()
-        init()
 
         mDirs = ArrayList<Directory>()
         mStoredAnimateGifs = config.animateGifs
         mStoredCropThumbnails = config.cropThumbnails
         mStoredScrollHorizontally = config.scrollHorizontally
 
-        // can be init later
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val bm = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-            val tDesc = TaskDescription(null, null, config.primaryColor)
-            setTaskDescription(tDesc)
-        }
+        initLocal()
     }
 
     override fun onResume() {
@@ -108,6 +100,8 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
 
         tryLoadGallery()
         invalidateOptionsMenu()
+
+        // set bar color if selected
         val shortcutsAdapter = directories_grid.adapter as ShortcutsAdapter?
         val selected = shortcutsAdapter?.actMode
         if(selected != null) {
@@ -234,6 +228,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
             setupDrawer()
             updateBackgroundColor()
             updateActionbarColor()
+            updateRecentsColor()
         }
     }
 
@@ -599,5 +594,11 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         } else {
             drawer?.setSelection(8L, false)
         }
+    }
+
+    fun initLocal() {
+        init()
+        // can be init later
+        updateRecentsColor()
     }
 }

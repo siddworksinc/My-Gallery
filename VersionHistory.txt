@@ -147,3 +147,7 @@ add some array size checks at deleting from media/directory view 53948f8d904ff49
 make fragment in photoVideoActivity nullable f269c70e5656e9730448f9dcb40cfba85388181a
 fixed statusbar appearing grey in mediaactivity
 --- Commit to github ---
+
+v6
+if color changed in onresume, again set recents color for all activities
+

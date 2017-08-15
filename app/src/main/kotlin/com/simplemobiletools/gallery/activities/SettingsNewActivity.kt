@@ -53,6 +53,7 @@ class SettingsNewActivity : SimpleActivity() {
         setupMasterPass()
         setupPrivacyAndSecurity()
         updateTextColors(main_content)
+        updateRecentsColor()
     }
 
     private fun setupPassProtectedAlbums() {

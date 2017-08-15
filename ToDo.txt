@@ -1,7 +1,5 @@
 This release
-    settings and about screen to be shown user accent color in recents screen
-    if color changed in onresume, again set recents color for all activities
-    transparent titlebars
+    select images in media activity, goto camera and click pics, goto app and wrong images are selected
     Add recent photos like quick pic
     tutorial
         features
@@ -13,6 +11,9 @@ This release
             like give rating, don't like, give feedback. Want to build it community driven app. can vote on upcoming features
 
 Next release
+    transparent titlebars
+    settings and about screen to be shown user accent color in recents screen
+	sldeshow option in mediaactiviy
     keybaord does not dismiss in filepickerdialog
     play gif is not working
     set as wallpaper by opening from intent is broken
