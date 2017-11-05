@@ -37,8 +37,8 @@ class RefreshShortcutsAsynctask(val context: Context, val shortcuts: ArrayList<S
         else { return null }
     }
 
-    override fun onPostExecute(dirs: ArrayList<Shortcut>?) {
-        super.onPostExecute(dirs)
-        callback.invoke(dirs)
+    override fun onPostExecute(result: ArrayList<Shortcut>?) {
+        super.onPostExecute(result)
+        callback.invoke(result)
     }
 }

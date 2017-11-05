@@ -136,6 +136,9 @@ fun getNewReleases(releases: ArrayList<Release>): String {
 
 fun getWhatsNewContent(versionCode: Int): String? {
     when (versionCode) {
+        6 -> return  "New: Quickly access recent Media. Turn it on/off in settings\n\n" +
+                " - Improve: Android Recents screen now shows user selected app color instead of default pink (@strngrINknowns)\n\n" +
+                " - Fixed: Changing color will update that in Android Recent Apps screen\n\n"
         5 -> return  "New: Remember column counts per album. You can have dense view in one and cozy in another!\n\n" +
                 " - New: Slideshow functionality. While viewing any photo/video start slideshow by Menu -> Slideshow\n\n" +
                 " - New: Select Inverse option while selecting things\n\n" +

@@ -158,6 +158,8 @@
     <string name="order_albums">Order Albums</string>
     <string name="select_inverse">Select Inverse</string>
     <string name="passcode_protection">Passcode Protection</string>
+    <string name="recent_media">Recent Media</string>
+    <string name="settings_recent_media_desc">Show Recent Media Prompt</string>
 
     <!--
         Haven't found some strings? There's more at

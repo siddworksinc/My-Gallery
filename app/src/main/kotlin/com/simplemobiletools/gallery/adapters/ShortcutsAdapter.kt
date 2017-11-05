@@ -1,8 +1,12 @@
 package com.simplemobiletools.gallery.adapters
 
 import android.content.DialogInterface
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.*
 import android.os.Build
 import android.support.v7.app.AlertDialog
+import android.support.v7.content.res.AppCompatResources
 import android.support.v7.view.ActionMode
 import android.support.v7.widget.RecyclerView
 import android.util.SparseArray
@@ -14,6 +18,7 @@ import com.bignerdranch.android.multiselector.SwappingHolder
 import com.bumptech.glide.Glide
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
 import com.simplemobiletools.commons.dialogs.PropertiesDialog
+import com.simplemobiletools.commons.extensions.adjustAlpha
 import com.simplemobiletools.commons.extensions.isImageVideoGif
 import com.simplemobiletools.commons.extensions.needsStupidWritePermissions
 import com.simplemobiletools.commons.extensions.setupDialogStuff
@@ -44,6 +49,8 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
     val selectedPositions = HashSet<Int>()
     var foregroundColor = config.primaryColor
     var scrollVertically = !config.scrollHorizontally
+    private var selectorOverlayDrawable: LayerDrawable? = null
+
 
     fun toggleItemSelection(select: Boolean, pos: Int) {
         if (itemViews[pos] != null)
@@ -82,9 +89,30 @@ class ShortcutsAdapter(val activity: ShortcutsActivity, var dirs: MutableList<Di
 
     private fun setupItemViewForeground(itemView: View) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-            (getProperView(itemView) as FrameLayout).foreground = foregroundColor.createSelector()
+            (getProperView(itemView) as FrameLayout).foreground = getSelector()
         else
-            getProperView(itemView).foreground = foregroundColor.createSelector()
+            getProperView(itemView).foreground = getSelector()
+    }
+
+    private fun getSelector(): StateListDrawable {
+        if(selectorOverlayDrawable == null) {
+            val layers = arrayOfNulls<Drawable>(2)
+            layers[0] = foregroundColor.createSelector()
+            layers[1] = AppCompatResources.getDrawable(activity, R.drawable.ic_check_black_overlay)
+            selectorOverlayDrawable = LayerDrawable(layers)
+        }
+
+        val selectorOverlay = StateListDrawable()
+        selectorOverlay.addState(intArrayOf(android.R.attr.state_selected), selectorOverlayDrawable)
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            val pressedDrawable = ColorDrawable(foregroundColor.adjustAlpha(0.2f))
+            selectorOverlay.addState(intArrayOf(android.R.attr.state_pressed), pressedDrawable)
+        } else {
+            val pressedDrawable = RippleDrawable(ColorStateList.valueOf(foregroundColor.adjustAlpha(0.2f)), null, ColorDrawable(Color.WHITE))
+            selectorOverlay.addState(intArrayOf(), pressedDrawable)
+        }
+        return selectorOverlay
     }
 
     val adapterListener = object : MyAdapterListener {

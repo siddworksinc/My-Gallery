@@ -40,6 +40,7 @@ class SettingsNewActivity : SimpleActivity() {
         setupAppLock()
         setupShowHiddenMedia()
         setupPassProtectedAlbums()
+        setupRecentMedia()
         setupAutoplayVideos()
         setupLoopVideos()
         setupAnimateGifs()
@@ -241,6 +242,17 @@ class SettingsNewActivity : SimpleActivity() {
             show_hidden_media_hint.text = "Hidden Media is shown"
         } else {
             show_hidden_media_hint.text = "Hidden Media is not shown"
+        }
+    }
+
+    private fun setupRecentMedia() {
+        recent_media_image.setColorFilter(accentColor)
+        recent_media_image.setImageResource(R.drawable.settings_recent)
+
+        recent_media.isChecked = config.recentMediaEnabled
+        recent_media_root.setOnClickListener {
+            recent_media.toggle()
+            config.recentMediaEnabled = recent_media.isChecked
         }
     }
 

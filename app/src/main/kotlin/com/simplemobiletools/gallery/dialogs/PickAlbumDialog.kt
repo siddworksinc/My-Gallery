@@ -45,7 +45,7 @@ class PickAlbumDialog(val activity: SimpleActivity, val sourcePath: String?,
             }
 
             GetDirectoriesAsynctask(activity, false, false) {
-                gotDirectories(it, view, false)
+                gotDirectories(it.dirs, view, false)
             }.execute()
         }
     }

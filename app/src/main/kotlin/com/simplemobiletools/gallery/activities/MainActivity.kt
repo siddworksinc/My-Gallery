@@ -189,7 +189,7 @@ class MainActivity : SimpleActivity(), DirectoryAdapter.DirOperationsListener {
 
         mLoadedInitialPhotos = true
         mCurrAsyncTask = GetDirectoriesAsynctask(applicationContext, mIsPickVideoIntent || mIsGetVideoContentIntent, mIsPickImageIntent || mIsGetImageContentIntent) {
-            gotDirectories(it)
+            gotDirectories(it.dirs)
         }
         mCurrAsyncTask!!.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }

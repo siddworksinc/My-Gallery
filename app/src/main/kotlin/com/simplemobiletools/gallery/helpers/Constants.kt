@@ -40,6 +40,7 @@ val CUSTOM_NAMES = "custom_names"
 val SCROLL_HORIZONTALLY = "scroll_horizontally"
 val HIDE_SYSTEM_UI = "hide_system_ui"
 val ORDERED_ALBUMS = "ordered_albums"
+val RECENT_MEDIA_ENABLED = "recent_media_enabled"
 
 // slideshow
 val SLIDESHOW_INTERVAL = "slideshow_interval"
@@ -80,3 +81,6 @@ val ORIENT_PORTRAIT = 0
 val ORIENT_LANDSCAPE_LEFT = 1
 val ORIENT_LANDSCAPE_RIGHT = 2
 val ORIENT_UPSIDE_DOWN = 3
+
+//MyGallery
+val LAST_MEDIA = "last_media"

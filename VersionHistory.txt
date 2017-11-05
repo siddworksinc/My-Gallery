@@ -150,4 +150,5 @@ fixed statusbar appearing grey in mediaactivity
 
 v6
 if color changed in onresume, again set recents color for all activities
-
+Added checkmark on selected items
+Recent Media

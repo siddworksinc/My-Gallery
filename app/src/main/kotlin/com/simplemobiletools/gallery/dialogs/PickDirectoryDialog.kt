@@ -38,7 +38,7 @@ class PickDirectoryDialog(val activity: SimpleActivity, val sourcePath: String, 
             }
 
             GetDirectoriesAsynctask(activity, false, false) {
-                gotDirectories(it, false)
+                gotDirectories(it.dirs, false)
             }.execute()
         }
     }

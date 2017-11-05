@@ -309,5 +309,13 @@ class Config(context: Context) : BaseConfig(context) {
     var slideshowMoveBackwards: Boolean
         get() = prefs.getBoolean(SLIDESHOW_MOVE_BACKWARDS, false)
         set(slideshowMoveBackwards) = prefs.edit().putBoolean(SLIDESHOW_MOVE_BACKWARDS, slideshowMoveBackwards).apply()
+
+    var lastMedia: String?
+        get() = prefs.getString(LAST_MEDIA, null)
+        set(lastMedia) = prefs.edit().remove(LAST_MEDIA).putString(LAST_MEDIA, lastMedia).apply()
+
+    var recentMediaEnabled: Boolean
+        get() = prefs.getBoolean(RECENT_MEDIA_ENABLED, false)
+        set(recentMediaEnabled) = prefs.edit().putBoolean(RECENT_MEDIA_ENABLED, recentMediaEnabled).apply()
 }
 

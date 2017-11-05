@@ -16,10 +16,11 @@ import com.simplemobiletools.gallery.models.Directory
 import com.simplemobiletools.gallery.models.Medium
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, val isPickImage: Boolean,
-                              val callback: (dirs: ArrayList<Directory>) -> Unit) : AsyncTask<Void, Void, ArrayList<Directory>>() {
+                              val callback: (dirs: DirMedia) -> Unit) : AsyncTask<Void, Void, GetDirectoriesAsynctask.DirMedia>() {
     var config = context.config
     var shouldStop = false
     val showHidden = config.shouldShowHidden
@@ -27,9 +28,13 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
     val showHiddenMedia = config.showHiddenMedia
     val dataFolders = config.getDataFolder()
 
-    override fun doInBackground(vararg params: Void): ArrayList<Directory> {
+    override fun doInBackground(vararg params: Void): DirMedia {
+        val result = DirMedia()
+        result.dirs = ArrayList()
+        result.media = ArrayList()
+
         if (!context.hasWriteStoragePermission())
-            return ArrayList()
+            return result
 
 //        val st = System.nanoTime()
 
@@ -40,7 +45,9 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         filteredDirs.sort()
 //        val end = System.nanoTime()
 //        Log.d("Adapter", ((end-st)/1000000).toString());
-        return moveOrderedAlbumsToFront(filteredDirs)
+        result.dirs = moveOrderedAlbumsToFront(filteredDirs)
+        result.media = ArrayList(media.subList(0, if ( media.size > 19) 19 else media.size))
+        return result
     }
 
     private fun processDirs(dirsAll: Map<String, Directory>): ArrayList<Directory> {
@@ -162,8 +169,13 @@ class GetDirectoriesAsynctask(val context: Context, val isPickVideo: Boolean, va
         return null
     }
 
-    override fun onPostExecute(dirs: ArrayList<Directory>) {
-        super.onPostExecute(dirs)
-        callback.invoke(dirs)
+    override fun onPostExecute(result: DirMedia) {
+        super.onPostExecute(result)
+        callback.invoke(result)
+    }
+
+    class DirMedia {
+        var dirs = ArrayList<Directory>()
+        var media = ArrayList<Medium>()
     }
 }

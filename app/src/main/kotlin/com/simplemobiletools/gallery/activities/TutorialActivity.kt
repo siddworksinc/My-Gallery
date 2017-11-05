@@ -93,7 +93,7 @@ class TutorialActivity : IntroActivity() {
 
     private fun getDirectories() {
         val mCurrAsyncTask = GetDirectoriesAsynctask(applicationContext, false, false) {
-            gotDirectories(it)
+            gotDirectories(it.dirs)
         }
         mCurrAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }

@@ -1,11 +1,12 @@
 This release
+	for phone with no albums, goto order albums, and + sign,.. it always says loading albums
     select images in media activity, goto camera and click pics, goto app and wrong images are selected
     Add recent photos like quick pic
     tutorial
         features
-            light weight apk size
+            light weight apk sizic_check_circle_2e
             no email, registration or anything required just use it already.
-        Few last things
+        Few last things - One more thing
             most features can be accessed by settings, long press on items, menu and drawer
             Gestures are supported like you can slide and select things or pinch
             like give rating, don't like, give feedback. Want to build it community driven app. can vote on upcoming features
@@ -75,6 +76,7 @@ AlbumPickerDialog:
     Multiselect albums
 
 
+https://github.com/Flipboard/bottomsheet
 
 remaining commits from simple-gallery
 horizontal scroll
@@ -100,3 +102,8 @@ individual column count per album
 Performance impacting things
 horizontal scroll
 check status bar for if selected > black in on resume
+
+checked circle selection change
+https://github.com/SimpleMobileTools/Simple-Gallery/commit/fa775e35e3d97f24b514127f536e29badc4acb0a
+https://github.com/SimpleMobileTools/Simple-Gallery/commit/15159de4e981d2abdfb0c1a8cd0f11e510fa9ce7
+https://github.com/SimpleMobileTools/Simple-Gallery/commit/9ee127399551e82488267ed835ca18075bfc0181

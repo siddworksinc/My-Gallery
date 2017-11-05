@@ -30,19 +30,26 @@ import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.commons.views.MyScalableRecyclerView
 import com.simplemobiletools.gallery.BuildConfig
 import com.simplemobiletools.gallery.R
+import com.simplemobiletools.gallery.adapters.MediaAdapter
 import com.simplemobiletools.gallery.adapters.ShortcutsAdapter
 import com.simplemobiletools.gallery.asynctasks.GetDirectoriesAsynctask
+import com.simplemobiletools.gallery.asynctasks.GetRecentMediaAsyncTask
 import com.simplemobiletools.gallery.dialogs.AlbumSortingDialog
 import com.simplemobiletools.gallery.dialogs.PasswordDialog
 import com.simplemobiletools.gallery.extensions.*
 import com.simplemobiletools.gallery.helpers.*
 import com.simplemobiletools.gallery.models.Directory
+import com.simplemobiletools.gallery.models.Medium
 import kotlinx.android.synthetic.main.activity_shortcuts.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
-class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListener {
+class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListener, MediaAdapter.MediaOperationsListener {
+    override fun deleteFiles(files: ArrayList<File>) {
+
+    }
 
     private val STORAGE_PERMISSION = 1
     private val PICK_MEDIA = 2
@@ -56,6 +63,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
     private var mStoredScrollHorizontally = true
     private var mLastMediaModified = 0
     private var mLastMediaHandler = Handler()
+    private lateinit var recentMedia: ArrayList<Medium>
 
     private var mCurrAsyncTask: GetDirectoriesAsynctask? = null
     private var drawer: Drawer? = null
@@ -78,6 +86,7 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         mStoredScrollHorizontally = config.scrollHorizontally
 
         initLocal()
+        initRecentMedia()
     }
 
     override fun onResume() {
@@ -107,6 +116,8 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         if(selected != null) {
             updateStatusBarColor(R.color.black)
         }
+
+        recent_fab.beVisibleIf(config.recentMediaEnabled)
     }
 
     override fun onPause() {
@@ -170,7 +181,11 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
 
         mLoadedInitialPhotos = true
         mCurrAsyncTask = GetDirectoriesAsynctask(applicationContext, false, false) {
-            gotDirectories(it)
+            gotDirectories(it.dirs)
+            GetRecentMediaAsyncTask(it.media, it.dirs) {
+                recentMedia = it ?: arrayListOf()
+                updateRecentMediaIfVisible()
+            }.execute()
         }
         mCurrAsyncTask!!.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
@@ -600,5 +615,62 @@ class ShortcutsActivity : SimpleActivity(), ShortcutsAdapter.DirOperationsListen
         init()
         // can be init later
         updateRecentsColor()
+    }
+
+    private fun initRecentMedia() {
+        recent_fab.beVisibleIf(config.recentMediaEnabled)
+        if(config.recentMediaEnabled) {
+            recent_fab.setOnClickListener(View.OnClickListener {
+                if(bottomsheet_parent.visibility == View.GONE) {
+                    val layoutParamsFab = recent_fab.layoutParams
+                    (layoutParamsFab as CoordinatorLayout.LayoutParams).bottomMargin = dpToPx(142)
+                    updateRecentMedia(recentMedia)
+                    recent_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_close_white_18dp));
+                } else {
+                    val layoutParamsFab = recent_fab.layoutParams
+                    updateRecentMedia(null)
+                    (layoutParamsFab as CoordinatorLayout.LayoutParams).bottomMargin = dpToPx(16)
+                    recent_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_schedule_white_18dp));
+                }
+            })
+        }
+    }
+
+    private fun updateRecentMedia(recentMedia: ArrayList<Medium>?) {
+        if(recentMedia != null) {
+            bottomsheet_parent.beVisible()
+            val currAdapter = recent_grid.adapter
+            if (currAdapter == null) {
+                val mediaAdapter = MediaAdapter(this, recentMedia, this, true) {
+                    val file = File(it.path)
+                    val isVideo = file.isVideoFast()
+                    if (isVideo) {
+                        openWith(file, false)
+                    } else {
+                        Intent(this, ViewPagerActivity::class.java).apply {
+                            putExtra(MEDIUM, it.path)
+                            putExtra(SHOW_ALL, config.showAll)
+                            startActivity(this)
+                        }
+                    }
+                }
+                mediaAdapter.scrollVertically = false
+                mediaAdapter.notifyDataSetChanged()
+                recent_grid.adapter = mediaAdapter
+
+                val layoutManager = recent_grid.layoutManager as GridLayoutManager
+                layoutManager.orientation = GridLayoutManager.HORIZONTAL
+            } else {
+                (currAdapter as MediaAdapter).updateMedia(recentMedia)
+            }
+        } else {
+            bottomsheet_parent.beGone()
+        }
+    }
+
+    private fun updateRecentMediaIfVisible() {
+        if(bottomsheet_parent.visibility == View.VISIBLE) {
+            updateRecentMedia(recentMedia)
+        }
     }
 }
